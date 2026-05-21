@@ -127,8 +127,11 @@ func (s *State) applyEffects(effects map[string]int, multiplier int) {
 		case ResourceCredits:
 			s.Credits += amount
 		default:
-			if key == "populationCap" {
+			switch key {
+			case "populationCap":
 				s.PopulationCap += amount
+			case "population":
+				s.Population += amount
 			}
 		}
 	}

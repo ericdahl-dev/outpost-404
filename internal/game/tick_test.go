@@ -55,3 +55,12 @@ func TestNextDay_WinsAfterDay30(t *testing.T) {
 		t.Fatalf("Day = %d, want 31", s.Day)
 	}
 }
+
+func TestApplyEffects_PopulationEffect(t *testing.T) {
+	s := newTestState()
+	s.Population = 5
+	s.applyEffects(map[string]int{"population": 3}, 1)
+	if s.Population != 8 {
+		t.Fatalf("Population = %d, want 8", s.Population)
+	}
+}
