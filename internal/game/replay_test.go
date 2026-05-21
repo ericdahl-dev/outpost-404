@@ -1,6 +1,7 @@
 package game
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -66,6 +67,24 @@ func TestReplaySession_MatchesRecordedLog(t *testing.T) {
 	}
 	if diff := snapshotDiff(normalizeSnapshot(replayed.snapshot()), normalizeSnapshot(orig.snapshot())); diff != "" {
 		t.Fatalf("final snapshot mismatch: %s\norig %#v\nreplay %#v", diff, orig.snapshot(), replayed.snapshot())
+	}
+}
+
+func TestReplaySession_UserLogFile(t *testing.T) {
+	path := filepath.Join("..", "..", "logs", "my-game.jsonl")
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		t.Skip("logs/my-game.jsonl not present")
+	}
+	content, err := LoadEmbeddedContent()
+	if err != nil {
+		t.Fatalf("LoadEmbeddedContent: %v", err)
+	}
+	entries, err := LoadSessionLog(path)
+	if err != nil {
+		t.Fatalf("LoadSessionLog: %v", err)
+	}
+	if _, err := ReplaySession(content, entries); err != nil {
+		t.Fatalf("ReplaySession: %v", err)
 	}
 }
 

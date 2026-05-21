@@ -8,22 +8,7 @@ func (s *State) NextDay() {
 	popBefore := s.Population
 
 	s.doAction("next_day", nil, func(detail map[string]any) {
-		s.Day++
-		s.Power -= 8 + s.Population/2
-		s.Food -= 6 + s.Population/2
-		s.Credits += 18
-
-		if s.Power > 55 && s.Food > 45 {
-			s.Morale += 2
-		} else {
-			s.Morale -= 5
-		}
-
-		if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
-			s.Population++
-			s.AddLog("A new colonist joined after hearing your beacon tests.")
-		}
-
+		s.advanceDay()
 		eventID := s.TriggerRandomEvent()
 		s.Clamp()
 
@@ -34,6 +19,46 @@ func (s *State) NextDay() {
 			detail["population_growth"] = true
 		}
 	})
+}
+
+// replayNextDay applies a logged day advance using the recorded event_id when present.
+func (s *State) replayNextDay(detail map[string]any) {
+	if s.GameOver {
+		return
+	}
+	s.advanceDay()
+	if eventID, _ := detail["event_id"].(string); eventID != "" {
+		s.applyEventByID(eventID)
+	}
+	s.Clamp()
+}
+
+func (s *State) advanceDay() {
+	s.Day++
+	s.Power -= 8 + s.Population/2
+	s.Food -= 6 + s.Population/2
+	s.Credits += 18
+
+	if s.Power > 55 && s.Food > 45 {
+		s.Morale += 2
+	} else {
+		s.Morale -= 5
+	}
+
+	if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
+		s.Population++
+		s.AddLog("A new colonist joined after hearing your beacon tests.")
+	}
+}
+
+func (s *State) applyEventByID(id string) {
+	for _, event := range s.Content.Events {
+		if event.ID == id {
+			s.applyEffects(event.Effects, 1)
+			s.AddLog(event.Title + ": " + event.Description)
+			return
+		}
+	}
 }
 
 func (s *State) TriggerRandomEvent() string {

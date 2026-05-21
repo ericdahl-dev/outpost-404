@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -141,24 +142,90 @@ func ReplaySession(content Content, entries []LogEntry) (State, error) {
 
 	s := StateFromSnapshot(content, *start.Snapshot, seed)
 	for _, entry := range entries {
-		switch entry.Type {
-		case "session_start", "game_end":
+		if entry.Type == "session_start" {
 			continue
 		}
-
-		action, ok := simActionFromEntry(entry)
-		if !ok {
-			return s, fmt.Errorf("unsupported log entry type %q", entry.Type)
-		}
-		s.ApplySimAction(action)
-		if entry.After == nil {
-			continue
-		}
-		if diff := snapshotDiff(*entry.After, s.snapshot()); diff != "" {
-			return s, fmt.Errorf("replay mismatch after %s (day %d): %s", entry.Type, entry.Day, diff)
+		if err := s.replayLogEntry(entry); err != nil {
+			return s, err
 		}
 	}
 	return s, nil
+}
+
+func (s *State) replayLogEntry(entry LogEntry) error {
+	switch entry.Type {
+	case "game_end":
+		if entry.After != nil {
+			s.restoreSnapshot(*entry.After)
+		}
+		if entry.Detail != nil {
+			if msg, ok := entry.Detail["message"].(string); ok {
+				s.Message = msg
+			}
+		}
+		return nil
+	case "next_day":
+		s.replayNextDay(entry.Detail)
+	default:
+		if err := s.replayAction(entry); err != nil {
+			return err
+		}
+	}
+	if entry.After == nil {
+		return nil
+	}
+	if diff := snapshotDiff(*entry.After, s.snapshot()); diff != "" {
+		return fmt.Errorf("replay mismatch after %s (day %d): %s", entry.Type, entry.Day, diff)
+	}
+	return nil
+}
+
+func (s *State) replayAction(entry LogEntry) error {
+	detail := cloneDetail(entry.Detail)
+	switch entry.Type {
+	case "build":
+		id, _ := detail["building_id"].(string)
+		s.buildWithDetail(detail, id)
+	case "repair":
+		s.repairWithDetail(detail)
+	case "trade":
+		s.tradeWithDetail(detail)
+	case "beacon":
+		s.beaconWithDetail(detail)
+	default:
+		return fmt.Errorf("unsupported log entry type %q", entry.Type)
+	}
+	return nil
+}
+
+func (s *State) restoreSnapshot(snap Snapshot) {
+	buildings := make(map[string]Building, len(snap.Buildings))
+	for id, level := range snap.Buildings {
+		buildings[id] = Building{DefID: id, Level: level}
+	}
+	s.Day = snap.Day
+	s.Power = snap.Power
+	s.Food = snap.Food
+	s.Morale = snap.Morale
+	s.Credits = snap.Credits
+	s.Population = snap.Population
+	s.PopulationCap = snap.PopulationCap
+	s.BeaconParts = snap.BeaconParts
+	s.MaxBeaconParts = snap.MaxBeacon
+	s.Buildings = buildings
+	s.GameOver = snap.GameOver
+	s.Won = snap.Won
+}
+
+func cloneDetail(detail map[string]any) map[string]any {
+	if detail == nil {
+		return map[string]any{}
+	}
+	out := make(map[string]any, len(detail))
+	for k, v := range detail {
+		out[k] = v
+	}
+	return out
 }
 
 func simActionFromEntry(entry LogEntry) (SimAction, bool) {
@@ -181,6 +248,8 @@ func seedFromDetail(detail map[string]any) (int64, error) {
 		return 0, fmt.Errorf("missing seed in session_start (re-record with a current build)")
 	}
 	switch v := raw.(type) {
+	case string:
+		return strconv.ParseInt(v, 10, 64)
 	case float64:
 		return int64(v), nil
 	case int64:
