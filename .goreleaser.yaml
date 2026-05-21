@@ -1,0 +1,66 @@
+version: 2
+
+project_name: outpost-404
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: outpost
+    main: ./cmd/outpost
+    binary: outpost
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+
+archives:
+  - formats:
+      - tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
+
+brews:
+  - name: outpost-404
+    directory: Formula
+    repository:
+      owner: ericdahl-dev
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/ericdahl-dev/outpost-404"
+    description: "Terminal base builder on a remote survival colony"
+    license: "MIT"
+    install: |
+      bin.install "outpost"
+    test: |
+      system "#{bin}/outpost", "-version"
+
+release:
+  github:
+    owner: ericdahl-dev
+    name: outpost-404
