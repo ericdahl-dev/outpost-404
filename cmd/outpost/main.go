@@ -16,6 +16,8 @@ func main() {
 	logFlag := flag.String("log", "", "JSONL session log path (empty: default cache dir; off: disable)")
 	seedFlag := flag.Int64("seed", 0, "RNG seed for random events (0: random each run)")
 	replayFlag := flag.String("replay", "", "Replay a JSONL session log and verify snapshots (no TUI)")
+	simulateFlag := flag.String("simulate", "", "Run a JSON sim script headlessly (no TUI)")
+	seedsFlag := flag.String("seeds", "", "Comma-separated seeds for -simulate sweep (overrides -seed)")
 	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
 
@@ -33,6 +35,14 @@ func main() {
 	if *replayFlag != "" {
 		if err := runReplay(content, *replayFlag); err != nil {
 			fmt.Fprintf(os.Stderr, "replay failed: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
+	if *simulateFlag != "" {
+		if err := runSimulate(content, *simulateFlag, *seedFlag, *seedsFlag); err != nil {
+			fmt.Fprintf(os.Stderr, "simulate failed: %v\n", err)
 			os.Exit(1)
 		}
 		return
