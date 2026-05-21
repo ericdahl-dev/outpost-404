@@ -37,6 +37,13 @@ type LogEntry struct {
 	Detail    map[string]any `json:"detail,omitempty"`
 }
 
+// Recorder is the session-logging seam. State holds a Recorder; SessionLogger implements it.
+// Pass nil for a no-op (tests, headless runs).
+type Recorder interface {
+	Record(typ string, day int, detail map[string]any, before, after Snapshot) error
+	Close() error
+}
+
 // SessionLogger appends structured session events to a JSONL file.
 type SessionLogger struct {
 	Path      string

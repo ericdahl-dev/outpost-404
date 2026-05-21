@@ -51,7 +51,7 @@ type State struct {
 	Buildings      map[string]Building
 	Log            []string
 	Content        Content
-	SessionLog     *SessionLogger
+	SessionLog     Recorder
 	Seed           int64
 	rng            *rand.Rand
 	GameOver       bool
