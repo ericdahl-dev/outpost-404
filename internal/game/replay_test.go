@@ -69,6 +69,29 @@ func TestReplaySession_MatchesRecordedLog(t *testing.T) {
 	}
 }
 
+func TestSimActionFromEntry_UsesActionRegistry(t *testing.T) {
+	for typ := range actionRegistry {
+		entry := LogEntry{Type: typ, Detail: map[string]any{}}
+		if typ == "build" {
+			entry.Detail["building_id"] = "solar_array"
+		}
+		action, ok := simActionFromEntry(entry)
+		if !ok {
+			t.Fatalf("simActionFromEntry(%q) not supported", typ)
+		}
+		if action.Type != typ {
+			t.Fatalf("simActionFromEntry(%q) type = %q, want %q", typ, action.Type, typ)
+		}
+		if typ == "build" && action.BuildingID != "solar_array" {
+			t.Fatalf("simActionFromEntry(%q) building_id = %q, want %q", typ, action.BuildingID, "solar_array")
+		}
+	}
+
+	if _, ok := simActionFromEntry(LogEntry{Type: "unsupported_action"}); ok {
+		t.Fatal("simActionFromEntry accepted unsupported type")
+	}
+}
+
 func testContentWithEvents() Content {
 	c := testContent()
 	c.Events = []EventDef{
