@@ -58,3 +58,17 @@ UI tests are optional until the game loop stabilizes.
 ## Suggested next task
 
 Balance the 30-day win path; use `game.Simulate` and `-replay` for regression checks.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (`ericdahl-dev/outpost-404`), managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical label vocabulary (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context repo — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

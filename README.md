@@ -16,7 +16,23 @@ This project uses the [Charm stack](https://charm.land/) for a terminal-native g
 
 See `docs/context.md` for the full Charm map (planned: Glamour, Huh, Harmonica).
 
+## Install
+
+### Homebrew
+
+```bash
+brew install ericdahl-dev/tap/outpost-404
+```
+
+### Go
+
+```bash
+go install github.com/ericdahl-dev/outpost-404/cmd/outpost@latest
+```
+
 ## Run it
+
+From the repo (uses `./data` when present, otherwise embedded content):
 
 ```bash
 go mod tidy
@@ -27,7 +43,21 @@ go run ./cmd/outpost
 
 ```bash
 go build -o outpost ./cmd/outpost
-./outpost
+./outpost -version
+```
+
+## CI and releases
+
+Matches [git-green](https://github.com/ericdahl-dev/git-green): GitHub Actions runs **build**, **test** (`-race`), and **golangci-lint** on every push/PR; pushing a `v*` tag runs **GoReleaser** (multi-platform binaries + `ericdahl-dev/homebrew-tap` formula).
+
+Repo secrets required for releases:
+
+- `GITHUB_TOKEN` (provided by Actions)
+- `HOMEBREW_TAP_GITHUB_TOKEN` — PAT with write access to `ericdahl-dev/homebrew-tap`
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
 ```
 
 ## Test it

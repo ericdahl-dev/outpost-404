@@ -10,13 +10,21 @@ import (
 	"github.com/ericdahl/outpost-404/internal/ui"
 )
 
+var version = "dev"
+
 func main() {
 	logFlag := flag.String("log", "", "JSONL session log path (empty: default cache dir; off: disable)")
 	seedFlag := flag.Int64("seed", 0, "RNG seed for random events (0: random each run)")
 	replayFlag := flag.String("replay", "", "Replay a JSONL session log and verify snapshots (no TUI)")
+	showVersion := flag.Bool("version", false, "print version and exit")
 	flag.Parse()
 
-	content, err := game.LoadContent("data")
+	if *showVersion {
+		fmt.Println(version)
+		return
+	}
+
+	content, err := loadContent()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to load game content: %v\n", err)
 		os.Exit(1)
@@ -69,6 +77,13 @@ func runReplay(content game.Content, path string) error {
 		final.Day, final.Won, final.GameOver, final.BeaconParts, final.MaxBeaconParts,
 		final.Power, final.Food, final.Morale, final.Credits)
 	return nil
+}
+
+func loadContent() (game.Content, error) {
+	if _, err := os.Stat("data/buildings.json"); err == nil {
+		return game.LoadContent("data")
+	}
+	return game.LoadEmbeddedContent()
 }
 
 func resolveLogPath(flagValue string) string {
