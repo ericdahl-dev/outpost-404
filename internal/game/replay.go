@@ -67,7 +67,7 @@ func (s *State) ensureRNG() {
 }
 
 // actionRegistry maps action type strings to their State methods.
-// Add new actions here; ApplySimAction and simActionFromEntry both derive from this map.
+// Add new actions here; ApplySimAction derives from this map.
 var actionRegistry = map[string]func(*State, SimAction){
 	"build":    func(s *State, a SimAction) { s.Build(a.BuildingID) },
 	"repair":   func(s *State, a SimAction) { s.Repair() },
@@ -226,17 +226,6 @@ func cloneDetail(detail map[string]any) map[string]any {
 		out[k] = v
 	}
 	return out
-}
-
-func simActionFromEntry(entry LogEntry) (SimAction, bool) {
-	if _, ok := actionRegistry[entry.Type]; !ok {
-		return SimAction{}, false
-	}
-	a := SimAction{Type: entry.Type}
-	if entry.Type == "build" {
-		a.BuildingID, _ = entry.Detail["building_id"].(string)
-	}
-	return a, true
 }
 
 func seedFromDetail(detail map[string]any) (int64, error) {
