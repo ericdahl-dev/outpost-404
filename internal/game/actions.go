@@ -10,6 +10,7 @@ func (s *State) doAction(typ string, initial map[string]any, fn func(detail map[
 	}
 	fn(detail)
 	s.recordAction(typ, detail, before, s.snapshot())
+	s.CheckEnd()
 }
 
 func (s *State) Build(id string) {
@@ -113,7 +114,6 @@ func (s *State) WorkOnBeacon() {
 		detail["ok"] = true
 		detail["beacon_parts"] = s.BeaconParts
 	})
-	s.CheckEnd()
 }
 
 func (s *State) applyEffects(effects map[string]int, multiplier int) {
