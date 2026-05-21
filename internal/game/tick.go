@@ -54,22 +54,7 @@ func (s *State) TriggerRandomEvent() string {
 	}
 
 	event := candidates[s.rng.Intn(len(candidates))]
-	for key, amount := range event.Effects {
-		switch Resource(key) {
-		case ResourcePower:
-			s.Power += amount
-		case ResourceFood:
-			s.Food += amount
-		case ResourceMorale:
-			s.Morale += amount
-		case ResourceCredits:
-			s.Credits += amount
-		default:
-			if key == "population" {
-				s.Population += amount
-			}
-		}
-	}
+	s.applyEffects(event.Effects, 1)
 	s.AddLog(event.Title + ": " + event.Description)
 	return event.ID
 }
