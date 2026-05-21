@@ -1,0 +1,42 @@
+[
+  {
+    "id": "solar_array",
+    "name": "Solar Array",
+    "description": "Adds power buffer and stabilizes daily operations.",
+    "cost": 70,
+    "maxLevel": 3,
+    "effects": { "power": 18 }
+  },
+  {
+    "id": "hydroponics",
+    "name": "Hydroponics",
+    "description": "Improves food reserves with each upgrade.",
+    "cost": 65,
+    "maxLevel": 3,
+    "effects": { "food": 18 }
+  },
+  {
+    "id": "habitat",
+    "name": "Habitat",
+    "description": "Raises population cap and morale.",
+    "cost": 90,
+    "maxLevel": 3,
+    "effects": { "populationCap": 3, "morale": 4 }
+  },
+  {
+    "id": "workshop",
+    "name": "Workshop",
+    "description": "Improves maintenance culture and morale.",
+    "cost": 85,
+    "maxLevel": 2,
+    "effects": { "morale": 10, "credits": 10 }
+  },
+  {
+    "id": "radio_tower",
+    "name": "Radio Tower",
+    "description": "Brings trade contacts and beacon progress confidence.",
+    "cost": 110,
+    "maxLevel": 2,
+    "effects": { "credits": 35, "morale": 7 }
+  }
+]

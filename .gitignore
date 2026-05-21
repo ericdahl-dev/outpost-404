@@ -1,0 +1,5 @@
+.cursor/
+/outpost
+logs/
+*.jsonl
+.DS_Store

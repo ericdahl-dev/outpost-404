@@ -1,0 +1,51 @@
+[
+  {
+    "id": "solar_storm",
+    "title": "Solar Storm",
+    "description": "Charged particles battered the arrays. Power -14.",
+    "effects": { "power": -14 },
+    "minDay": 2
+  },
+  {
+    "id": "trader_arrives",
+    "title": "Trader Arrives",
+    "description": "A rover convoy exchanged parts for telemetry. Credits +30.",
+    "effects": { "credits": 30 },
+    "minDay": 3
+  },
+  {
+    "id": "fungus",
+    "title": "Hydroponics Fungus",
+    "description": "A fungal bloom damaged lettuce trays. Food -12, morale -4.",
+    "effects": { "food": -12, "morale": -4 },
+    "minDay": 4
+  },
+  {
+    "id": "quiet_shift",
+    "title": "Quiet Shift",
+    "description": "Nothing broke. People noticed. Morale +8.",
+    "effects": { "morale": 8 },
+    "minDay": 1
+  },
+  {
+    "id": "coffee_outage",
+    "title": "Coffee Outage",
+    "description": "The colony discovered the last filter was used yesterday. Morale -9.",
+    "effects": { "morale": -9 },
+    "minDay": 5
+  },
+  {
+    "id": "cache_of_parts",
+    "title": "Parts Cache",
+    "description": "A buried crate contained useful components. Power +8, credits +20.",
+    "effects": { "power": 8, "credits": 20 },
+    "minDay": 6
+  },
+  {
+    "id": "sick_colonist",
+    "title": "Sick Colonist",
+    "description": "A fever spread through the bunks. Population -1, morale -6.",
+    "effects": { "population": -1, "morale": -6 },
+    "minDay": 10
+  }
+]
