@@ -8,6 +8,5 @@ var (
 	mutedStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
 	goodStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("42"))
 	warnStyle     = lipgloss.NewStyle().Foreground(lipgloss.Color("214"))
-	badStyle      = lipgloss.NewStyle().Foreground(lipgloss.Color("196"))
-	selectedStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("205"))
+	badStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("196"))
 )
