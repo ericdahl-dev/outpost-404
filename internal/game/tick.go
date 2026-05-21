@@ -5,36 +5,35 @@ func (s *State) NextDay() {
 		return
 	}
 
-	before := s.snapshot()
 	popBefore := s.Population
 
-	s.Day++
-	s.Power -= 8 + s.Population/2
-	s.Food -= 6 + s.Population/2
-	s.Credits += 18
+	s.doAction("next_day", nil, func(detail map[string]any) {
+		s.Day++
+		s.Power -= 8 + s.Population/2
+		s.Food -= 6 + s.Population/2
+		s.Credits += 18
 
-	if s.Power > 55 && s.Food > 45 {
-		s.Morale += 2
-	} else {
-		s.Morale -= 5
-	}
+		if s.Power > 55 && s.Food > 45 {
+			s.Morale += 2
+		} else {
+			s.Morale -= 5
+		}
 
-	if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
-		s.Population++
-		s.AddLog("A new colonist joined after hearing your beacon tests.")
-	}
+		if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
+			s.Population++
+			s.AddLog("A new colonist joined after hearing your beacon tests.")
+		}
 
-	eventID := s.TriggerRandomEvent()
-	s.Clamp()
+		eventID := s.TriggerRandomEvent()
+		s.Clamp()
 
-	detail := map[string]any{}
-	if eventID != "" {
-		detail["event_id"] = eventID
-	}
-	if s.Population > popBefore {
-		detail["population_growth"] = true
-	}
-	s.recordAction("next_day", detail, before, s.snapshot())
+		if eventID != "" {
+			detail["event_id"] = eventID
+		}
+		if s.Population > popBefore {
+			detail["population_growth"] = true
+		}
+	})
 	s.CheckEnd()
 }
 
