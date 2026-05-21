@@ -16,6 +16,14 @@ type SimAction struct {
 	BuildingID string `json:"building_id,omitempty"`
 }
 
+var actionRegistry = map[string]func(*State, SimAction){
+	"build":    func(s *State, a SimAction) { s.Build(a.BuildingID) },
+	"repair":   func(s *State, _ SimAction) { s.Repair() },
+	"trade":    func(s *State, _ SimAction) { s.Trade() },
+	"beacon":   func(s *State, _ SimAction) { s.WorkOnBeacon() },
+	"next_day": func(s *State, _ SimAction) { s.NextDay() },
+}
+
 // RandomSeed returns a seed suitable for new sessions.
 func RandomSeed() int64 {
 	return time.Now().UnixNano()
@@ -67,17 +75,8 @@ func (s *State) ensureRNG() {
 
 // ApplySimAction runs one action through the public game API.
 func (s *State) ApplySimAction(a SimAction) {
-	switch a.Type {
-	case "build":
-		s.Build(a.BuildingID)
-	case "repair":
-		s.Repair()
-	case "trade":
-		s.Trade()
-	case "beacon":
-		s.WorkOnBeacon()
-	case "next_day":
-		s.NextDay()
+	if apply, ok := actionRegistry[a.Type]; ok {
+		apply(s, a)
 	}
 }
 
@@ -161,21 +160,14 @@ func ReplaySession(content Content, entries []LogEntry) (State, error) {
 }
 
 func simActionFromEntry(entry LogEntry) (SimAction, bool) {
-	switch entry.Type {
-	case "build":
-		id, _ := entry.Detail["building_id"].(string)
-		return SimAction{Type: "build", BuildingID: id}, true
-	case "repair":
-		return SimAction{Type: "repair"}, true
-	case "trade":
-		return SimAction{Type: "trade"}, true
-	case "beacon":
-		return SimAction{Type: "beacon"}, true
-	case "next_day":
-		return SimAction{Type: "next_day"}, true
-	default:
+	if _, ok := actionRegistry[entry.Type]; !ok {
 		return SimAction{}, false
 	}
+	action := SimAction{Type: entry.Type}
+	if entry.Type == "build" {
+		action.BuildingID, _ = entry.Detail["building_id"].(string)
+	}
+	return action, true
 }
 
 func seedFromDetail(detail map[string]any) (int64, error) {
