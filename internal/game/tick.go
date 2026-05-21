@@ -34,7 +34,6 @@ func (s *State) NextDay() {
 			detail["population_growth"] = true
 		}
 	})
-	s.CheckEnd()
 }
 
 func (s *State) TriggerRandomEvent() string {
