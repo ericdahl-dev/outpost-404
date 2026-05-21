@@ -123,3 +123,34 @@ func TestWorkOnBeacon_RejectsWithoutPowerAndCredits(t *testing.T) {
 		t.Fatalf("BeaconParts = %d, want 0", s.BeaconParts)
 	}
 }
+
+func TestRepair_TriggersGameOverWhenFoodDepleted(t *testing.T) {
+	s := newTestState()
+	s.Food = 0
+	s.Power = 100
+	s.Morale = 100
+	s.Credits = 100
+
+	s.Repair()
+
+	if !s.GameOver {
+		t.Fatal("expected GameOver when food is 0")
+	}
+	if s.Won {
+		t.Fatal("expected loss, not win")
+	}
+}
+
+func TestTrade_TriggersGameOverWhenMoraleDepleted(t *testing.T) {
+	s := newTestState()
+	s.Morale = 3
+	s.Food = 100
+	s.Power = 100
+	s.Credits = 0
+
+	s.Trade()
+
+	if !s.GameOver {
+		t.Fatal("expected GameOver when morale reaches 0")
+	}
+}

@@ -65,19 +65,20 @@ func (s *State) ensureRNG() {
 	}
 }
 
+// actionRegistry maps action type strings to their State methods.
+// Add new actions here; ApplySimAction and simActionFromEntry both derive from this map.
+var actionRegistry = map[string]func(*State, SimAction){
+	"build":    func(s *State, a SimAction) { s.Build(a.BuildingID) },
+	"repair":   func(s *State, a SimAction) { s.Repair() },
+	"trade":    func(s *State, a SimAction) { s.Trade() },
+	"beacon":   func(s *State, a SimAction) { s.WorkOnBeacon() },
+	"next_day": func(s *State, a SimAction) { s.NextDay() },
+}
+
 // ApplySimAction runs one action through the public game API.
 func (s *State) ApplySimAction(a SimAction) {
-	switch a.Type {
-	case "build":
-		s.Build(a.BuildingID)
-	case "repair":
-		s.Repair()
-	case "trade":
-		s.Trade()
-	case "beacon":
-		s.WorkOnBeacon()
-	case "next_day":
-		s.NextDay()
+	if fn, ok := actionRegistry[a.Type]; ok {
+		fn(s, a)
 	}
 }
 
@@ -161,21 +162,14 @@ func ReplaySession(content Content, entries []LogEntry) (State, error) {
 }
 
 func simActionFromEntry(entry LogEntry) (SimAction, bool) {
-	switch entry.Type {
-	case "build":
-		id, _ := entry.Detail["building_id"].(string)
-		return SimAction{Type: "build", BuildingID: id}, true
-	case "repair":
-		return SimAction{Type: "repair"}, true
-	case "trade":
-		return SimAction{Type: "trade"}, true
-	case "beacon":
-		return SimAction{Type: "beacon"}, true
-	case "next_day":
-		return SimAction{Type: "next_day"}, true
-	default:
+	if _, ok := actionRegistry[entry.Type]; !ok {
 		return SimAction{}, false
 	}
+	a := SimAction{Type: entry.Type}
+	if entry.Type == "build" {
+		a.BuildingID, _ = entry.Detail["building_id"].(string)
+	}
+	return a, true
 }
 
 func seedFromDetail(detail map[string]any) (int64, error) {

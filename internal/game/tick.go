@@ -5,37 +5,35 @@ func (s *State) NextDay() {
 		return
 	}
 
-	before := s.snapshot()
 	popBefore := s.Population
 
-	s.Day++
-	s.Power -= 8 + s.Population/2
-	s.Food -= 6 + s.Population/2
-	s.Credits += 18
+	s.doAction("next_day", nil, func(detail map[string]any) {
+		s.Day++
+		s.Power -= 8 + s.Population/2
+		s.Food -= 6 + s.Population/2
+		s.Credits += 18
 
-	if s.Power > 55 && s.Food > 45 {
-		s.Morale += 2
-	} else {
-		s.Morale -= 5
-	}
+		if s.Power > 55 && s.Food > 45 {
+			s.Morale += 2
+		} else {
+			s.Morale -= 5
+		}
 
-	if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
-		s.Population++
-		s.AddLog("A new colonist joined after hearing your beacon tests.")
-	}
+		if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
+			s.Population++
+			s.AddLog("A new colonist joined after hearing your beacon tests.")
+		}
 
-	eventID := s.TriggerRandomEvent()
-	s.Clamp()
+		eventID := s.TriggerRandomEvent()
+		s.Clamp()
 
-	detail := map[string]any{}
-	if eventID != "" {
-		detail["event_id"] = eventID
-	}
-	if s.Population > popBefore {
-		detail["population_growth"] = true
-	}
-	s.recordAction("next_day", detail, before, s.snapshot())
-	s.CheckEnd()
+		if eventID != "" {
+			detail["event_id"] = eventID
+		}
+		if s.Population > popBefore {
+			detail["population_growth"] = true
+		}
+	})
 }
 
 func (s *State) TriggerRandomEvent() string {
@@ -55,22 +53,7 @@ func (s *State) TriggerRandomEvent() string {
 	}
 
 	event := candidates[s.rng.Intn(len(candidates))]
-	for key, amount := range event.Effects {
-		switch Resource(key) {
-		case ResourcePower:
-			s.Power += amount
-		case ResourceFood:
-			s.Food += amount
-		case ResourceMorale:
-			s.Morale += amount
-		case ResourceCredits:
-			s.Credits += amount
-		default:
-			if key == "population" {
-				s.Population += amount
-			}
-		}
-	}
+	s.applyEffects(event.Effects, 1)
 	s.AddLog(event.Title + ": " + event.Description)
 	return event.ID
 }
