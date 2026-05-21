@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -142,7 +143,9 @@ func (s *State) LogSessionStart() {
 		return
 	}
 	snap := s.snapshot()
-	_ = s.SessionLog.Record("session_start", s.Day, map[string]any{"seed": s.Seed}, snap, snap)
+	_ = s.SessionLog.Record("session_start", s.Day, map[string]any{
+		"seed": strconv.FormatInt(s.Seed, 10),
+	}, snap, snap)
 }
 
 func (s *State) recordAction(typ string, detail map[string]any, before, after Snapshot) {
