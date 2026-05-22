@@ -59,5 +59,24 @@
     "description": "Fine regolith infiltrated the greenhouse seals.",
     "effects": { "food": -6, "morale": -3 },
     "minDay": 14
+  },
+  {
+    "id": "array_burnout",
+    "title": "Array Burnout",
+    "description": "A voltage spike scorched the primary collector. Daily output halved until repaired.",
+    "effects": {},
+    "damageBuilding": "solar_array",
+    "requiresBuilding": "solar_array",
+    "minDay": 18,
+    "weight": 1
+  },
+  {
+    "id": "systems_fault",
+    "title": "Systems Fault",
+    "description": "An untraced fault took down a key facility. Output halved until the crew gets to it.",
+    "effects": { "morale": -4 },
+    "damageRandomBuilt": true,
+    "minDay": 15,
+    "weight": 1
   }
 ]
