@@ -1,6 +1,7 @@
 package game
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -98,6 +99,93 @@ func TestReplaySession_MismatchAfterBuildReturnsError(t *testing.T) {
 	}
 	if !containsAll(err.Error(), "replay mismatch", "build", "credits") {
 		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_missingSessionStart(t *testing.T) {
+	content := testContentWithEvents()
+	_, err := ReplaySession(content, []LogEntry{{Type: "build", Day: 1}})
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !containsAll(err.Error(), "session log missing session_start") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_sessionStartWithoutSnapshot(t *testing.T) {
+	content := testContentWithEvents()
+	entries := []LogEntry{{Type: "session_start", Detail: map[string]any{"seed": "7"}}}
+	_, err := ReplaySession(content, entries)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !containsAll(err.Error(), "session log missing session_start") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_missingSeed(t *testing.T) {
+	content := testContentWithEvents()
+	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
+	entries := []LogEntry{{Type: "session_start", Snapshot: &start}}
+	_, err := ReplaySession(content, entries)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !containsAll(err.Error(), "session log", "missing seed") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_invalidSeedType(t *testing.T) {
+	content := testContentWithEvents()
+	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
+	entries := []LogEntry{
+		{Type: "session_start", Snapshot: &start, Detail: map[string]any{"seed": true}},
+	}
+	_, err := ReplaySession(content, entries)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !containsAll(err.Error(), "session log", "invalid seed type") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_numericSeedFormsReplay(t *testing.T) {
+	content := testContentWithEvents()
+	seed := int64(7)
+	actions := []SimAction{{Type: "next_day"}}
+
+	final, snaps, err := SimulateWithSnapshots(content, seed, actions)
+	if err != nil {
+		t.Fatalf("SimulateWithSnapshots: %v", err)
+	}
+	start, after := snaps[0], snaps[1]
+
+	cases := []struct {
+		name string
+		seed any
+	}{
+		{name: "string", seed: "7"},
+		{name: "float64", seed: float64(7)},
+		{name: "json.Number", seed: json.Number("7")},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			entries := []LogEntry{
+				{Type: "session_start", Snapshot: &start, Detail: map[string]any{"seed": tc.seed}},
+				{Type: "next_day", Day: 1, Before: &start, After: &after},
+			}
+			got, err := ReplaySession(content, entries)
+			if err != nil {
+				t.Fatalf("ReplaySession: %v", err)
+			}
+			if diff := snapshotDiff(normalizeSnapshot(final.snapshot()), normalizeSnapshot(got.snapshot())); diff != "" {
+				t.Fatalf("snapshot mismatch: %s", diff)
+			}
+		})
 	}
 }
 

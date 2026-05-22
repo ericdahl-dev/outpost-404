@@ -52,28 +52,33 @@ func ScriptsDir() string {
 
 // CheckBaselineOutcome verifies a simulation result against strategy rules.
 func CheckBaselineOutcome(strategy BaselineStrategy, seed int64, s State) error {
+	prefix := fmt.Sprintf("strategy %q seed %d", strategy.ID, seed)
+
 	if s.Day < strategy.MinEndDay {
-		return fmt.Errorf("seed %d: day %d < min %d", seed, s.Day, strategy.MinEndDay)
+		return fmt.Errorf("%s: day %d below min %d", prefix, s.Day, strategy.MinEndDay)
 	}
 	if strategy.RequireAlive && s.GameOver {
-		return fmt.Errorf("seed %d: game over on day %d (expected alive at script end)", seed, s.Day)
+		return fmt.Errorf("%s: game over on day %d (expected alive)", prefix, s.Day)
 	}
 	if strategy.MinBeaconParts > 0 && s.BeaconParts < strategy.MinBeaconParts {
-		return fmt.Errorf("seed %d: beacon %d < min %d", seed, s.BeaconParts, strategy.MinBeaconParts)
+		return fmt.Errorf("%s: beacon %d below min %d", prefix, s.BeaconParts, strategy.MinBeaconParts)
 	}
 
 	want, ok := strategy.Expected[seed]
 	if !ok {
-		return fmt.Errorf("seed %d: missing expected outcome for strategy %q", seed, strategy.ID)
+		return fmt.Errorf("%s: missing expected outcome", prefix)
 	}
-	got := BaselineOutcome{
-		Day:         s.Day,
-		GameOver:    s.GameOver,
-		Won:         s.Won,
-		BeaconParts: s.BeaconParts,
+	if s.Day != want.Day {
+		return fmt.Errorf("%s: day %d want %d", prefix, s.Day, want.Day)
 	}
-	if got != want {
-		return fmt.Errorf("seed %d: got %+v want %+v", seed, got, want)
+	if s.GameOver != want.GameOver {
+		return fmt.Errorf("%s: game_over %v want %v", prefix, s.GameOver, want.GameOver)
+	}
+	if s.Won != want.Won {
+		return fmt.Errorf("%s: won %v want %v", prefix, s.Won, want.Won)
+	}
+	if s.BeaconParts != want.BeaconParts {
+		return fmt.Errorf("%s: beacon %d want %d", prefix, s.BeaconParts, want.BeaconParts)
 	}
 	return nil
 }
