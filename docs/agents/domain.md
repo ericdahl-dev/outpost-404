@@ -4,7 +4,9 @@ How the engineering skills should consume this repo's domain documentation when 
 
 ## Before exploring, read these
 
+- **`CONTEXT.md`** — domain glossary (terms, relationships; no implementation detail)
 - **`docs/context.md`** — game pitch, Charm stack map, tone, MVP scope
+- **`docs/gameplay-depth-plan.md`** — v0.2 gameplay locked decisions and issue order
 - **`docs/balance.md`** — reference scripts, baseline seeds, coverage policy, TDD tuning workflow
 - **`docs/adr/`** — ADRs that touch the area you're about to work in (when present)
 
@@ -14,8 +16,10 @@ If `docs/adr/` is empty or missing entries for your area, proceed without blocki
 
 ```
 /
+├── CONTEXT.md              # domain glossary
 ├── docs/
 │   ├── context.md          # design context
+│   ├── gameplay-depth-plan.md  # v0.2 gameplay plan + locked decisions
 │   ├── balance.md          # balance baselines and CI coverage
 │   └── adr/                # architecture decisions (as added)
 ├── AGENTS.md

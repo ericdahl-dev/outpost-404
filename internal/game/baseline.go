@@ -1,9 +1,6 @@
 package game
 
-import (
-	"fmt"
-	"path/filepath"
-)
+import "fmt"
 
 // ReferenceSeeds are fixed RNG seeds for balance regression checks.
 // 1779403310247544000 matches a real session_start seed (see seed_json_test).
@@ -43,11 +40,6 @@ func ReferenceStrategies() []BaselineStrategy {
 		beaconRushBaseline(),
 		survival45Baseline(),
 	}
-}
-
-// ScriptsDir returns the repo scripts/ directory from internal/game tests or tools.
-func ScriptsDir() string {
-	return filepath.Join("..", "..", "scripts")
 }
 
 // CheckBaselineOutcome verifies a simulation result against strategy rules.
