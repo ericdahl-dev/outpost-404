@@ -133,7 +133,7 @@ seed=42 day=5 won=false game_over=true beacon=0/5 power=40 food=0 morale=55 cred
 
 You can also call `game.Simulate` from Go tests (see `internal/game/replay.go`).
 
-**Balance baseline** — three reference scripts (`scripts/conservative.json`, `no_trade_survival.json`, `beacon_rush.json`) run across fixed seeds in `go test`; see [docs/balance.md](docs/balance.md) for seeds, viability rules, and how to update expectations after tuning.
+**Balance baseline** — four reference scripts (`conservative.json`, `no_trade_survival.json`, `beacon_rush.json`, `survival_30.json`) run across fixed seeds in `go test`; see [docs/balance.md](docs/balance.md) for seeds, viability rules, and how to update expectations after tuning.
 
 Logs recorded before seeds were added cannot be replayed; record a new session with the current build.
 
@@ -156,10 +156,12 @@ Logs recorded before seeds were added cannot be replayed; record a new session w
 
 Win by doing either of these:
 
-- survive 30 days
-- complete 5 Signal Beacon parts
+- **Survive 30 days** — advance to day 31 with power, food, morale, and population still above zero (checked each day; win triggers when day becomes 31).
+- **Signal Beacon** — complete 5 beacon parts before collapse.
 
-Lose if power, food, morale, or population hits zero.
+Lose if power, food, morale, or population hits zero on any day.
+
+The survival path is tuned separately from beacon rush; see `scripts/survival_30.json` and [docs/balance.md](docs/balance.md).
 
 ## Project structure
 
@@ -181,4 +183,4 @@ AGENTS.md                 # coding-agent instructions
 4. Add facility upkeep and passive per-day production.
 5. Add a map panel or ASCII base layout.
 6. Expand `internal/game` tests (events, repair/trade, balance).
-7. Balance resources so the 30-day win is tense but fair.
+7. Further tighten survival margin (stats at day-31 win) without breaking `survival_30` baseline.

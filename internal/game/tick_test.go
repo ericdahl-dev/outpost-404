@@ -14,7 +14,7 @@ func TestNextDay_AdvancesDayAndConsumesResources(t *testing.T) {
 	if s.Day != startDay+1 {
 		t.Fatalf("Day = %d, want %d", s.Day, startDay+1)
 	}
-	wantPower := startPower - (7 + s.Population/2)
+	wantPower := startPower - (6 + s.Population/2)
 	if s.Power != wantPower {
 		t.Fatalf("Power = %d, want %d", s.Power, wantPower)
 	}

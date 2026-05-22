@@ -11,10 +11,10 @@ func TestAdvanceDay_HydroAndSolarProvideDailyProduction(t *testing.T) {
 
 	s.advanceDay()
 
-	if s.Food != 46 {
-		t.Fatalf("Food = %d, want 46 (50 + 4 hydro - 8 upkeep)", s.Food)
+	if s.Food != 48 {
+		t.Fatalf("Food = %d, want 48 (50 + 6 hydro - 8 upkeep)", s.Food)
 	}
-	if s.Power != 44 {
-		t.Fatalf("Power = %d, want 44 (50 + 5 solar - 11 upkeep)", s.Power)
+	if s.Power != 46 {
+		t.Fatalf("Power = %d, want 46 (50 + 6 solar - 10 upkeep)", s.Power)
 	}
 }

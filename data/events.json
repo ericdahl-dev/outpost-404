@@ -3,7 +3,7 @@
     "id": "solar_storm",
     "title": "Solar Storm",
     "description": "Charged particles battered the arrays. Power -11.",
-    "effects": { "power": -11 },
+    "effects": { "power": -9 },
     "minDay": 2
   },
   {
@@ -31,7 +31,7 @@
     "id": "coffee_outage",
     "title": "Coffee Outage",
     "description": "The colony discovered the last filter was used yesterday. Morale -9.",
-    "effects": { "morale": -9 },
+    "effects": { "morale": -6 },
     "minDay": 5
   },
   {
