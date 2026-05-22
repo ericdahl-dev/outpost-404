@@ -21,6 +21,9 @@ func (s *State) nextDayWithDetail(replayDetail map[string]any) nextDayOutcome {
 	if eventID == "" {
 		eventID = s.TriggerRandomEvent()
 	}
+	if eventID == "" {
+		s.emitQuietBeat()
+	}
 	s.Clamp()
 
 	return nextDayOutcome{

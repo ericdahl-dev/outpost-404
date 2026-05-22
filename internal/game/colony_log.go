@@ -117,6 +117,17 @@ func (s State) SessionSummary() []string {
 	return lines
 }
 
+// emitQuietBeat logs a telemetry line on days when no random event fires.
+func (s *State) emitQuietBeat() {
+	beats := s.Content.QuietBeats
+	if len(beats) == 0 {
+		return
+	}
+	s.ensureRNG()
+	beat := beats[s.rngIntn(len(beats))]
+	s.AddLogKind(LogSystem, beat)
+}
+
 func collapseCause(s State) string {
 	switch {
 	case s.Power <= 0:

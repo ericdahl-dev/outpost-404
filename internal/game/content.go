@@ -25,7 +25,8 @@ func LoadContentFS(fsys fs.FS) (Content, error) {
 	if err != nil {
 		return Content{}, err
 	}
-	return Content{Buildings: buildings, Events: events}, nil
+	quietBeats, _ := loadJSONFS[[]string](fsys, "quiet_beats.json")
+	return Content{Buildings: buildings, Events: events, QuietBeats: quietBeats}, nil
 }
 
 func LoadContent(dir string) (Content, error) {
@@ -38,8 +39,8 @@ func LoadContent(dir string) (Content, error) {
 	if err != nil {
 		return Content{}, err
 	}
-
-	return Content{Buildings: buildings, Events: events}, nil
+	quietBeats, _ := loadJSON[[]string](filepath.Join(dir, "quiet_beats.json"))
+	return Content{Buildings: buildings, Events: events, QuietBeats: quietBeats}, nil
 }
 
 func loadJSON[T any](path string) (T, error) {
