@@ -219,6 +219,7 @@ func NewRun(content Content, profiles RunProfiles, seed int64, scenarioID, diffi
 	s.DailyCreditsIncomeDelta = mods.DailyCreditsIncomeDelta
 
 	s.Seed = seed
+	s.rngDrawMods = nil
 	if seed != 0 {
 		s.rng = rand.New(rand.NewSource(seed))
 	}

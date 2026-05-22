@@ -76,7 +76,7 @@ func (s *State) pickRandomEligibleEvent(candidates []EventDef) (EventDef, bool) 
 		return EventDef{}, false
 	}
 	s.ensureRNG()
-	r := s.rng.Intn(total)
+	r := s.rngIntn(total)
 	for _, e := range candidates {
 		w := eventWeight(e)
 		if r < w {

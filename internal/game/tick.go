@@ -69,7 +69,7 @@ func (s *State) applyBuildingProduction() {
 
 func (s *State) TriggerRandomEvent() string {
 	s.ensureRNG()
-	if !s.randomEventRollOccurs(s.rng.Intn(RandomEventRollSides)) {
+	if !s.randomEventRollOccurs(s.rngIntn(RandomEventRollSides)) {
 		return ""
 	}
 

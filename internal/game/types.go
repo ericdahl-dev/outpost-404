@@ -75,6 +75,7 @@ type State struct {
 	Content        Content
 	SessionLog     Recorder
 	Seed           int64
+	rngDrawMods    []int
 	rng            *rand.Rand
 	GameOver       bool
 	Won            bool

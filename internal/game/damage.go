@@ -93,7 +93,7 @@ func (s *State) damageRandomBuiltFacility() {
 		return
 	}
 	s.ensureRNG()
-	id := candidates[s.rng.Intn(len(candidates))]
+	id := candidates[s.rngIntn(len(candidates))]
 	s.damageBuilding(id)
 	if def, ok := s.FindBuilding(id); ok {
 		s.AddLogKind(LogDanger, fmt.Sprintf("%s took damage; daily output halved until repaired.", def.Name))

@@ -21,6 +21,7 @@ func main() {
 	simulateFlag := flag.String("simulate", "", "Run a JSON sim script headlessly (no TUI)")
 	seedsFlag := flag.String("seeds", "", "Comma-separated seeds for -simulate sweep (overrides -seed)")
 	showVersion := flag.Bool("version", false, "print version and exit")
+	continueFlag := flag.Bool("continue", false, "resume from autosave instead of new-game setup")
 	flag.Parse()
 
 	if *showVersion {
@@ -58,6 +59,13 @@ func main() {
 
 	model := ui.NewModel(content, profiles)
 	model.SessionLogPath = resolveLogPath(*logFlag)
+
+	if *continueFlag {
+		if err := model.ContinueFromAutosave(); err != nil {
+			fmt.Fprintf(os.Stderr, "continue failed: %v\n", err)
+			os.Exit(1)
+		}
+	}
 
 	program := tea.NewProgram(model, tea.WithAltScreen())
 
