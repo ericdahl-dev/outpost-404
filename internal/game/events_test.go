@@ -51,6 +51,53 @@ func TestApplyEventByID_UnknownID_IsNoOp(t *testing.T) {
 	}
 }
 
+func TestEligibleEvents_FiltersByMinDay(t *testing.T) {
+	events := []EventDef{
+		{ID: "early", MinDay: 1},
+		{ID: "mid", MinDay: 5},
+		{ID: "late", MinDay: 10},
+	}
+	got := eligibleEvents(events, 5)
+	if len(got) != 2 {
+		t.Fatalf("eligible count = %d, want 2", len(got))
+	}
+	if got[0].ID != "early" || got[1].ID != "mid" {
+		t.Fatalf("eligible = %v, want early and mid", got)
+	}
+}
+
+func TestEligibleEvents_EmptyWhenNoneQualify(t *testing.T) {
+	events := []EventDef{{ID: "late", MinDay: 10}}
+	if len(eligibleEvents(events, 1)) != 0 {
+		t.Fatal("expected no eligible events on day 1")
+	}
+}
+
+func TestPickRandomEligibleEvent_EmptyCandidates(t *testing.T) {
+	s := NewStateWithSeed(testContentWithEvents(), 1)
+	if _, ok := s.pickRandomEligibleEvent(nil); ok {
+		t.Fatal("expected false for empty candidates")
+	}
+}
+
+func TestTriggerRandomEvent_NoEligibleEventsNeverApplies(t *testing.T) {
+	for _, seed := range []int64{0, 1, 7, 42, 99} {
+		s := NewStateWithSeed(testContent(), seed)
+		s.Day = 5
+		beforeLog := len(s.Log)
+		beforeMorale := s.Morale
+		if id := s.TriggerRandomEvent(); id != "" {
+			t.Fatalf("seed %d: id=%q with no events in content", seed, id)
+		}
+		if len(s.Log) != beforeLog {
+			t.Fatalf("seed %d: unexpected log line without events", seed)
+		}
+		if s.Morale != beforeMorale {
+			t.Fatalf("seed %d: morale changed without event", seed)
+		}
+	}
+}
+
 func TestTriggerRandomEvent_LiveMatchesReplayByEventID(t *testing.T) {
 	content := testContentWithEvents()
 	live := NewStateWithSeed(content, 42)
