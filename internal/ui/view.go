@@ -60,22 +60,7 @@ func (m Model) mainView() string {
 	}
 	left := boxStyle.Width(layout.LeftWidth).Render(strings.Join(leftLines, "\n"))
 
-	buildings := []string{"Facilities"}
-	nameW := facilityNameWidth(layout.MiddleWidth)
-	for _, def := range m.State.Content.Buildings {
-		lvl := m.State.BuildingLevel(def.ID)
-		line := fmt.Sprintf("%-*s Lv. %d/%d", nameW, def.Name, lvl, def.MaxLevel)
-		if b, ok := m.State.Buildings[def.ID]; ok && b.Damaged {
-			line += " " + badStyle.Render("DAMAGED")
-		}
-		if lvl > 0 {
-			if note := game.FormatDailyProductionNote(def); note != "" {
-				line += "  " + mutedStyle.Render(note)
-			}
-		}
-		buildings = append(buildings, line)
-	}
-	middle := boxStyle.Width(layout.MiddleWidth).Render(strings.Join(buildings, "\n"))
+	middle := boxStyle.Width(layout.MiddleWidth).Render(RenderOutpostPanel(m.State, layout.MiddleWidth))
 
 	logPanel := boxStyle.Width(m.LogViewport.Width + 2).Render(
 		"Event Log\n" + mutedStyle.Render("↑↓ scroll") + "\n" + m.LogViewport.View(),
@@ -89,11 +74,6 @@ func (m Model) mainView() string {
 	}
 
 	return titleStyle.Render("Outpost 404") + "\n" + mutedStyle.Render("A tiny terminal base builder by default, a future colony sim by design.") + "\n\n" + panels + "\n\n" + mainActions(layout.CompactKeys)
-}
-
-func facilityNameWidth(panelWidth int) int {
-	w := panelWidth - 12
-	return clamp(8, w, 14)
 }
 
 func mainActions(compact bool) string {

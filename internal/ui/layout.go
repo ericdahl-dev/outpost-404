@@ -15,7 +15,7 @@ const (
 	horizontalMinWidth = 96
 	minPanelWidth      = 24
 	maxLeftWidth       = 36
-	maxMiddleWidth     = 38
+	maxMiddleWidth     = 42
 )
 
 func MainLayoutFor(termWidth, termHeight int) MainLayout {
