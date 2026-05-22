@@ -1,21 +1,45 @@
 package game
 
+type nextDayOutcome struct {
+	eventID          string
+	populationGrowth bool
+}
+
+// nextDayWithDetail advances the calendar and resolves the day's event.
+// Live play passes nil replayDetail (random event). Replay passes logged detail with event_id.
+func (s *State) nextDayWithDetail(replayDetail map[string]any) nextDayOutcome {
+	popBefore := s.Population
+	s.advanceDay()
+
+	var eventID string
+	if replayDetail != nil {
+		if id, _ := replayDetail["event_id"].(string); id != "" {
+			eventID = id
+			s.applyEventByID(id)
+		}
+	}
+	if eventID == "" {
+		eventID = s.TriggerRandomEvent()
+	}
+	s.Clamp()
+
+	return nextDayOutcome{
+		eventID:          eventID,
+		populationGrowth: s.Population > popBefore,
+	}
+}
+
 func (s *State) NextDay() {
 	if s.GameOver {
 		return
 	}
 
-	popBefore := s.Population
-
 	s.doAction("next_day", nil, func(detail map[string]any) {
-		s.advanceDay()
-		eventID := s.TriggerRandomEvent()
-		s.Clamp()
-
-		if eventID != "" {
-			detail["event_id"] = eventID
+		outcome := s.nextDayWithDetail(nil)
+		if outcome.eventID != "" {
+			detail["event_id"] = outcome.eventID
 		}
-		if s.Population > popBefore {
+		if outcome.populationGrowth {
 			detail["population_growth"] = true
 		}
 	})
@@ -26,11 +50,7 @@ func (s *State) replayNextDay(detail map[string]any) {
 	if s.GameOver {
 		return
 	}
-	s.advanceDay()
-	if eventID, _ := detail["event_id"].(string); eventID != "" {
-		s.applyEventByID(eventID)
-	}
-	s.Clamp()
+	s.nextDayWithDetail(detail)
 }
 
 // applyBuildingProduction grants per-day output from building dailyEffects (JSON order).
