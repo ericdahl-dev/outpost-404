@@ -11,7 +11,9 @@
     "title": "Trader Arrives",
     "description": "A rover convoy exchanged parts for telemetry. Credits +30.",
     "effects": { "credits": 30 },
-    "minDay": 3
+    "minDay": 3,
+    "maxDay": 25,
+    "weight": 2
   },
   {
     "id": "fungus",
@@ -25,14 +27,16 @@
     "title": "Quiet Shift",
     "description": "Nothing broke. People noticed. Morale +8.",
     "effects": { "morale": 8, "food": 2 },
-    "minDay": 1
+    "minDay": 1,
+    "weight": 2
   },
   {
     "id": "coffee_outage",
     "title": "Coffee Outage",
     "description": "The colony discovered the last filter was used yesterday. Morale -9.",
     "effects": { "morale": -6 },
-    "minDay": 5
+    "minDay": 5,
+    "weight": 1
   },
   {
     "id": "cache_of_parts",

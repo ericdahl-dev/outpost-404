@@ -117,6 +117,42 @@ func TestEligibleEvents_EmptyWhenNoneQualify(t *testing.T) {
 	}
 }
 
+func TestEligibleEvents_FiltersByMaxDay(t *testing.T) {
+	events := []EventDef{
+		{ID: "early_only", MinDay: 1, MaxDay: 5},
+		{ID: "always", MinDay: 1},
+	}
+	got := eligibleEvents(events, 10)
+	if len(got) != 1 || got[0].ID != "always" {
+		t.Fatalf("day 10 eligible = %v, want only always", got)
+	}
+	got5 := eligibleEvents(events, 5)
+	if len(got5) != 2 {
+		t.Fatalf("day 5 eligible count = %d, want 2", len(got5))
+	}
+}
+
+func TestPickRandomEligibleEvent_WeightedFavorsHigherWeight(t *testing.T) {
+	events := []EventDef{
+		{ID: "light", Weight: 1},
+		{ID: "heavy", Weight: 9},
+	}
+	s := NewStateWithSeed(testContent(), 99)
+	counts := map[string]int{}
+	const trials = 8000
+	for range trials {
+		e, ok := s.pickRandomEligibleEvent(events)
+		if !ok {
+			t.Fatal("expected pick")
+		}
+		counts[e.ID]++
+	}
+	heavyShare := float64(counts["heavy"]) / trials
+	if heavyShare < 0.85 {
+		t.Fatalf("heavy share = %.3f, want ~0.9 with weights 1:9", heavyShare)
+	}
+}
+
 func TestPickRandomEligibleEvent_EmptyCandidates(t *testing.T) {
 	s := NewStateWithSeed(testContentWithEvents(), 1)
 	if _, ok := s.pickRandomEligibleEvent(nil); ok {

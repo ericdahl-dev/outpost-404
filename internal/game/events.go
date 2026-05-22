@@ -26,17 +26,43 @@ func (s *State) applyEventByID(id string) {
 func eligibleEvents(events []EventDef, day int) []EventDef {
 	out := make([]EventDef, 0)
 	for _, event := range events {
-		if event.MinDay <= day {
-			out = append(out, event)
+		if event.MinDay > day {
+			continue
 		}
+		if event.MaxDay > 0 && day > event.MaxDay {
+			continue
+		}
+		out = append(out, event)
 	}
 	return out
+}
+
+func eventWeight(e EventDef) int {
+	if e.Weight <= 0 {
+		return 1
+	}
+	return e.Weight
 }
 
 func (s *State) pickRandomEligibleEvent(candidates []EventDef) (EventDef, bool) {
 	if len(candidates) == 0 {
 		return EventDef{}, false
 	}
+	total := 0
+	for _, e := range candidates {
+		total += eventWeight(e)
+	}
+	if total <= 0 {
+		return EventDef{}, false
+	}
 	s.ensureRNG()
-	return candidates[s.rng.Intn(len(candidates))], true
+	r := s.rng.Intn(total)
+	for _, e := range candidates {
+		w := eventWeight(e)
+		if r < w {
+			return e, true
+		}
+		r -= w
+	}
+	return candidates[len(candidates)-1], true
 }
