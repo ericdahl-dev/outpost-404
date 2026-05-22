@@ -1,9 +1,26 @@
 package game
 
+import "fmt"
+
 // applyEvent applies event effects and appends the standard log line.
 func (s *State) applyEvent(event EventDef) {
 	s.applyEffects(event.Effects, 1)
+	s.applyEventDamage(event)
 	s.AddLog(event.Title + ": " + event.Description)
+}
+
+func (s *State) applyEventDamage(event EventDef) {
+	switch {
+	case event.DamageBuilding != "":
+		if s.BuildingLevel(event.DamageBuilding) > 0 {
+			s.damageBuilding(event.DamageBuilding)
+			if def, ok := s.FindBuilding(event.DamageBuilding); ok {
+				s.AddLog(fmt.Sprintf("%s damaged; daily output halved until repaired.", def.Name))
+			}
+		}
+	case event.DamageRandomBuilt:
+		s.damageRandomBuiltFacility()
+	}
 }
 
 func (s *State) findEventByID(id string) (EventDef, bool) {

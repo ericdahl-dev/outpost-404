@@ -62,30 +62,65 @@ func (s *State) buildWithDetail(detail map[string]any, id string) {
 }
 
 func (s *State) Repair() {
-	s.doAction("repair", nil, func(detail map[string]any) {
-		s.repairWithDetail(detail)
+	id := s.firstDamagedBuildingID()
+	if id == "" {
+		s.doAction("repair", nil, func(detail map[string]any) {
+			s.AddLog("No damaged facilities need repair.")
+			detail["ok"] = false
+			detail["reason"] = "nothing_damaged"
+		})
+		return
+	}
+	s.RepairBuilding(id)
+}
+
+func (s *State) RepairBuilding(id string) {
+	s.doAction("repair", map[string]any{"building_id": id}, func(detail map[string]any) {
+		s.repairWithDetail(detail, id)
 	})
 }
 
-func (s *State) repairWithDetail(detail map[string]any) {
+func (s *State) repairWithDetail(detail map[string]any, id string) {
 	if s.GameOver {
 		detail["ok"] = false
 		detail["reason"] = "game_over"
 		return
 	}
-	if s.Credits < 35 {
-		s.AddLog("Repairs require 35 credits.")
+	def, ok := s.FindBuilding(id)
+	if !ok {
+		s.AddLog("Unknown building.")
+		detail["ok"] = false
+		detail["reason"] = "unknown_building"
+		return
+	}
+	b, built := s.Buildings[id]
+	if !built || b.Level <= 0 {
+		s.AddLog(fmt.Sprintf("%s is not built yet.", def.Name))
+		detail["ok"] = false
+		detail["reason"] = "not_built"
+		return
+	}
+	if !b.Damaged {
+		s.AddLog(fmt.Sprintf("%s is not damaged.", def.Name))
+		detail["ok"] = false
+		detail["reason"] = "not_damaged"
+		return
+	}
+	cost := RepairCost(b.Level)
+	detail["cost"] = cost
+	if s.Credits < cost {
+		s.AddLog(fmt.Sprintf("Repair %s needs %d credits.", def.Name, cost))
 		detail["ok"] = false
 		detail["reason"] = "insufficient_credits"
 		return
 	}
-	s.Credits -= 35
-	s.Power += 12
-	s.Food += 3
-	s.Morale += 5
-	s.AddLog("Workshop crew patched failing systems. Power +12, food +3, morale +5.")
+	s.Credits -= cost
+	b.Damaged = false
+	s.Buildings[id] = b
+	s.AddLog(fmt.Sprintf("Repaired %s. Daily output restored.", def.Name))
 	s.Clamp()
 	detail["ok"] = true
+	detail["building_id"] = id
 }
 
 func (s *State) Trade() {

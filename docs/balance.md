@@ -21,7 +21,7 @@ Override a script’s embedded seed with `-seed` or sweep with `-seeds` (comma-s
 | `scripts/conservative_mid.json` | Same opener through **day 11+** alive on all reference seeds (`TestEarlyBalance_*`) |
 | `scripts/no_trade_survival.json` | Mid-game probe **without trade**; must **finish alive** on day 14 on all reference seeds |
 | `scripts/beacon_rush.json` | Solar then beacon work; must reach **day 6** with **≥2 beacon parts** |
-| `scripts/survival_45.json` | Hydro/solar L3, workshop, repairs; **45 `next_day`** → **day 46 win** on all reference seeds |
+| `scripts/survival_45.json` | Hydro/solar L3, workshop (no repair buffs); solar daily **10** power; **45 `next_day`** → **day 46 win** on all reference seeds |
 
 Exact end states (day, `game_over`, beacon parts) are locked in `internal/game/baseline_test.go`. Changing JSON balance or events without updating expectations should fail CI.
 

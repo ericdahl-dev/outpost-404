@@ -53,8 +53,12 @@ func (m Model) mainView() string {
 	buildings := []string{"Facilities"}
 	nameW := facilityNameWidth(layout.MiddleWidth)
 	for _, def := range m.State.Content.Buildings {
-		line := fmt.Sprintf("%-*s Lv. %d/%d", nameW, def.Name, m.State.BuildingLevel(def.ID), def.MaxLevel)
-		if lvl := m.State.BuildingLevel(def.ID); lvl > 0 {
+		lvl := m.State.BuildingLevel(def.ID)
+		line := fmt.Sprintf("%-*s Lv. %d/%d", nameW, def.Name, lvl, def.MaxLevel)
+		if b, ok := m.State.Buildings[def.ID]; ok && b.Damaged {
+			line += " " + badStyle.Render("DAMAGED")
+		}
+		if lvl > 0 {
 			if note := game.FormatDailyProductionNote(def); note != "" {
 				line += "  " + mutedStyle.Render(note)
 			}
