@@ -1,4 +1,6 @@
 {
+  "scenario": "beacon_rush",
+  "description": "Beacon Rush: solar first, then all-in on beacon work. Wins at day 3 with food 44-46.",
   "actions": [
     { "type": "build", "building_id": "solar_array" },
     { "type": "beacon" },
