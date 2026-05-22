@@ -10,7 +10,8 @@ import (
 type screen int
 
 const (
-	screenNewGame screen = iota
+	screenTitle screen = iota
+	screenNewGame
 	screenMain
 	screenBuild
 	screenHelp
@@ -45,7 +46,7 @@ func NewModel(content game.Content, profiles game.RunProfiles) Model {
 	m := Model{
 		Content:         content,
 		Profiles:        profiles,
-		Screen:          screenNewGame,
+		Screen:          screenTitle,
 		ScenarioIndex:   0,
 		DifficultyIndex: diffIdx,
 		TermWidth:       defaultTermWidth,
