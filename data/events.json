@@ -2,8 +2,8 @@
   {
     "id": "solar_storm",
     "title": "Solar Storm",
-    "description": "Charged particles battered the arrays. Power -14.",
-    "effects": { "power": -14 },
+    "description": "Charged particles battered the arrays. Power -11.",
+    "effects": { "power": -11 },
     "minDay": 2
   },
   {
@@ -16,15 +16,15 @@
   {
     "id": "fungus",
     "title": "Hydroponics Fungus",
-    "description": "A fungal bloom damaged lettuce trays. Food -12, morale -4.",
-    "effects": { "food": -12, "morale": -4 },
+    "description": "A fungal bloom damaged lettuce trays. Food -8, morale -4.",
+    "effects": { "food": -8, "morale": -4 },
     "minDay": 4
   },
   {
     "id": "quiet_shift",
     "title": "Quiet Shift",
     "description": "Nothing broke. People noticed. Morale +8.",
-    "effects": { "morale": 8 },
+    "effects": { "morale": 8, "food": 2 },
     "minDay": 1
   },
   {

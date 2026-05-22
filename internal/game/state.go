@@ -10,7 +10,7 @@ func newBareState(content Content) State {
 	s := State{
 		Day:            1,
 		Power:          65,
-		Food:           55,
+		Food:           60,
 		Morale:         70,
 		Credits:        180,
 		Population:     8,

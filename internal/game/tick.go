@@ -35,8 +35,9 @@ func (s *State) replayNextDay(detail map[string]any) {
 
 func (s *State) advanceDay() {
 	s.Day++
-	s.Power -= 8 + s.Population/2
-	s.Food -= 6 + s.Population/2
+	s.applyBuildingProduction()
+	s.Power -= 7 + s.Population/2
+	s.Food -= 4 + s.Population/2
 	s.Credits += 18
 
 	if s.Power > 55 && s.Food > 45 {
@@ -48,6 +49,16 @@ func (s *State) advanceDay() {
 	if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
 		s.Population++
 		s.AddLog("A new colonist joined after hearing your beacon tests.")
+	}
+}
+
+// applyBuildingProduction grants daily output from completed facilities (see data/buildings.json).
+func (s *State) applyBuildingProduction() {
+	if lvl := s.BuildingLevel("hydroponics"); lvl > 0 {
+		s.Food += 4 * lvl
+	}
+	if lvl := s.BuildingLevel("solar_array"); lvl > 0 {
+		s.Power += 5 * lvl
 	}
 }
 

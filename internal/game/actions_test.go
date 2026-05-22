@@ -14,8 +14,8 @@ func TestBuild_UpgradesBuildingAndDeductsScaledCost(t *testing.T) {
 	if want := startCredits - 70; s.Credits != want {
 		t.Fatalf("Credits = %d, want %d", s.Credits, want)
 	}
-	if s.Power != 83 {
-		t.Fatalf("Power = %d, want 83 (65 + 18)", s.Power)
+	if s.Power != 85 {
+		t.Fatalf("Power = %d, want 85 (65 + 20)", s.Power)
 	}
 }
 
@@ -150,7 +150,7 @@ func TestRepair_RejectsInsufficientCredits(t *testing.T) {
 	}
 }
 
-func TestRepair_TriggersGameOverWhenFoodDepleted(t *testing.T) {
+func TestRepair_ProvidesFoodWhenStarving(t *testing.T) {
 	s := newTestState()
 	s.Food = 0
 	s.Power = 100
@@ -159,11 +159,11 @@ func TestRepair_TriggersGameOverWhenFoodDepleted(t *testing.T) {
 
 	s.Repair()
 
-	if !s.GameOver {
-		t.Fatal("expected GameOver when food is 0")
+	if s.Food != 3 {
+		t.Fatalf("Food = %d, want 3 from repair ration pack", s.Food)
 	}
-	if s.Won {
-		t.Fatal("expected loss, not win")
+	if s.GameOver {
+		t.Fatal("repair should stabilize starving colony, not end the run")
 	}
 }
 
