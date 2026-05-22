@@ -5,8 +5,6 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-
-	"github.com/ericdahl/outpost-404/internal/game"
 )
 
 func (m Model) View() string {
@@ -41,24 +39,7 @@ func (m Model) mainView() string {
 		return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(boxW).Render(heading+"\n\n"+body+"\n\nPress r to restart or q to quit.")
 	}
 
-	leftLines := []string{
-		fmt.Sprintf("Day: %d / %d", m.State.Day, m.State.SurvivalWinTarget()),
-		bar("Power", m.State.Power, layout.LeftWidth),
-		bar("Food", m.State.Food, layout.LeftWidth),
-		bar("Morale", m.State.Morale, layout.LeftWidth),
-		fmt.Sprintf("Credits: %d", m.State.Credits),
-		fmt.Sprintf("Population: %d / %d", m.State.Population, m.State.PopulationCap),
-		fmt.Sprintf("Signal Beacon: %d / %d", m.State.BeaconParts, m.State.MaxBeaconParts),
-	}
-	for _, w := range game.ActiveWarnings(m.State) {
-		line := "! " + w.Message
-		if w.Severity >= game.SeverityCritical {
-			leftLines = append(leftLines, badStyle.Render(line))
-		} else {
-			leftLines = append(leftLines, warnStyle.Render(line))
-		}
-	}
-	left := boxStyle.Width(layout.LeftWidth).Render(strings.Join(leftLines, "\n"))
+	left := boxStyle.Width(layout.LeftWidth).Render(RenderResourcePanel(m.State, layout.LeftWidth))
 
 	middle := boxStyle.Width(layout.MiddleWidth).Render(RenderOutpostPanel(m.State, layout.MiddleWidth))
 
@@ -105,22 +86,3 @@ func (m Model) helpView() string {
 	return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(layout.BoxWidth).Render(strings.Join(help, "\n"))
 }
 
-func bar(label string, value int, panelWidth int) string {
-	width := clamp(8, panelWidth-12, 12)
-	filled := value * width / 100
-	if filled < 0 {
-		filled = 0
-	}
-	if filled > width {
-		filled = width
-	}
-	cells := strings.Repeat("█", filled) + strings.Repeat("░", width-filled)
-	rendered := fmt.Sprintf("%-7s %s %3d%%", label+":", cells, value)
-	if value <= 20 {
-		return badStyle.Render(rendered)
-	}
-	if value <= 40 {
-		return warnStyle.Render(rendered)
-	}
-	return rendered
-}
