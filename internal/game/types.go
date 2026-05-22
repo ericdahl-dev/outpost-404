@@ -12,12 +12,13 @@ const (
 )
 
 type BuildingDef struct {
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	Cost        int            `json:"cost"`
-	MaxLevel    int            `json:"maxLevel"`
-	Effects     map[string]int `json:"effects"`
+	ID           string         `json:"id"`
+	Name         string         `json:"name"`
+	Description  string         `json:"description"`
+	Cost         int            `json:"cost"`
+	MaxLevel     int            `json:"maxLevel"`
+	Effects      map[string]int `json:"effects"`
+	DailyEffects map[string]int `json:"dailyEffects,omitempty"`
 }
 
 type EventDef struct {
@@ -31,6 +32,15 @@ type EventDef struct {
 type Content struct {
 	Buildings []BuildingDef
 	Events    []EventDef
+}
+
+func (c Content) FindBuilding(id string) (BuildingDef, bool) {
+	for _, b := range c.Buildings {
+		if b.ID == id {
+			return b, true
+		}
+	}
+	return BuildingDef{}, false
 }
 
 type Building struct {

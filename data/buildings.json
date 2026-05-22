@@ -2,18 +2,20 @@
   {
     "id": "solar_array",
     "name": "Solar Array",
-    "description": "Adds power buffer and stabilizes daily operations.",
+    "description": "One-time power buffer; ongoing +6 power per level each day.",
     "cost": 70,
     "maxLevel": 3,
-    "effects": { "power": 20 }
+    "effects": { "power": 20 },
+    "dailyEffects": { "power": 6 }
   },
   {
     "id": "hydroponics",
     "name": "Hydroponics",
-    "description": "Improves food reserves with each upgrade.",
+    "description": "One-time food stockpile; ongoing +6 food per level each day.",
     "cost": 65,
     "maxLevel": 3,
-    "effects": { "food": 22 }
+    "effects": { "food": 22 },
+    "dailyEffects": { "food": 6 }
   },
   {
     "id": "habitat",

@@ -41,12 +41,7 @@ func (s State) BuildingLevel(id string) int {
 }
 
 func (s State) FindBuilding(id string) (BuildingDef, bool) {
-	for _, b := range s.Content.Buildings {
-		if b.ID == id {
-			return b, true
-		}
-	}
-	return BuildingDef{}, false
+	return s.Content.FindBuilding(id)
 }
 
 func (s *State) Clamp() {

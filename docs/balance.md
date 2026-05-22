@@ -65,3 +65,7 @@ Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline u
 Use `-simulate` sweeps to explore; lock outcomes in tests before merging balance PRs.
 
 Do not loosen checks to greenwash a regression—change data/rules or document a deliberate baseline shift in the PR.
+
+## Building daily production
+
+`data/buildings.json` may include `dailyEffects` (per-level per day). `advanceDay` applies them **before** power/food upkeep and morale drift (`applyBuildingProduction` in `internal/game/tick.go`). One-time build bonuses stay in `effects`.

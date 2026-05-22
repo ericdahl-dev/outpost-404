@@ -10,4 +10,9 @@ func TestLoadEmbeddedContent_LoadsBuildingsAndEvents(t *testing.T) {
 	if len(content.Buildings) == 0 || len(content.Events) == 0 {
 		t.Fatal("expected embedded buildings and events")
 	}
+	for _, def := range content.Buildings {
+		if def.ID == "hydroponics" && def.DailyEffects["food"] != 6 {
+			t.Fatalf("embedded hydroponics daily food = %d, want 6", def.DailyEffects["food"])
+		}
+	}
 }
