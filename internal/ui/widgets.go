@@ -104,7 +104,7 @@ func buildListHeight(itemCount int) int {
 }
 
 func newLogViewport(termWidth, termHeight int) viewport.Model {
-	vp := viewport.New(logViewportWidth(termWidth), logViewportHeight(termHeight))
+	vp := viewport.New(LogViewportWidth(termWidth), LogViewportHeight(termHeight))
 	vp.Style = lipgloss.NewStyle()
 	return vp
 }
@@ -117,25 +117,6 @@ func syncLogViewport(vp viewport.Model, lines []string) viewport.Model {
 	vp.SetContent(content)
 	vp.GotoBottom()
 	return vp
-}
-
-func logViewportWidth(termWidth int) int {
-	w := 44
-	if termWidth > 120 {
-		w = 52
-	}
-	return w
-}
-
-func logViewportHeight(termHeight int) int {
-	h := termHeight - 12
-	if h < 6 {
-		return 6
-	}
-	if h > 14 {
-		return 14
-	}
-	return h
 }
 
 func selectedBuildingID(l list.Model) (string, bool) {

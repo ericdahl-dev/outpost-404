@@ -7,6 +7,7 @@ Build **Outpost 404**, a Go/Bubble Tea terminal base builder. The priority is ma
 ## Development principles
 
 - Keep game logic in `internal/game` and UI concerns in `internal/ui`.
+- Game and CLI tests live under `test/` mirroring source (`test/internal/game`, `test/cmd/outpost`); use `package game_test` / `main_test` and `internal/game/testhook.go` for white-box hooks.
 - Do not put balance constants directly into view code.
 - Prefer small, testable functions for state transitions.
 - Keep buildings and events data-driven where possible.
@@ -64,7 +65,7 @@ Use **TDD** for game logic and balance changes: one behavior per cycle, not a ba
 
 1. **RED** — Write one test that asserts observable behavior through a public API (`NextDay`, `Build`, `Simulate`, `CheckBaselineOutcome`, etc.). Run it; it must fail for the right reason.
 2. **GREEN** — Add the smallest change in `internal/game` (or `data/` when tuning JSON) that makes that test pass.
-3. **REFACTOR** — Clean up only while green; run `go test ./internal/game/...` after each step.
+3. **REFACTOR** — Clean up only while green; run `go test ./test/internal/game/...` after each step.
 
 **Rules:**
 
@@ -97,9 +98,12 @@ Single-context repo — `docs/context.md`, `docs/balance.md`, and `docs/adr/` wh
 ## Learned User Preferences
 
 - Never commit or push work directly to `main`; use a feature branch and open a PR.
+- Prefer auto-merging PRs after CI passes (`gh pr merge`); do not bypass checks or force-push `main`.
+- Use git worktrees when tackling multiple independent issues or PRs in parallel.
 
 ## Learned Workspace Facts
 
 - CI and releases follow the local `git-green` repo pattern: GitHub Actions (build, `go test -race`, golangci-lint), GoReleaser on `v*` tags, Homebrew formula in `ericdahl-dev/homebrew-tap` (needs `HOMEBREW_TAP_GITHUB_TOKEN`).
 - Shipped binaries embed `data/` JSON; a checkout’s `./data` directory overrides embedded content when present.
 - Headless balance tooling: `go run ./cmd/outpost -simulate scripts/*.json`, `-replay` on JSONL session logs, plus `game.Simulate` / `TestBalanceBaseline` in tests.
+- `scripts/check-game-coverage.sh` enforces ≥80% statement coverage on `internal/game` via `go test ./test/internal/game/...` with `-coverpkg=./internal/game/...`.

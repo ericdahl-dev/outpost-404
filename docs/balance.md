@@ -23,12 +23,12 @@ Override a script’s embedded seed with `-seed` or sweep with `-seeds` (comma-s
 | `scripts/beacon_rush.json` | Solar then beacon work; must reach **day 6** with **≥2 beacon parts** |
 | `scripts/survival_45.json` | Hydro/solar L3, workshop, repairs; **45 `next_day`** → **day 46 win** on all reference seeds |
 
-Exact end states (day, `game_over`, beacon parts) are locked in `internal/game/baseline_test.go`. Changing JSON balance or events without updating expectations should fail CI.
+Exact end states (day, `game_over`, beacon parts) are locked in `test/internal/game/baseline_test.go`. Changing JSON balance or events without updating expectations should fail CI.
 
 ## Running checks
 
 ```bash
-go test ./internal/game/ -run TestBalanceBaseline
+go test ./test/internal/game/ -run TestBalanceBaseline
 ```
 
 CLI sweeps (after `-simulate` is available):
@@ -59,7 +59,7 @@ Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline u
 ## Updating expectations (TDD)
 
 1. **RED** — Change or add a baseline assertion first (or let an existing test fail after a deliberate `data/` edit).
-2. **GREEN** — Tune `data/*.json` or `internal/game` until `go test ./internal/game/ -run TestBalanceBaseline` passes.
+2. **GREEN** — Tune `data/*.json` or `internal/game` until `go test ./test/internal/game/ -run TestBalanceBaseline` passes.
 3. **REFACTOR** — Only while green; update `Expected` in `internal/game/baseline.go` to match intentional new outcomes.
 
 Use `-simulate` sweeps to explore; lock outcomes in tests before merging balance PRs.

@@ -7,7 +7,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PROFILE="${1:-$ROOT/coverage.game.out}"
 
 cd "$ROOT"
-go test ./internal/game/... -covermode=atomic -coverprofile="$PROFILE" >/dev/null
+go test ./test/internal/game/... -covermode=atomic -coverpkg=./internal/game/... -coverprofile="$PROFILE" >/dev/null
 
 total="$(go tool cover -func="$PROFILE" | awk '/^total:/ { gsub(/%/, "", $3); print $3 }')"
 if [[ -z "$total" ]]; then
