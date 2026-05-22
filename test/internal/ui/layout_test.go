@@ -1,40 +1,56 @@
 package ui_test
 
 import (
+	"strings"
 	"testing"
 
+	"github.com/ericdahl/outpost-404/internal/game"
 	"github.com/ericdahl/outpost-404/internal/ui"
 )
 
-func TestMainLayout_wideTerminalUsesHorizontalPanels(t *testing.T) {
-	l := ui.MainLayoutFor(120, 30)
-	if l.Stacked {
-		t.Fatal("expected horizontal layout at 120 columns")
+func TestMainLayout_wideAt120x35(t *testing.T) {
+	l := ui.MainLayoutFor(120, 35)
+	if l.Mode != ui.LayoutModeWide {
+		t.Fatalf("mode = %v, want wide", l.Mode)
 	}
-	if l.LeftWidth < 28 || l.MiddleWidth < 28 {
-		t.Fatalf("panel widths too small: left=%d mid=%d", l.LeftWidth, l.MiddleWidth)
-	}
-	if l.LogInnerWidth < 44 {
-		t.Fatalf("log width=%d, want at least 44 on wide terminal", l.LogInnerWidth)
+	if l.Stacked || l.OutpostBelow {
+		t.Fatalf("wide should be 3-column row: stacked=%v outpostBelow=%v", l.Stacked, l.OutpostBelow)
 	}
 }
 
-func TestMainLayout_narrowTerminalStacksPanels(t *testing.T) {
-	l := ui.MainLayoutFor(70, 24)
+func TestMainLayout_mediumAt100x30(t *testing.T) {
+	l := ui.MainLayoutFor(100, 30)
+	if l.Mode != ui.LayoutModeMedium {
+		t.Fatalf("mode = %v, want medium", l.Mode)
+	}
+	if !l.OutpostBelow || l.Stacked {
+		t.Fatalf("medium want outpost below: stacked=%v outpostBelow=%v", l.Stacked, l.OutpostBelow)
+	}
+}
+
+func TestMainLayout_narrowAt80x24(t *testing.T) {
+	l := ui.MainLayoutFor(80, 24)
+	if l.Mode != ui.LayoutModeNarrow {
+		t.Fatalf("mode = %v, want narrow", l.Mode)
+	}
 	if !l.Stacked {
-		t.Fatal("expected stacked layout below horizontal breakpoint")
-	}
-	if l.ContentWidth < 60 {
-		t.Fatalf("content width=%d, want most of terminal width", l.ContentWidth)
+		t.Fatal("narrow should stack panels")
 	}
 }
 
-func TestMainLayout_logViewportShrinksOnNarrowTerminal(t *testing.T) {
-	w := ui.LogViewportWidth(60)
-	if w > 52 {
-		t.Fatalf("log viewport width=%d, should shrink with terminal", w)
+func TestRenderStatusHeader_IncludesDayAndScenario(t *testing.T) {
+	s := game.NewState(game.Content{})
+	s.Day = 18
+	s.ScenarioID = "standard"
+	s.DifficultyID = "normal"
+	p := game.RunProfiles{
+		Scenarios:    []game.ScenarioDef{{ID: "standard", Name: "Standard Landing"}},
+		Difficulties: []game.DifficultyDef{{ID: "normal", Name: "Normal"}},
 	}
-	if w < 20 {
-		t.Fatalf("log viewport width=%d, too narrow to read", w)
+	h := ui.RenderStatusHeader(s, p, 100)
+	for _, want := range []string{"Outpost 404", "Day 18", "Standard Landing", "Normal"} {
+		if !strings.Contains(h, want) {
+			t.Fatalf("missing %q in %q", want, h)
+		}
 	}
 }

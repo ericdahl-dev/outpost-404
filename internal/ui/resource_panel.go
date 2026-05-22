@@ -16,15 +16,11 @@ func RenderResourcePanel(s game.State, panelWidth int) string {
 	barW := resourceBarWidth(panelWidth)
 
 	lines := []string{
-		fmt.Sprintf("Day %d / %d", s.Day, s.SurvivalWinTarget()),
 		resourceBarLine("Power", s.Power, deltas.Power, barW, game.WarningPowerCriticalAt, game.WarningPowerUrgentAt),
 		resourceBarLine("Food", s.Food, deltas.Food, barW, game.WarningFoodCriticalAt, game.WarningFoodUrgentAt),
 		resourceBarLine("Morale", s.Morale, deltas.Morale, barW, game.WarningMoraleCriticalAt, game.WarningMoraleUrgentAt),
 		fmt.Sprintf("Credits %-4d  Pop %d/%d  Beacon %d/%d",
 			s.Credits, s.Population, s.PopulationCap, s.BeaconParts, s.MaxBeaconParts),
-	}
-	if strip := formatStatusStrip(game.StatusBadges(s)); strip != "" {
-		lines = append(lines, "", strip)
 	}
 	return title + "\n" + strings.Join(lines, "\n")
 }

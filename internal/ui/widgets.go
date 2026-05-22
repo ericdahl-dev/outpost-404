@@ -103,7 +103,7 @@ func buildListHeight(itemCount int) int {
 }
 
 func newLogViewport(termWidth, termHeight int) viewport.Model {
-	vp := viewport.New(LogViewportWidth(termWidth), LogViewportHeight(termHeight))
+	vp := viewport.New(LogViewportWidth(termWidth, termHeight), LogViewportHeight(termHeight))
 	vp.Style = lipgloss.NewStyle()
 	return vp
 }
