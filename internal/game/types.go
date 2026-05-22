@@ -69,4 +69,5 @@ type State struct {
 	GameOver       bool
 	Won            bool
 	Message        string
+	WarningLevels  map[string]WarningSeverity
 }
