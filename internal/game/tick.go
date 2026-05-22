@@ -33,25 +33,6 @@ func (s *State) replayNextDay(detail map[string]any) {
 	s.Clamp()
 }
 
-func (s *State) advanceDay() {
-	s.Day++
-	s.applyBuildingProduction()
-	s.Power -= DailyPowerUpkeep(s.Population)
-	s.Food -= DailyFoodUpkeep(s.Population)
-	s.Credits += DailyCreditsIncome
-
-	if ResourcesComfortable(s.Power, s.Food) {
-		s.Morale += ComfortMoraleGain
-	} else {
-		s.Morale -= StressMoraleLoss
-	}
-
-	if CanGrowColonist(s.Day, s.Population, s.PopulationCap, s.Food, s.Morale) {
-		s.Population++
-		s.AddLog("A new colonist joined after hearing your beacon tests.")
-	}
-}
-
 // applyBuildingProduction grants per-day output from building dailyEffects (JSON order).
 // Runs at the start of advanceDay, before resource upkeep and morale drift.
 func (s *State) applyBuildingProduction() {
