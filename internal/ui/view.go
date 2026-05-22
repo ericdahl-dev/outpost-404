@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/ericdahl/outpost-404/internal/game"
 )
 
 func (m Model) View() string {
@@ -28,7 +30,7 @@ func (m Model) mainView() string {
 	}
 
 	left := boxStyle.Width(36).Render(strings.Join([]string{
-		fmt.Sprintf("Day: %d / 30", m.State.Day),
+		fmt.Sprintf("Day: %d / %d", m.State.Day, game.SurvivalWinAfterDay),
 		bar("Power", m.State.Power),
 		bar("Food", m.State.Food),
 		bar("Morale", m.State.Morale),
@@ -59,7 +61,7 @@ func (m Model) buildView() string {
 
 func (m Model) helpView() string {
 	help := []string{
-		"Goal: survive 30 days or complete 5 Signal Beacon parts.",
+		fmt.Sprintf("Goal: survive %d days or complete 5 Signal Beacon parts.", game.SurvivalWinAfterDay),
 		"",
 		"Every day consumes power and food. Low resources damage morale.",
 		"Build facilities to stabilize the colony, then spend power and credits on the beacon.",

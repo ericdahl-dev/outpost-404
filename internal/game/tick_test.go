@@ -39,20 +39,21 @@ func TestNextDay_NoOpWhenGameOver(t *testing.T) {
 	}
 }
 
-func TestNextDay_WinsAfterDay30(t *testing.T) {
+func TestNextDay_WinsAfterSurvivalTarget(t *testing.T) {
 	s := newTestState()
-	s.Day = 30
+	s.Day = SurvivalWinAfterDay
 	s.Power = 50
 	s.Food = 50
 	s.Morale = 50
 
 	s.NextDay()
 
+	wantDay := SurvivalWinAfterDay + 1
 	if !s.GameOver || !s.Won {
-		t.Fatal("expected win after surviving into day 31")
+		t.Fatalf("expected win after surviving into day %d", wantDay)
 	}
-	if s.Day != 31 {
-		t.Fatalf("Day = %d, want 31", s.Day)
+	if s.Day != wantDay {
+		t.Fatalf("Day = %d, want %d", s.Day, wantDay)
 	}
 }
 

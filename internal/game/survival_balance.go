@@ -1,8 +1,8 @@
 package game
 
-// Floors for the survival_30 reference script end state (#31).
+// Floors for the survival_45 reference script end state (#31).
 const (
-	SurvivalMinEndPower = 15
+	SurvivalMinEndPower = 4 // longer 45-day path drains more power on reference seeds
 	SurvivalMinEndFood  = 10
 )
 
