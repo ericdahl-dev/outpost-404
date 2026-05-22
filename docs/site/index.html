@@ -11,91 +11,116 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="wrap">
-      <header>
-        <p class="badge">
-          Go · Charm · Bubble Tea · <span id="latest-version" class="version-pill">…</span>
-        </p>
-        <h1>OUTPOST 404</h1>
-        <p class="tagline">
-          Remote survival colony ops in your terminal. Balance scarce resources, survive random
-          events, and complete the Signal Beacon before the outpost collapses.
-        </p>
-        <div class="cta">
-          <a class="btn btn-primary" href="#download">Download</a>
-          <a class="btn" href="#install">Install</a>
-          <a
-            class="btn"
-            href="https://github.com/ericdahl-dev/outpost-404"
-            rel="noopener noreferrer"
-            >Source on GitHub</a
-          >
-        </div>
-      </header>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
 
-      <section id="download">
-        <h2>Latest release</h2>
-        <div class="panel">
-          <div id="release-status" class="dim">Loading release…</div>
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="hero-eyebrow">// SIGNAL INTERCEPTED &mdash; COLONY DESIGNATION 404</p>
+        <h1 class="hero-title" data-text="OUTPOST 404">OUTPOST 404</h1>
+        <p class="hero-tagline">
+          Remote survival colony ops in your terminal.<br />
+          Balance scarce resources, survive random events,<br />
+          and complete the Signal Beacon before the outpost collapses.
+        </p>
+        <div class="hero-vitals" aria-label="Colony status indicators">
+          <div class="vital">
+            <span class="vital-label">PWR</span>
+            <span class="vital-bar"><span class="vital-fill" style="--pct:62%"></span></span>
+          </div>
+          <div class="vital">
+            <span class="vital-label">FOOD</span>
+            <span class="vital-bar"><span class="vital-fill" style="--pct:78%"></span></span>
+          </div>
+          <div class="vital">
+            <span class="vital-label">MORALE</span>
+            <span class="vital-bar vital-bar--warn"><span class="vital-fill" style="--pct:34%"></span></span>
+          </div>
+          <div class="vital">
+            <span class="vital-label">BEACON</span>
+            <span class="vital-bar vital-bar--beacon"><span class="vital-fill" style="--pct:20%"></span></span>
+          </div>
+        </div>
+        <nav class="hero-cta">
+          <a class="btn btn-primary" href="#download">&gt; DOWNLOAD</a>
+          <a class="btn" href="#install">&gt; INSTALL</a>
+          <a class="btn" href="https://github.com/ericdahl-dev/outpost-404" rel="noopener noreferrer">&gt; SOURCE</a>
+        </nav>
+        <p class="hero-version">
+          <span class="dim">RELEASE </span><span id="latest-version" class="version-tag">&#8230;</span>
+          <span class="dim"> // Go &middot; Charm &middot; Bubble Tea</span>
+        </p>
+      </div>
+      <div class="hero-scroll-hint" aria-hidden="true">&#9660;</div>
+    </section>
+
+    <main class="wrap">
+
+      <section id="download" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[SYS.RELEASE]</span> Latest Binary</h2>
+        <div class="log-body">
+          <div id="release-status" class="dim">Querying release feed&#8230;</div>
           <div id="release-assets"></div>
           <div id="release-notes" class="release-notes"></div>
         </div>
       </section>
 
-      <section id="objective">
-        <h2>Mission</h2>
-        <div class="panel grid grid-2">
-          <div>
-            <strong>Win</strong>
+      <section id="objective" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[OPS.BRIEF]</span> Mission Parameters</h2>
+        <div class="log-body log-grid">
+          <div class="mission-block mission-win">
+            <p class="mission-header">WIN CONDITIONS</p>
             <ul>
-              <li><strong>Survive 45 days</strong> — reach day 46 with vitals above zero</li>
-              <li><strong>Signal Beacon</strong> — complete 5 parts before collapse</li>
+              <li><strong>Survive 45 days</strong> &mdash; reach day&nbsp;46 with vitals above zero</li>
+              <li><strong>Signal Beacon</strong> &mdash; complete all 5 parts before collapse</li>
             </ul>
           </div>
-          <div>
-            <strong>Lose</strong>
+          <div class="mission-block mission-lose">
+            <p class="mission-header">COLLAPSE TRIGGERS</p>
             <ul>
-              <li>Power, food, morale, or population hits zero</li>
-              <li>Collapse is checked before a survival win on the final day</li>
+              <li>Power, food, morale, or population reaches zero</li>
+              <li>Collapse is checked before survival win on the final day</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section id="install">
-        <h2>Install</h2>
-        <div class="panel">
-          <p><strong>Homebrew</strong></p>
+      <section id="install" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[CMD.INSTALL]</span> Deployment</h2>
+        <div class="log-body">
+          <p class="install-method">Homebrew</p>
           <pre><code>brew install ericdahl-dev/tap/outpost-404</code></pre>
-          <p><strong>Go</strong></p>
+          <p class="install-method">Go toolchain</p>
           <pre><code>go install github.com/ericdahl-dev/outpost-404/cmd/outpost@latest</code></pre>
-          <p><strong>From source</strong></p>
+          <p class="install-method">From source</p>
           <pre><code>git clone https://github.com/ericdahl-dev/outpost-404.git
 cd outpost-404
 go run ./cmd/outpost</code></pre>
         </div>
       </section>
 
-      <section id="play">
-        <h2>Run</h2>
-        <div class="panel terminal">
-          <div><span class="prompt">$ </span>outpost</div>
-          <div class="dim"># fixed seed for reproducible events</div>
-          <div><span class="prompt">$ </span>outpost -seed 42</div>
-          <div class="dim"># optional JSONL session log</div>
-          <div><span class="prompt">$ </span>outpost -log ./logs/my-run.jsonl</div>
+      <section id="play" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[CMD.EXEC]</span> Launch</h2>
+        <div class="log-body">
+          <div class="terminal">
+            <div><span class="prompt">$ </span>outpost</div>
+            <div class="dim"># fixed seed for reproducible events</div>
+            <div><span class="prompt">$ </span>outpost -seed 42</div>
+            <div class="dim"># optional JSONL session log</div>
+            <div><span class="prompt">$ </span>outpost -log ./logs/my-run.jsonl</div>
+          </div>
         </div>
       </section>
 
-      <section id="controls">
-        <h2>Controls</h2>
-        <div class="panel">
+      <section id="controls" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[SYS.INPUT]</span> Controls</h2>
+        <div class="log-body">
           <table>
             <thead>
               <tr>
@@ -110,7 +135,7 @@ go run ./cmd/outpost</code></pre>
               <tr><td>r</td><td>Repair systems</td></tr>
               <tr><td>t</td><td>Trade food for credits</td></tr>
               <tr><td>s</td><td>Work on Signal Beacon</td></tr>
-              <tr><td>n / space</td><td>Next day</td></tr>
+              <tr><td>n / space</td><td>Advance to next day</td></tr>
               <tr><td>?</td><td>Help</td></tr>
               <tr><td>q</td><td>Quit</td></tr>
             </tbody>
@@ -118,43 +143,45 @@ go run ./cmd/outpost</code></pre>
         </div>
       </section>
 
-      <section id="hack">
-        <h2>Headless tools</h2>
-        <div class="panel">
+      <section id="hack" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[DEV.TOOLS]</span> Headless Operations</h2>
+        <div class="log-body">
           <p>Balance scripts and session replay for tuning and regression checks:</p>
-          <pre><code>outpost -simulate scripts/conservative.json -seed 99
-outpost -simulate scripts/survival_45.json -seeds 1,7,42
-outpost -replay ./logs/my-run.jsonl</code></pre>
-          <p>
-            See the repo
-            <a href="https://github.com/ericdahl-dev/outpost-404/blob/main/docs/balance.md"
-              >balance guide</a
-            >
+          <div class="terminal">
+            <div><span class="prompt">$ </span>outpost -simulate scripts/conservative.json -seed 99</div>
+            <div><span class="prompt">$ </span>outpost -simulate scripts/survival_45.json -seeds 1,7,42</div>
+            <div><span class="prompt">$ </span>outpost -replay ./logs/my-run.jsonl</div>
+          </div>
+          <p class="dim small">
+            See the
+            <a href="https://github.com/ericdahl-dev/outpost-404/blob/main/docs/balance.md">balance guide</a>
             for reference seeds and baseline expectations.
           </p>
         </div>
       </section>
 
-      <section id="stack">
-        <h2>Stack</h2>
-        <div class="panel">
+      <section id="stack" class="log-entry">
+        <h2 class="log-label"><span class="log-tag">[SYS.ARCH]</span> Stack</h2>
+        <div class="log-body">
           <p>
             Built with the
-            <a href="https://charm.land/" rel="noopener noreferrer">Charm stack</a>: Bubble Tea,
-            Lip Gloss, and Bubbles. Game rules live in <code>internal/game</code>; the TUI in
-            <code>internal/ui</code>. Content is JSON-driven (<code>data/buildings.json</code>,
-            <code>data/events.json</code>).
+            <a href="https://charm.land/" rel="noopener noreferrer">Charm stack</a>:
+            Bubble Tea, Lip Gloss, and Bubbles. Game rules live in
+            <code>internal/game</code>; the TUI in <code>internal/ui</code>.
+            Content is JSON-driven &mdash; <code>data/buildings.json</code>,
+            <code>data/events.json</code>.
           </p>
         </div>
       </section>
 
       <footer>
         <p>
-          <a href="https://github.com/ericdahl-dev/outpost-404">ericdahl-dev/outpost-404</a> · MIT
-          · Terminal-native game, not a spreadsheet.
+          <a href="https://github.com/ericdahl-dev/outpost-404">ericdahl-dev/outpost-404</a>
+          &nbsp;&middot;&nbsp; MIT &nbsp;&middot;&nbsp; Terminal-native game, not a spreadsheet.
         </p>
       </footer>
-    </div>
+    </main>
+
     <script src="release.js"></script>
   </body>
 </html>
