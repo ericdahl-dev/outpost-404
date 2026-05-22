@@ -13,8 +13,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.TermWidth = msg.Width
 		m.TermHeight = msg.Height
-		m.LogViewport.Width = logViewportWidth(msg.Width)
-		m.LogViewport.Height = logViewportHeight(msg.Height)
+		m.LogViewport.Width = LogViewportWidth(msg.Width)
+		m.LogViewport.Height = LogViewportHeight(msg.Height)
 		m.LogViewport = syncLogViewport(m.LogViewport, m.State.Log)
 		m.BuildList.SetSize(buildListWidth(msg.Width), m.BuildList.Height())
 		return m, nil
