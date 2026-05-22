@@ -124,6 +124,32 @@ func TestWorkOnBeacon_RejectsWithoutPowerAndCredits(t *testing.T) {
 	}
 }
 
+func TestRepair_RejectsWhenGameOver(t *testing.T) {
+	s := newTestState()
+	s.GameOver = true
+	s.Credits = 100
+
+	s.Repair()
+
+	if s.Credits != 100 {
+		t.Fatalf("Credits = %d, want unchanged 100", s.Credits)
+	}
+}
+
+func TestRepair_RejectsInsufficientCredits(t *testing.T) {
+	s := newTestState()
+	s.Credits = 10
+
+	s.Repair()
+
+	if s.Credits != 10 {
+		t.Fatalf("Credits = %d, want unchanged 10", s.Credits)
+	}
+	if len(s.Log) == 0 || s.Log[0] == "" {
+		t.Fatal("expected rejection log line")
+	}
+}
+
 func TestRepair_TriggersGameOverWhenFoodDepleted(t *testing.T) {
 	s := newTestState()
 	s.Food = 0

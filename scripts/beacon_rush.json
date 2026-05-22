@@ -1,0 +1,16 @@
+{
+  "actions": [
+    { "type": "build", "building_id": "solar_array" },
+    { "type": "beacon" },
+    { "type": "next_day" },
+    { "type": "beacon" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "beacon" },
+    { "type": "next_day" },
+    { "type": "beacon" },
+    { "type": "next_day" },
+    { "type": "beacon" },
+    { "type": "next_day" }
+  ]
+}
