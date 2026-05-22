@@ -34,7 +34,8 @@ type AutosaveFile struct {
 	GameOver                bool           `json:"game_over"`
 	Won                     bool           `json:"won"`
 	Message                 string         `json:"message,omitempty"`
-	WarningLevels           map[string]int `json:"warning_levels,omitempty"`
+	WarningLevels           map[string]int  `json:"warning_levels,omitempty"`
+	MilestonesSeen          map[string]bool `json:"milestones_seen,omitempty"`
 	MinPowerSeen            int            `json:"min_power_seen,omitempty"`
 	MinFoodSeen             int            `json:"min_food_seen,omitempty"`
 	MinMoraleSeen           int            `json:"min_morale_seen,omitempty"`
@@ -72,6 +73,12 @@ func (s *State) toAutosaveFile() AutosaveFile {
 	for id, sev := range s.WarningLevels {
 		warn[id] = int(sev)
 	}
+	seen := make(map[string]bool, len(s.MilestonesSeen))
+	for id, ok := range s.MilestonesSeen {
+		if ok {
+			seen[id] = true
+		}
+	}
 	return AutosaveFile{
 		Version:                 AutosaveVersion,
 		Day:                     s.Day,
@@ -97,6 +104,7 @@ func (s *State) toAutosaveFile() AutosaveFile {
 		Won:                     s.Won,
 		Message:                 s.Message,
 		WarningLevels:           warn,
+		MilestonesSeen:          seen,
 		MinPowerSeen:            s.MinPowerSeen,
 		MinFoodSeen:             s.MinFoodSeen,
 		MinMoraleSeen:           s.MinMoraleSeen,
@@ -149,6 +157,12 @@ func stateFromAutosave(file AutosaveFile, content Content, profiles RunProfiles)
 	for id, sev := range file.WarningLevels {
 		warn[id] = WarningSeverity(sev)
 	}
+	seen := make(map[string]bool, len(file.MilestonesSeen))
+	for id, ok := range file.MilestonesSeen {
+		if ok {
+			seen[id] = true
+		}
+	}
 	s := State{
 		Day:                     file.Day,
 		Power:                   file.Power,
@@ -174,6 +188,7 @@ func stateFromAutosave(file AutosaveFile, content Content, profiles RunProfiles)
 		Won:                     file.Won,
 		Message:                 file.Message,
 		WarningLevels:           warn,
+		MilestonesSeen:          seen,
 		MinPowerSeen:            file.MinPowerSeen,
 		MinFoodSeen:             file.MinFoodSeen,
 		MinMoraleSeen:           file.MinMoraleSeen,

@@ -14,6 +14,7 @@ func (s *State) doAction(typ string, initial map[string]any, fn func(detail map[
 	s.CheckEnd()
 	if !s.GameOver {
 		s.syncWarnings()
+		s.syncMilestones()
 	}
 	s.recordAction(typ, detail, before, s.snapshot())
 	if typ == "next_day" && !s.GameOver {
