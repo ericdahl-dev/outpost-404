@@ -108,15 +108,3 @@ func resolveLogPath(flagValue string) string {
 	}
 	return os.Getenv("OUTPOST_LOG")
 }
-
-func attachSessionLog(state *game.State, path string) error {
-	if path == "off" {
-		return nil
-	}
-	logger, err := game.AttachSessionLog(state, path)
-	if err != nil {
-		return err
-	}
-	fmt.Fprintf(os.Stderr, "session log: %s\n", logger.Path)
-	return nil
-}

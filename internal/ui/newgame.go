@@ -2,6 +2,7 @@ package ui
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/ericdahl/outpost-404/internal/game"
@@ -44,8 +45,9 @@ func (m *Model) attachSessionLogIfConfigured() {
 	}
 	logger, err := game.AttachSessionLog(&m.State, m.SessionLogPath)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "session logging disabled: %v\n", err)
 		return
 	}
 	m.State.LogSessionStart()
-	_ = logger
+	fmt.Fprintf(os.Stderr, "session log: %s\n", logger.Path)
 }
