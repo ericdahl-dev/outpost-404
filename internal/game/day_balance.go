@@ -47,7 +47,10 @@ func RandomEventRollOccurs(roll int) bool {
 
 func (s State) randomEventRollOccurs(roll int) bool {
 	limit := s.EventGateSkipAbove
-	if limit <= 0 {
+	if limit < 0 {
+		return false // explicitly disabled
+	}
+	if limit == 0 {
 		limit = RandomEventRollSkipAbove
 	}
 	return roll <= limit

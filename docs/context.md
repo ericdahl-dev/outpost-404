@@ -76,3 +76,15 @@ Examples:
 - achievements
 - save files
 - Steam-like terminal polish eventually, but keep scope small now
+
+## Colony log as primary narrative layer
+
+**Design goal:** the colony log is the game's voice. Every `next_day` should give the player at least one readable beat — an event, a milestone, a warning escalation, or a quiet telemetry line when nothing dramatic happened. Players should be able to answer "what happened yesterday?" from the log alone.
+
+### Quiet beats
+
+When no random event fires on a given day, a short neutral telemetry line is emitted (prefixed `·`, `LogSystem`). These are data-driven — drawn randomly from `data/quiet_beats.json`. They signal calm without being silent, and make the log feel alive even during uneventful stretches.
+
+### Layout principle
+
+The event log viewport should be at least as prominent as the resource stat panel in the TUI layout. Stats are scoreboard; the log is story.

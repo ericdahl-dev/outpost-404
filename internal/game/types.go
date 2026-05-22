@@ -35,8 +35,9 @@ type EventDef struct {
 }
 
 type Content struct {
-	Buildings []BuildingDef
-	Events    []EventDef
+	Buildings   []BuildingDef
+	Events      []EventDef
+	QuietBeats  []string
 }
 
 func (c Content) FindBuilding(id string) (BuildingDef, bool) {

@@ -89,3 +89,31 @@ func logContainsAll(s string, parts ...string) bool {
 func joinStrings(parts []string) string {
 	return strings.Join(parts, "\n")
 }
+
+func TestNextDay_QuietBeat_AppearsWhenNoEvent(t *testing.T) {
+	content, err := LoadEmbeddedContent()
+	if err != nil {
+		t.Fatalf("LoadEmbeddedContent: %v", err)
+	}
+	s := NewState(content)
+	// Set gate so event roll never fires (-1 = never, overrides fallback)
+	s.EventGateSkipAbove = -1
+	logBefore := len(s.Log)
+	s.NextDay()
+	newCount := len(s.Log) - logBefore
+	if newCount <= 0 {
+		t.Fatal("no log lines added on quiet day")
+	}
+	// Newest lines are prepended; grab the new ones
+	added := s.Log[:newCount]
+	found := false
+	for _, line := range added {
+		if strings.HasPrefix(line, string(LogSystem)+" ") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("no quiet beat (· prefix) in quiet-day log: %v", added)
+	}
+}
