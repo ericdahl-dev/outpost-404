@@ -23,7 +23,7 @@ func TestOpenSessionLog_WritesSessionStartAndActionsAsJSONL(t *testing.T) {
 		t.Fatalf("Record session_start: %v", err)
 	}
 	before := start
-	after := Snapshot{Day: 1, Power: 83, Credits: 110, Buildings: map[string]int{"solar_array": 1}}
+	after := Snapshot{Day: 1, Power: 85, Credits: 110, Buildings: map[string]int{"solar_array": 1}}
 	if err := logger.Record("build", 1, map[string]any{"building_id": "solar_array", "ok": true}, before, after); err != nil {
 		t.Fatalf("Record build: %v", err)
 	}

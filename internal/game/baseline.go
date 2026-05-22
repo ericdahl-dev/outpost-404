@@ -99,15 +99,15 @@ func noTradeSurvivalBaseline() BaselineStrategy {
 	return BaselineStrategy{
 		ID:         "no_trade_survival",
 		ScriptFile: "no_trade_survival.json",
-		MinEndDay:  8,
+		MinEndDay:  14,
 		Expected: map[int64]BaselineOutcome{
-			1:                   {Day: 9, GameOver: true, Won: false, BeaconParts: 0},
-			7:                   {Day: 8, GameOver: true, Won: false, BeaconParts: 0},
-			42:                  {Day: 9, GameOver: true, Won: false, BeaconParts: 0},
-			99:                  {Day: 9, GameOver: true, Won: false, BeaconParts: 0},
-			100:                 {Day: 9, GameOver: true, Won: false, BeaconParts: 0},
-			101:                 {Day: 8, GameOver: true, Won: false, BeaconParts: 0},
-			1779403310247544000: {Day: 9, GameOver: true, Won: false, BeaconParts: 0},
+			1:                   {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			7:                   {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			42:                  {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			99:                  {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			100:                 {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			101:                 {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
+			1779403310247544000: {Day: 14, GameOver: false, Won: false, BeaconParts: 0},
 		},
 	}
 }
@@ -120,12 +120,12 @@ func beaconRushBaseline() BaselineStrategy {
 		MinBeaconParts: 2,
 		Expected: map[int64]BaselineOutcome{
 			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			7:                   {Day: 6, GameOver: true, Won: false, BeaconParts: 2},
-			42:                  {Day: 6, GameOver: true, Won: false, BeaconParts: 2},
+			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
+			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			101:                 {Day: 6, GameOver: true, Won: false, BeaconParts: 2},
-			1779403310247544000: {Day: 6, GameOver: true, Won: false, BeaconParts: 2},
+			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
+			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 		},
 	}
 }

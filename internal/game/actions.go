@@ -78,8 +78,9 @@ func (s *State) repairWithDetail(detail map[string]any) {
 	}
 	s.Credits -= 35
 	s.Power += 12
+	s.Food += 3
 	s.Morale += 4
-	s.AddLog("Workshop crew patched failing systems. Power +12, morale +4.")
+	s.AddLog("Workshop crew patched failing systems. Power +12, food +3, morale +4.")
 	s.Clamp()
 	detail["ok"] = true
 }
@@ -96,10 +97,10 @@ func (s *State) tradeWithDetail(detail map[string]any) {
 		detail["reason"] = "game_over"
 		return
 	}
-	s.Credits += 45
-	s.Food -= 8
+	s.Credits += 40
+	s.Food -= 5
 	s.Morale -= 3
-	s.AddLog("Traded surplus rations for 45 credits. Food -8, morale -3.")
+	s.AddLog("Traded surplus rations for 40 credits. Food -5, morale -3.")
 	s.Clamp()
 	detail["ok"] = true
 }

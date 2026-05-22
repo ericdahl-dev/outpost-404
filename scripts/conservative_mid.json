@@ -1,0 +1,22 @@
+{
+  "actions": [
+    { "type": "build", "building_id": "hydroponics" },
+    { "type": "build", "building_id": "solar_array" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" }
+  ]
+}
