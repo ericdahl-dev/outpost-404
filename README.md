@@ -133,7 +133,7 @@ seed=42 day=5 won=false game_over=true beacon=0/5 power=40 food=0 morale=55 cred
 
 You can also call `game.Simulate` from Go tests (see `internal/game/replay.go`).
 
-**Balance baseline** — four reference scripts (`conservative.json`, `no_trade_survival.json`, `beacon_rush.json`, `survival_30.json`) run across fixed seeds in `go test`; see [docs/balance.md](docs/balance.md) for seeds, viability rules, and how to update expectations after tuning.
+**Balance baseline** — four reference scripts (`conservative.json`, `no_trade_survival.json`, `beacon_rush.json`, `survival_45.json`) run across fixed seeds in `go test`; see [docs/balance.md](docs/balance.md) for seeds, viability rules, and how to update expectations after tuning.
 
 Logs recorded before seeds were added cannot be replayed; record a new session with the current build.
 
@@ -156,12 +156,12 @@ Logs recorded before seeds were added cannot be replayed; record a new session w
 
 Win by doing either of these:
 
-- **Survive 30 days** — reach day 31 with power, food, morale, and population still above zero. Collapse is checked before the survival win, so hitting zero on the final day still loses.
+- **Survive 45 days** — reach day 46 with power, food, morale, and population still above zero. Collapse is checked before the survival win, so hitting zero on the final day still loses.
 - **Signal Beacon** — complete 5 beacon parts before collapse.
 
 Lose if power, food, morale, or population hits zero on any day.
 
-The survival path is tuned separately from beacon rush; see `scripts/survival_30.json` and [docs/balance.md](docs/balance.md).
+The survival path is tuned separately from beacon rush; see `scripts/survival_45.json` and [docs/balance.md](docs/balance.md).
 
 ## Project structure
 

@@ -1,0 +1,206 @@
+{
+  "actions": [
+    {
+      "type": "build",
+      "building_id": "hydroponics"
+    },
+    {
+      "type": "build",
+      "building_id": "solar_array"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "build",
+      "building_id": "workshop"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "build",
+      "building_id": "hydroponics"
+    },
+    {
+      "type": "build",
+      "building_id": "solar_array"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "build",
+      "building_id": "hydroponics"
+    },
+    {
+      "type": "build",
+      "building_id": "solar_array"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "repair"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    }
+  ]
+}

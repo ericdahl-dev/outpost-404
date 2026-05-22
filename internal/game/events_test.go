@@ -51,6 +51,50 @@ func TestApplyEventByID_UnknownID_IsNoOp(t *testing.T) {
 	}
 }
 
+func TestEmbeddedContent_DustSealFailureEvent(t *testing.T) {
+	content, err := LoadEmbeddedContent()
+	if err != nil {
+		t.Fatalf("LoadEmbeddedContent: %v", err)
+	}
+	var dust *EventDef
+	for i := range content.Events {
+		if content.Events[i].ID == "dust_seal_failure" {
+			dust = &content.Events[i]
+			break
+		}
+	}
+	if dust == nil {
+		t.Fatal("expected dust_seal_failure in embedded events")
+	}
+	if dust.MinDay != 14 {
+		t.Fatalf("MinDay = %d, want 14", dust.MinDay)
+	}
+	if dust.Effects["food"] != -6 || dust.Effects["morale"] != -3 {
+		t.Fatalf("effects = %v, want food -6 morale -3", dust.Effects)
+	}
+}
+
+func TestApplyEvent_DustSealFailureReducesFoodAndMorale(t *testing.T) {
+	s := newTestState()
+	startFood, startMorale := s.Food, s.Morale
+	event := EventDef{
+		ID:          "dust_seal_failure",
+		Title:       "Dust Seal Failure",
+		Description: "Seals failed.",
+		Effects:     map[string]int{"food": -6, "morale": -3},
+		MinDay:      14,
+	}
+
+	s.applyEvent(event)
+
+	if s.Food != startFood-6 {
+		t.Fatalf("Food = %d, want %d", s.Food, startFood-6)
+	}
+	if s.Morale != startMorale-3 {
+		t.Fatalf("Morale = %d, want %d", s.Morale, startMorale-3)
+	}
+}
+
 func TestEligibleEvents_FiltersByMinDay(t *testing.T) {
 	events := []EventDef{
 		{ID: "early", MinDay: 1},

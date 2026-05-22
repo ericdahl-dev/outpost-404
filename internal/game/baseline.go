@@ -41,7 +41,7 @@ func ReferenceStrategies() []BaselineStrategy {
 		conservativeBaseline(),
 		noTradeSurvivalBaseline(),
 		beaconRushBaseline(),
-		survival30Baseline(),
+		survival45Baseline(),
 	}
 }
 
@@ -131,12 +131,13 @@ func beaconRushBaseline() BaselineStrategy {
 	}
 }
 
-func survival30Baseline() BaselineStrategy {
-	win := BaselineOutcome{Day: 31, GameOver: true, Won: true, BeaconParts: 0}
+func survival45Baseline() BaselineStrategy {
+	winDay := SurvivalWinAfterDay + 1
+	win := BaselineOutcome{Day: winDay, GameOver: true, Won: true, BeaconParts: 0}
 	return BaselineStrategy{
-		ID:         "survival_30",
-		ScriptFile: "survival_30.json",
-		MinEndDay:  31,
+		ID:         "survival_45",
+		ScriptFile: "survival_45.json",
+		MinEndDay:  winDay,
 		Expected: map[int64]BaselineOutcome{
 			1:                   win,
 			7:                   win,

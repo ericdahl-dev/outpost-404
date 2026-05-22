@@ -2,7 +2,7 @@
   {
     "id": "solar_storm",
     "title": "Solar Storm",
-    "description": "Charged particles battered the arrays. Power -11.",
+    "description": "Charged particles battered the arrays. Power -9.",
     "effects": { "power": -9 },
     "minDay": 2
   },
@@ -47,5 +47,12 @@
     "description": "A fever spread through the bunks. Population -1, morale -6.",
     "effects": { "population": -1, "morale": -6 },
     "minDay": 10
+  },
+  {
+    "id": "dust_seal_failure",
+    "title": "Dust Seal Failure",
+    "description": "Fine regolith infiltrated the greenhouse seals. Food -6, morale -3.",
+    "effects": { "food": -6, "morale": -3 },
+    "minDay": 14
   }
 ]

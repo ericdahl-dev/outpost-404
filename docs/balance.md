@@ -21,7 +21,7 @@ Override a script’s embedded seed with `-seed` or sweep with `-seeds` (comma-s
 | `scripts/conservative_mid.json` | Same opener through **day 11+** alive on all reference seeds (`TestEarlyBalance_*`) |
 | `scripts/no_trade_survival.json` | Mid-game probe **without trade**; must **finish alive** on day 14 on all reference seeds |
 | `scripts/beacon_rush.json` | Solar then beacon work; must reach **day 6** with **≥2 beacon parts** |
-| `scripts/survival_30.json` | Hydro/solar L2, workshop, repairs; **30 `next_day`** → **day 31 win** on all reference seeds |
+| `scripts/survival_45.json` | Hydro/solar L3, workshop, repairs; **45 `next_day`** → **day 46 win** on all reference seeds |
 
 Exact end states (day, `game_over`, beacon parts) are locked in `internal/game/baseline_test.go`. Changing JSON balance or events without updating expectations should fail CI.
 
@@ -37,7 +37,7 @@ CLI sweeps (after `-simulate` is available):
 go run ./cmd/outpost -simulate scripts/conservative.json -seeds 1,7,42,99,100,101,1779403310247544000
 go run ./cmd/outpost -simulate scripts/no_trade_survival.json -seeds 1,7,42,99,100,101,1779403310247544000
 go run ./cmd/outpost -simulate scripts/beacon_rush.json -seeds 1,7,42,99,100,101,1779403310247544000
-go run ./cmd/outpost -simulate scripts/survival_30.json -seeds 1,7,42,99,100,101,1779403310247544000
+go run ./cmd/outpost -simulate scripts/survival_45.json -seeds 1,7,42,99,100,101,1779403310247544000
 ```
 
 ## Interpreting results
@@ -46,8 +46,8 @@ go run ./cmd/outpost -simulate scripts/survival_30.json -seeds 1,7,42,99,100,101
 - **No-trade reaches day 14 alive** — mid-game without trade; baseline expects survival through the full script after #16 food/trade/production tuning.
 - **Conservative mid day 11+** — early hydro/solar path must not collapse on days 3–5 and should reach day 11 on every reference seed.
 - **Beacon rush beacon ≥2** — rush path still buys parts before collapse; power/credit gates for `beacon` still reachable.
-- **Survival 30 day 31 win** — `scripts/survival_30.json` with exactly 30 `next_day` actions; hydro/solar L3, workshop, repairs; `survival_30` baseline + `TestSurvival30_*`.
-- **Survival stat integrity (#31)** — `CheckEnd` treats collapse before the day-31 win. `TestSurvival30_NoVitalHitsZeroDuringScript` walks snapshots; end floors: power ≥ `SurvivalMinEndPower` (15), food ≥ `SurvivalMinEndFood` (10) on all reference seeds.
+- **Survival 45 day 46 win** — `scripts/survival_45.json` with exactly 45 `next_day` actions; hydro/solar L3, workshop, repairs; `survival_45` baseline + `TestSurvival45_*`.
+- **Survival stat integrity (#31)** — `CheckEnd` treats collapse before the day-46 win. `TestSurvival45_NoVitalHitsZeroDuringScript` walks snapshots; end floors: power ≥ `SurvivalMinEndPower` (4), food ≥ `SurvivalMinEndFood` (10) on all reference seeds.
 - **Exact mismatch** — RNG or rules changed; update `baseline.go` expectations only after intentional balance work (#16+).
 
 Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline uses **documented outcomes**, not “must win on all seeds.”

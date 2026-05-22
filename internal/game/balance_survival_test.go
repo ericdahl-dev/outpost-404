@@ -5,16 +5,36 @@ import (
 	"testing"
 )
 
-func TestSurvival30_WinsOnAllReferenceSeeds(t *testing.T) {
+func survivalWinDay() int {
+	return SurvivalWinAfterDay + 1
+}
+
+// Survival win threshold (vertical slice 1): healthy colony on the last survival day is not a win yet.
+func TestCheckEnd_NoSurvivalWinOnLastSurvivalDay(t *testing.T) {
+	s := newTestState()
+	s.Day = SurvivalWinAfterDay
+	s.Power = 50
+	s.Food = 50
+	s.Morale = 50
+	s.Population = 8
+
+	s.CheckEnd()
+
+	if s.GameOver || s.Won {
+		t.Fatalf("day %d with positive vitals should keep playing (win on day %d)", s.Day, survivalWinDay())
+	}
+}
+
+func TestSurvival45_WinsOnAllReferenceSeeds(t *testing.T) {
 	content, err := LoadEmbeddedContent()
 	if err != nil {
 		t.Fatalf("LoadEmbeddedContent: %v", err)
 	}
-	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_30.json"))
+	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_45.json"))
 	if err != nil {
 		t.Fatalf("LoadSimScript: %v", err)
 	}
-	strategy := survival30Baseline()
+	strategy := survival45Baseline()
 
 	for _, seed := range ReferenceSeeds {
 		t.Run(seedLabel(seed), func(t *testing.T) {
@@ -25,19 +45,20 @@ func TestSurvival30_WinsOnAllReferenceSeeds(t *testing.T) {
 			if err := CheckBaselineOutcome(strategy, seed, final); err != nil {
 				t.Fatal(err)
 			}
-			if !final.Won || final.Day != 31 {
-				t.Fatalf("seed %d: day=%d won=%v", seed, final.Day, final.Won)
+			wantDay := survivalWinDay()
+			if !final.Won || final.Day != wantDay {
+				t.Fatalf("seed %d: day=%d won=%v, want day=%d won", seed, final.Day, final.Won, wantDay)
 			}
 		})
 	}
 }
 
-func TestSurvival30_NoVitalHitsZeroDuringScript(t *testing.T) {
+func TestSurvival45_NoVitalHitsZeroDuringScript(t *testing.T) {
 	content, err := LoadEmbeddedContent()
 	if err != nil {
 		t.Fatalf("LoadEmbeddedContent: %v", err)
 	}
-	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_30.json"))
+	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_45.json"))
 	if err != nil {
 		t.Fatalf("LoadSimScript: %v", err)
 	}
@@ -64,12 +85,12 @@ func TestSurvival30_NoVitalHitsZeroDuringScript(t *testing.T) {
 	}
 }
 
-func TestSurvival30_EndMarginsOnAllReferenceSeeds(t *testing.T) {
+func TestSurvival45_EndMarginsOnAllReferenceSeeds(t *testing.T) {
 	content, err := LoadEmbeddedContent()
 	if err != nil {
 		t.Fatalf("LoadEmbeddedContent: %v", err)
 	}
-	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_30.json"))
+	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_45.json"))
 	if err != nil {
 		t.Fatalf("LoadSimScript: %v", err)
 	}
@@ -92,9 +113,9 @@ func TestSurvival30_EndMarginsOnAllReferenceSeeds(t *testing.T) {
 	}
 }
 
-func TestCheckEnd_SurvivalLossWhenDay31ButFoodDepleted(t *testing.T) {
+func TestCheckEnd_SurvivalLossWhenWinDayButFoodDepleted(t *testing.T) {
 	s := newTestState()
-	s.Day = 31
+	s.Day = survivalWinDay()
 	s.Food = 0
 	s.Power = 50
 	s.Morale = 50
@@ -103,13 +124,13 @@ func TestCheckEnd_SurvivalLossWhenDay31ButFoodDepleted(t *testing.T) {
 	s.CheckEnd()
 
 	if !s.GameOver || s.Won {
-		t.Fatal("expected collapse on day 31 when food is 0, not survival win")
+		t.Fatalf("expected collapse on day %d when food is 0, not survival win", s.Day)
 	}
 }
 
-func TestCheckEnd_SurvivalWinWhenDay31AndVitalsPositive(t *testing.T) {
+func TestCheckEnd_SurvivalWinWhenWinDayAndVitalsPositive(t *testing.T) {
 	s := newTestState()
-	s.Day = 31
+	s.Day = survivalWinDay()
 	s.Food = 10
 	s.Power = 15
 	s.Morale = 50
@@ -118,7 +139,7 @@ func TestCheckEnd_SurvivalWinWhenDay31AndVitalsPositive(t *testing.T) {
 	s.CheckEnd()
 
 	if !s.GameOver || !s.Won {
-		t.Fatal("expected survival win with positive vitals on day 31")
+		t.Fatalf("expected survival win with positive vitals on day %d", s.Day)
 	}
 }
 
@@ -135,8 +156,8 @@ func TestCheckEnd_BeaconWinStillBeatsCollapse(t *testing.T) {
 	}
 }
 
-func TestSurvival30_ScriptHasThirtyDayAdvances(t *testing.T) {
-	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_30.json"))
+func TestSurvival45_ScriptHasFortyFiveDayAdvances(t *testing.T) {
+	script, err := LoadSimScript(filepath.Join(ScriptsDir(), "survival_45.json"))
 	if err != nil {
 		t.Fatalf("LoadSimScript: %v", err)
 	}
@@ -146,8 +167,7 @@ func TestSurvival30_ScriptHasThirtyDayAdvances(t *testing.T) {
 			n++
 		}
 	}
-	if n != 30 {
-		t.Fatalf("survival_30.json has %d next_day actions, want 30", n)
+	if n != SurvivalWinAfterDay {
+		t.Fatalf("survival_45.json has %d next_day actions, want %d", n, SurvivalWinAfterDay)
 	}
 }
-

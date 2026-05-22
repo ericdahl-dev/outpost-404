@@ -2,6 +2,8 @@ package game
 
 // Daily economy balance (game layer only — not UI).
 const (
+	// SurvivalWinAfterDay: win when Day exceeds this (day 46 wins after 45 full days).
+	SurvivalWinAfterDay = 45
 	DailyPowerUpkeepBase  = 6
 	DailyFoodUpkeepBase   = 4
 	DailyUpkeepPopDivisor = 2

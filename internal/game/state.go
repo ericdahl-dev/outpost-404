@@ -22,7 +22,7 @@ func newBareState(content Content) State {
 		Log:            []string{},
 	}
 	s.AddLog("Welcome to Outpost 404. Keep the systems online and finish the Signal Beacon.")
-	s.AddLog("Survive 30 days or complete 5 beacon parts to win.")
+	s.AddLog(fmt.Sprintf("Survive %d days or complete 5 beacon parts to win.", SurvivalWinAfterDay))
 	return s
 }
 
@@ -73,10 +73,10 @@ func (s *State) CheckEnd() {
 		s.GameOver = true
 		s.Won = false
 		s.Message = fmt.Sprintf("Outpost collapse on day %d. Final stats: power %d, food %d, morale %d, population %d.", s.Day, s.Power, s.Food, s.Morale, s.Population)
-	} else if s.Day > 30 {
+	} else if s.Day > SurvivalWinAfterDay {
 		s.GameOver = true
 		s.Won = true
-		s.Message = "You survived 30 days. Outpost 404 is stable enough to become permanent."
+		s.Message = fmt.Sprintf("You survived %d days. Outpost 404 is stable enough to become permanent.", SurvivalWinAfterDay)
 	}
 
 	if s.GameOver {
