@@ -97,10 +97,16 @@ func (s *State) tradeWithDetail(detail map[string]any) {
 		detail["reason"] = "game_over"
 		return
 	}
-	s.Credits += 40
-	s.Food -= 5
-	s.Morale -= 3
-	s.AddLog("Traded surplus rations for 40 credits. Food -5, morale -3.")
+	if s.Food <= MinFoodToTrade {
+		s.AddLog(fmt.Sprintf("Trade refused: food reserves too low (need more than %d).", MinFoodToTrade))
+		detail["ok"] = false
+		detail["reason"] = "low_food"
+		return
+	}
+	s.Credits += TradeCreditsGain
+	s.Food -= TradeFoodCost
+	s.Morale -= TradeMoraleCost
+	s.AddLog(fmt.Sprintf("Traded surplus rations for %d credits. Food -%d, morale -%d.", TradeCreditsGain, TradeFoodCost, TradeMoraleCost))
 	s.Clamp()
 	detail["ok"] = true
 }

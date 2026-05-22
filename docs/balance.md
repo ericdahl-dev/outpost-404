@@ -48,6 +48,10 @@ go run ./cmd/outpost -simulate scripts/beacon_rush.json -seeds 1,7,42,99,100,101
 
 Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline uses **documented outcomes**, not “must win on all seeds.”
 
+## Trade guard
+
+`Trade()` is blocked when `food <= 30` (`MinFoodToTrade` in `internal/game/trade_balance.go`). Rejections log a clear message and record `ok: false`, `reason: "low_food"` in session JSONL for replay.
+
 ## Updating expectations (TDD)
 
 1. **RED** — Change or add a baseline assertion first (or let an existing test fail after a deliberate `data/` edit).
