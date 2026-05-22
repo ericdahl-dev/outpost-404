@@ -21,3 +21,22 @@ func (s *State) applyEventByID(id string) {
 		s.applyEvent(event)
 	}
 }
+
+// eligibleEvents returns events that can fire on the given day.
+func eligibleEvents(events []EventDef, day int) []EventDef {
+	out := make([]EventDef, 0)
+	for _, event := range events {
+		if event.MinDay <= day {
+			out = append(out, event)
+		}
+	}
+	return out
+}
+
+func (s *State) pickRandomEligibleEvent(candidates []EventDef) (EventDef, bool) {
+	if len(candidates) == 0 {
+		return EventDef{}, false
+	}
+	s.ensureRNG()
+	return candidates[s.rng.Intn(len(candidates))], true
+}

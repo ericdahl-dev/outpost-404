@@ -51,17 +51,11 @@ func (s *State) TriggerRandomEvent() string {
 		return ""
 	}
 
-	candidates := make([]EventDef, 0)
-	for _, event := range s.Content.Events {
-		if event.MinDay <= s.Day {
-			candidates = append(candidates, event)
-		}
-	}
-	if len(candidates) == 0 {
+	candidates := eligibleEvents(s.Content.Events, s.Day)
+	event, ok := s.pickRandomEligibleEvent(candidates)
+	if !ok {
 		return ""
 	}
-
-	event := candidates[s.rng.Intn(len(candidates))]
 	s.applyEvent(event)
 	return event.ID
 }
