@@ -100,3 +100,11 @@ outpost -simulate scripts/dust_season_power_buffer.json -seeds 1,7,42
 # Silent Colony — radio tower early
 outpost -simulate scripts/silent_colony_radio_first.json -seeds 1,7,42
 ```
+
+## Beacon Rush food floor
+
+With `beacon_rush` scenario (`dailyCreditsIncomeDelta: +7`, `maxBeaconParts: 3`), the `beacon_rush.json` script wins at **day 3** with food 44–46 across all reference seeds. This is comfortable — the rush wins fast enough that food pressure never becomes critical.
+
+**Target band: food ≥ 40 at victory** (day 3). The higher credit income enables the solar build + beacon rush without needing a hydroponics investment.
+
+Before this change, the script ran on Standard scenario and ended day 6 with food 14–24 (some seeds in the critical/urgent band). The fix was wiring `beacon_rush.json` to the `beacon_rush` scenario.

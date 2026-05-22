@@ -122,19 +122,21 @@ func noTradeSurvivalBaseline() BaselineStrategy {
 }
 
 func beaconRushBaseline() BaselineStrategy {
+	win := BaselineOutcome{Day: 3, GameOver: true, Won: true, BeaconParts: 3}
 	return BaselineStrategy{
 		ID:             "beacon_rush",
 		ScriptFile:     "beacon_rush.json",
-		MinEndDay:      6,
-		MinBeaconParts: 2,
+		ScenarioID:     "beacon_rush",
+		MinEndDay:      3,
+		MinBeaconParts: 3,
 		Expected: map[int64]BaselineOutcome{
-			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
-			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 4},
-			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 4},
-			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 4},
-			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
-			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
-			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			1:                   win,
+			7:                   win,
+			42:                  win,
+			99:                  win,
+			100:                 win,
+			101:                 win,
+			1779403310247544000: win,
 		},
 	}
 }
