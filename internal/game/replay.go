@@ -127,6 +127,9 @@ func LoadSessionLog(path string) ([]LogEntry, error) {
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("read session log: %w", err)
 	}
+	if len(entries) == 0 {
+		return nil, fmt.Errorf("empty session log")
+	}
 	return entries, nil
 }
 

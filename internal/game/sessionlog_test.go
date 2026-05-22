@@ -174,6 +174,59 @@ func TestDefaultSessionLogPath_ReturnsPathUnderCache(t *testing.T) {
 	}
 }
 
+func TestLoadSessionLog_missingFile(t *testing.T) {
+	_, err := LoadSessionLog(filepath.Join(t.TempDir(), "missing.jsonl"))
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "open session log") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestLoadSessionLog_invalidJSONLine(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "bad.jsonl")
+	if err := os.WriteFile(path, []byte("not json\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, err := LoadSessionLog(path)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "parse session log line") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestLoadSessionLog_emptyFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "empty.jsonl")
+	if err := os.WriteFile(path, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	_, err := LoadSessionLog(path)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "empty session log") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestLoadSessionLog_skipsBlankLines(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "sparse.jsonl")
+	line := `{"type":"session_start","snapshot":{"day":1,"power":65,"credits":180,"max_beacon_parts":5}}`
+	if err := os.WriteFile(path, []byte("\n\n"+line+"\n\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	entries, err := LoadSessionLog(path)
+	if err != nil {
+		t.Fatalf("LoadSessionLog: %v", err)
+	}
+	if len(entries) != 1 || entries[0].Type != "session_start" {
+		t.Fatalf("entries = %+v", entries)
+	}
+}
+
 func readLogLines(t *testing.T, path string) []string {
 	t.Helper()
 	raw, err := os.ReadFile(path)
