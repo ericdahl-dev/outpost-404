@@ -64,7 +64,7 @@ git push origin v0.1.0
 
 ## Test it
 
-Game rules are covered by unit tests in `internal/game` (CI requires ≥ 80% statement coverage on that package; see [docs/balance.md](docs/balance.md)):
+Game rules are covered by unit tests in `test/internal/game` (mirrors `internal/game`; CI requires ≥ 80% statement coverage on that package; see [docs/balance.md](docs/balance.md)):
 
 ```bash
 go test ./...          # game rules + cmd/outpost CLI contract tests
@@ -169,8 +169,10 @@ The survival path is tuned separately from beacon rush; see `scripts/survival_45
 ## Project structure
 
 ```text
-cmd/outpost/              # executable entrypoint; headless -simulate/-replay tested in cli_test.go
+cmd/outpost/              # executable entrypoint
+test/cmd/outpost/         # CLI contract tests (mirrors cmd/outpost)
 internal/game/            # game state, rules, actions, daily tick, content loading
+test/internal/game/       # game rule tests (mirrors internal/game)
 internal/ui/              # Bubble Tea model, Bubbles widgets, Lip Gloss styles
 data/buildings.json       # data-driven building definitions (incl. dailyEffects)
 data/events.json          # data-driven random events
@@ -181,11 +183,13 @@ docs/balance.md           # baseline seeds, scripts, coverage policy
 AGENTS.md                 # coding-agent instructions
 ```
 
-## Next good milestones
+## Roadmap (v0.2)
 
-1. Add save/load.
-2. Add scenarios and difficulty settings.
-3. Make random events weighted instead of uniform.
-4. Extend `dailyEffects` to more buildings and tune mid/late events.
-5. Add a map panel or ASCII base layout.
-6. Glamour markdown for help/events; Huh for new-game setup (see [docs/context.md](docs/context.md)).
+Product spec: [GitHub #78 PRD](https://github.com/ericdahl-dev/outpost-404/issues/78).
+
+| Track | Plan | Milestone |
+| --- | --- | --- |
+| Gameplay depth | [docs/gameplay-depth-plan.md](docs/gameplay-depth-plan.md) | [Gameplay depth v0.2](https://github.com/ericdahl-dev/outpost-404/milestone/2) |
+| TUI graphics | [docs/tui-graphics-plan.md](docs/tui-graphics-plan.md) | [TUI graphics pass](https://github.com/ericdahl-dev/outpost-404/milestone/1) |
+
+Priority: weighted events and daily effects first, then ASCII outpost schematic, then save/scenarios. Later: Glamour/Huh (see [docs/context.md](docs/context.md)).
