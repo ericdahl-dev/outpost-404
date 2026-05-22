@@ -117,6 +117,63 @@ func TestWorkOnBeacon_LogsGameEnd(t *testing.T) {
 	}
 }
 
+func TestAttachSessionLog_WritesSessionStart(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "attached.jsonl")
+
+	s := newTestState()
+	s.Seed = 42
+	logger, err := AttachSessionLog(&s, path)
+	if err != nil {
+		t.Fatalf("AttachSessionLog: %v", err)
+	}
+	if logger == nil || s.SessionLog == nil {
+		t.Fatal("expected logger bound to state")
+	}
+
+	lines := readLogLines(t, path)
+	if len(lines) != 1 {
+		t.Fatalf("got %d lines, want session_start only", len(lines))
+	}
+	var start LogEntry
+	if err := json.Unmarshal([]byte(lines[0]), &start); err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	if start.Type != "session_start" || start.Detail["seed"] != "42" {
+		t.Fatalf("session_start: %+v", start)
+	}
+}
+
+func TestEndSession_ClosesAndClearsRecorder(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "end.jsonl")
+
+	s := newTestState()
+	logger, err := AttachSessionLog(&s, path)
+	if err != nil {
+		t.Fatalf("AttachSessionLog: %v", err)
+	}
+
+	s.EndSession()
+
+	if s.SessionLog != nil {
+		t.Fatal("SessionLog should be nil after EndSession")
+	}
+	if err := logger.Record("should_fail", 1, nil, s.snapshot(), s.snapshot()); err == nil {
+		t.Fatal("expected error writing after Close")
+	}
+}
+
+func TestDefaultSessionLogPath_ReturnsPathUnderCache(t *testing.T) {
+	path, err := DefaultSessionLogPath()
+	if err != nil {
+		t.Fatalf("DefaultSessionLogPath: %v", err)
+	}
+	if !strings.Contains(path, "outpost-404") || !strings.HasSuffix(path, ".jsonl") {
+		t.Fatalf("unexpected path: %s", path)
+	}
+}
+
 func readLogLines(t *testing.T, path string) []string {
 	t.Helper()
 	raw, err := os.ReadFile(path)

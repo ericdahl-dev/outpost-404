@@ -3,6 +3,7 @@ package game
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -68,6 +69,63 @@ func TestReplaySession_MatchesRecordedLog(t *testing.T) {
 	if diff := snapshotDiff(normalizeSnapshot(replayed.snapshot()), normalizeSnapshot(orig.snapshot())); diff != "" {
 		t.Fatalf("final snapshot mismatch: %s\norig %#v\nreplay %#v", diff, orig.snapshot(), replayed.snapshot())
 	}
+}
+
+func TestReplaySession_MismatchAfterBuildReturnsError(t *testing.T) {
+	content := testContentWithEvents()
+	start := Snapshot{Day: 1, Power: 65, Food: 55, Morale: 70, Credits: 180, Population: 8, PopulationCap: 10, BeaconParts: 0, MaxBeacon: 5}
+	wrongAfter := start
+	wrongAfter.Credits = 999
+
+	entries := []LogEntry{
+		{
+			Type:     "session_start",
+			Snapshot: &start,
+			Detail:   map[string]any{"seed": "7"},
+		},
+		{
+			Type:   "build",
+			Day:    1,
+			Detail: map[string]any{"building_id": "solar_array", "ok": true},
+			Before: &start,
+			After:  &wrongAfter,
+		},
+	}
+
+	_, err := ReplaySession(content, entries)
+	if err == nil {
+		t.Fatal("expected replay mismatch error")
+	}
+	if !containsAll(err.Error(), "replay mismatch", "build", "credits") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestReplaySession_UnsupportedEntryTypeReturnsError(t *testing.T) {
+	content := testContentWithEvents()
+	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
+
+	entries := []LogEntry{
+		{Type: "session_start", Snapshot: &start, Detail: map[string]any{"seed": "7"}},
+		{Type: "teleport", Day: 1, Before: &start, After: &start},
+	}
+
+	_, err := ReplaySession(content, entries)
+	if err == nil {
+		t.Fatal("expected unsupported type error")
+	}
+	if !containsAll(err.Error(), "unsupported", "teleport") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func containsAll(s string, parts ...string) bool {
+	for _, p := range parts {
+		if !strings.Contains(s, p) {
+			return false
+		}
+	}
+	return true
 }
 
 func TestReplaySession_UserLogFile(t *testing.T) {

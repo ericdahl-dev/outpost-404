@@ -13,6 +13,7 @@ Build **Outpost 404**, a Go/Bubble Tea terminal base builder. The priority is ma
 - Avoid adding persistence, networking, or external APIs until the core loop is fun.
 - Preserve simple keyboard controls.
 - Favor readable code over clever abstractions.
+- Keep code easy to understand and self-documenting: clear names, obvious control flow, and comments only where intent is not evident from the code itself.
 
 ## Charm stack expectations
 
@@ -54,6 +55,26 @@ Prioritize tests for `internal/game`:
 - beacon progress
 
 UI tests are optional until the game loop stabilizes.
+
+### Test-driven development (required)
+
+Use **TDD** for game logic and balance changes: one behavior per cycle, not a batch of tests then a batch of code.
+
+**Workflow (vertical slices):**
+
+1. **RED** — Write one test that asserts observable behavior through a public API (`NextDay`, `Build`, `Simulate`, `CheckBaselineOutcome`, etc.). Run it; it must fail for the right reason.
+2. **GREEN** — Add the smallest change in `internal/game` (or `data/` when tuning JSON) that makes that test pass.
+3. **REFACTOR** — Clean up only while green; run `go test ./internal/game/...` after each step.
+
+**Rules:**
+
+- Do not write all tests upfront, then all implementation (horizontal slices produce brittle tests).
+- Tests describe **behavior** (player-visible outcomes, replay fidelity, baseline end states), not private helpers or implementation shape.
+- Prefer `game.Simulate` and `TestBalanceBaseline` for multi-step flows; unit-test single transitions when that is clearer.
+- Balance tuning (#16+): failing baseline test first, then adjust `data/` or rules, then update `baseline.go` expectations only when the new balance is intentional (see `docs/balance.md`).
+- No tests for states the type system or invariants already rule out.
+
+**Before claiming done:** `go test ./...` must pass with evidence from the terminal, not assumed.
 
 ## Suggested next task
 

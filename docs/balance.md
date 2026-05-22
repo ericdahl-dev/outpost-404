@@ -46,10 +46,12 @@ go run ./cmd/outpost -simulate scripts/beacon_rush.json -seeds 1,7,42,99,100,101
 
 Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline uses **documented outcomes**, not “must win on all seeds.”
 
-## Updating expectations
+## Updating expectations (TDD)
 
-1. Run the failing strategy with `-simulate` and note per-seed lines.
-2. Adjust `Expected` in `internal/game/baseline.go` for that strategy.
-3. Re-run `go test ./internal/game/ -run TestBalanceBaseline`.
+1. **RED** — Change or add a baseline assertion first (or let an existing test fail after a deliberate `data/` edit).
+2. **GREEN** — Tune `data/*.json` or `internal/game` until `go test ./internal/game/ -run TestBalanceBaseline` passes.
+3. **REFACTOR** — Only while green; update `Expected` in `internal/game/baseline.go` to match intentional new outcomes.
+
+Use `-simulate` sweeps to explore; lock outcomes in tests before merging balance PRs.
 
 Do not loosen checks to greenwash a regression—change data/rules or document a deliberate baseline shift in the PR.

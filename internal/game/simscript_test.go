@@ -80,6 +80,30 @@ func TestResolveSimSeed_RequiresSeed(t *testing.T) {
 	}
 }
 
+func TestSimulateSeeds_MatchesIndividualSimulate(t *testing.T) {
+	content := testContentWithEvents()
+	actions := []SimAction{{Type: "next_day"}, {Type: "repair"}}
+	seeds := []int64{7, 99}
+
+	batch, err := SimulateSeeds(content, seeds, actions)
+	if err != nil {
+		t.Fatalf("SimulateSeeds: %v", err)
+	}
+	if len(batch) != len(seeds) {
+		t.Fatalf("got %d states, want %d", len(batch), len(seeds))
+	}
+
+	for i, seed := range seeds {
+		single, err := Simulate(content, seed, actions)
+		if err != nil {
+			t.Fatalf("Simulate seed %d: %v", seed, err)
+		}
+		if diff := snapshotDiff(normalizeSnapshot(batch[i].snapshot()), normalizeSnapshot(single.snapshot())); diff != "" {
+			t.Fatalf("seed %d batch vs single: %s", seed, diff)
+		}
+	}
+}
+
 func TestFormatSimOutcome(t *testing.T) {
 	s := State{Day: 3, Won: false, GameOver: true, BeaconParts: 1, MaxBeaconParts: 5,
 		Power: 10, Food: 0, Morale: 50, Credits: 20}
