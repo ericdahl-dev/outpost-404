@@ -29,6 +29,7 @@ Use **Go + [Charm stack](https://charm.land/)**. Prefer Charm libraries over han
 
 - `internal/game` has zero Charm imports.
 - `internal/ui` owns all Bubble Tea / Bubbles / Lip Gloss code.
+- Event log prefixes and viewport styling: [tui-log.md](tui-log.md).
 - Add a Bubbles widget when it replaces non-trivial custom UI; do not add deps for show.
 
 TypeScript/Ink was considered because collaborators may prefer TypeScript, but Go/Bubble Tea is the better fit for a terminal-native game with single-binary distribution and a clean update loop.

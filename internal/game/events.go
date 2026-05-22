@@ -6,7 +6,7 @@ import "fmt"
 func (s *State) applyEvent(event EventDef) {
 	s.applyEffects(event.Effects, 1)
 	s.applyEventDamage(event)
-	s.AddLogKind(LogPlain, formatEventLogLine(event))
+	s.AddLogKind(LogEvent, formatEventLogLine(event))
 }
 
 func (s *State) applyEventDamage(event EventDef) {

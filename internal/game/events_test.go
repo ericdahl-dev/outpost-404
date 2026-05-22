@@ -21,7 +21,7 @@ func TestApplyEvent_AppliesEffectsAndLogLine(t *testing.T) {
 	if s.Morale != startMorale+8 {
 		t.Fatalf("Morale = %d, want %d", s.Morale, startMorale+8)
 	}
-	if len(s.Log) == 0 || !strings.Contains(s.Log[0], "Quiet Shift: Calm day.") || !strings.Contains(s.Log[0], "Morale +8") {
+	if len(s.Log) == 0 || !strings.Contains(s.Log[0], "> Quiet Shift: Calm day.") || !strings.Contains(s.Log[0], "Morale +8") {
 		t.Fatalf("log[0] = %q, want flavor and effect summary", s.Log[0])
 	}
 }
@@ -190,7 +190,7 @@ func TestTriggerRandomEvent_LiveMatchesReplayByEventID(t *testing.T) {
 	}
 	var eventID string
 	for _, e := range content.Events {
-		if live.Log[0] == formatEventLogLine(e) {
+		if live.Log[0] == string(LogEvent)+" "+formatEventLogLine(e) {
 			eventID = e.ID
 			break
 		}

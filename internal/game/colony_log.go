@@ -14,6 +14,8 @@ const (
 	LogGain      LogKind = "+"
 	LogTrade     LogKind = "$"
 	LogMilestone LogKind = "*"
+	LogEvent     LogKind = ">"
+	LogSystem    LogKind = "·"
 )
 
 const maxColonyLogLines = 12
