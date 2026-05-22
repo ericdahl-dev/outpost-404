@@ -41,14 +41,10 @@ func TestFormatStatusStrip_JoinsBadges(t *testing.T) {
 	}
 }
 
-func TestRenderResourcePanel_IncludesStatusStrip(t *testing.T) {
+func TestRenderResourcePanel_IncludesResourceBars(t *testing.T) {
 	s := game.NewState(game.Content{Buildings: []game.BuildingDef{{ID: "habitat", Name: "Habitat", MaxLevel: 3}}})
-	s.Food = game.WarningFoodCriticalAt
 	body := RenderResourcePanel(s, 36)
-	if !strings.Contains(body, "Status:") {
-		t.Fatalf("missing status strip:\n%s", body)
-	}
-	if !strings.Contains(body, "Power") {
-		t.Fatalf("missing power bar:\n%s", body)
+	if !strings.Contains(body, "Power") || !strings.Contains(body, "Food") {
+		t.Fatalf("missing resource bars:\n%s", body)
 	}
 }

@@ -41,14 +41,24 @@ func (m Model) mainView() string {
 		"Event Log\n" + mutedStyle.Render("↑↓ scroll") + "\n" + m.LogViewport.View(),
 	)
 
+	header := RenderStatusHeader(m.State, m.Profiles, m.TermWidth)
 	var panels string
-	if layout.Stacked {
-		panels = lipgloss.JoinVertical(lipgloss.Left, left, middle, logPanel)
-	} else {
+	switch layout.Mode {
+	case LayoutModeMedium:
+		top := lipgloss.JoinHorizontal(lipgloss.Top, left, logPanel)
+		panels = lipgloss.JoinVertical(lipgloss.Left, top, middle)
+	case LayoutModeWide:
 		panels = lipgloss.JoinHorizontal(lipgloss.Top, left, middle, logPanel)
+	default:
+		parts := []string{left}
+		if strip := formatStatusStrip(game.StatusBadges(m.State)); strip != "" {
+			parts = append(parts, boxStyle.Width(layout.ContentWidth).Render(strip))
+		}
+		parts = append(parts, middle, logPanel)
+		panels = lipgloss.JoinVertical(lipgloss.Left, parts...)
 	}
 
-	return titleStyle.Render("Outpost 404") + "\n" + mutedStyle.Render("A tiny terminal base builder by default, a future colony sim by design.") + "\n\n" + panels + "\n\n" + mainActions(layout.CompactKeys)
+	return header + "\n\n" + panels + "\n\n" + mainActions(layout.CompactKeys)
 }
 
 func mainActions(compact bool) string {

@@ -1,8 +1,19 @@
 package ui
 
+// LayoutMode selects the main-screen panel arrangement.
+type LayoutMode int
+
+const (
+	LayoutModeNarrow LayoutMode = iota
+	LayoutModeMedium
+	LayoutModeWide
+)
+
 // MainLayout describes how the main screen arranges panels for the current terminal size.
 type MainLayout struct {
+	Mode          LayoutMode
 	Stacked       bool
+	OutpostBelow  bool
 	ContentWidth  int
 	LeftWidth     int
 	MiddleWidth   int
@@ -12,40 +23,71 @@ type MainLayout struct {
 }
 
 const (
-	horizontalMinWidth = 96
-	minPanelWidth      = 24
-	maxLeftWidth       = 36
-	maxMiddleWidth     = 42
+	wideMinWidth    = 120
+	wideMinHeight   = 35
+	mediumMinWidth  = 100
+	mediumMinHeight = 30
+	minPanelWidth   = 24
+	maxLeftWidth    = 36
+	maxMiddleWidth  = 42
 )
 
 func MainLayoutFor(termWidth, termHeight int) MainLayout {
-	_ = termHeight
 	content := contentWidth(termWidth)
-	logW := LogViewportWidth(termWidth)
+	logW := LogViewportWidth(termWidth, termHeight)
 	l := MainLayout{
 		ContentWidth:  content,
 		LogInnerWidth: logW,
 		BoxWidth:      boxWidth(termWidth, 80),
 		CompactKeys:   termWidth < 88,
 	}
-	if termWidth < horizontalMinWidth {
-		l.Stacked = true
-		l.LeftWidth = content
-		l.MiddleWidth = content
-		return l
+	switch {
+	case termWidth >= wideMinWidth && termHeight >= wideMinHeight:
+		l.Mode = LayoutModeWide
+		l.applyWideLayout(termWidth, logW)
+	case termWidth >= mediumMinWidth && termHeight >= mediumMinHeight:
+		l.Mode = LayoutModeMedium
+		l.applyMediumLayout(termWidth, logW, content)
+	default:
+		l.Mode = LayoutModeNarrow
+		l.applyNarrowLayout(content)
 	}
+	return l
+}
+
+func (l *MainLayout) applyWideLayout(termWidth, logW int) {
 	l.Stacked = false
+	l.OutpostBelow = false
 	logBox := logW + 2
 	remaining := termWidth - logBox
 	if remaining < minPanelWidth*2 {
-		l.Stacked = true
-		l.LeftWidth = content
-		l.MiddleWidth = content
-		return l
+		l.applyNarrowLayout(l.ContentWidth)
+		l.Mode = LayoutModeNarrow
+		return
 	}
 	l.LeftWidth = clamp(minPanelWidth, remaining*9/20, maxLeftWidth)
 	l.MiddleWidth = clamp(minPanelWidth, remaining-l.LeftWidth, maxMiddleWidth)
-	return l
+}
+
+func (l *MainLayout) applyMediumLayout(termWidth, logW, content int) {
+	l.Stacked = false
+	l.OutpostBelow = true
+	l.MiddleWidth = content
+	logBox := logW + 2
+	remaining := termWidth - logBox
+	if remaining < minPanelWidth {
+		l.applyNarrowLayout(content)
+		l.Mode = LayoutModeNarrow
+		return
+	}
+	l.LeftWidth = clamp(minPanelWidth, remaining, maxLeftWidth)
+}
+
+func (l *MainLayout) applyNarrowLayout(content int) {
+	l.Stacked = true
+	l.OutpostBelow = false
+	l.LeftWidth = content
+	l.MiddleWidth = content
 }
 
 func contentWidth(termWidth int) int {
@@ -67,19 +109,19 @@ func boxWidth(termWidth, preferred int) int {
 	return w
 }
 
-func LogViewportWidth(termWidth int) int {
-	if termWidth < horizontalMinWidth {
+func LogViewportWidth(termWidth, termHeight int) int {
+	if termWidth < mediumMinWidth || termHeight < mediumMinHeight {
 		return clamp(22, termWidth-8, 44)
 	}
 	w := 44
-	if termWidth > 120 {
+	if termWidth >= wideMinWidth {
 		return 52
 	}
 	return w
 }
 
 func LogViewportHeight(termHeight int) int {
-	h := termHeight - 12
+	h := termHeight - 14
 	return clamp(6, h, 14)
 }
 
