@@ -55,7 +55,11 @@ func (s *State) buildWithDetail(detail map[string]any, id string) {
 	s.Credits -= cost
 	s.Buildings[id] = Building{DefID: id, Level: level + 1}
 	s.applyEffects(def.Effects, level+1)
-	s.AddLog(fmt.Sprintf("Built %s level %d.", def.Name, level+1))
+	newLevel := level + 1
+	if newLevel == 1 {
+		s.AddLogKind(LogMilestone, fmt.Sprintf("%s came online.", def.Name))
+	}
+	s.AddLogKind(LogGain, fmt.Sprintf("Built %s level %d. %s", def.Name, newLevel, formatEffectSummary(def.Effects)))
 	s.Clamp()
 	detail["ok"] = true
 	detail["level"] = level + 1
@@ -117,7 +121,7 @@ func (s *State) repairWithDetail(detail map[string]any, id string) {
 	s.Credits -= cost
 	b.Damaged = false
 	s.Buildings[id] = b
-	s.AddLog(fmt.Sprintf("Repaired %s. Daily output restored.", def.Name))
+	s.AddLogKind(LogGain, fmt.Sprintf("Repaired %s. Daily output restored.", def.Name))
 	s.Clamp()
 	detail["ok"] = true
 	detail["building_id"] = id
@@ -144,7 +148,7 @@ func (s *State) tradeWithDetail(detail map[string]any) {
 	s.Credits += TradeCreditsGain
 	s.Food -= TradeFoodCost
 	s.Morale -= TradeMoraleCost
-	s.AddLog(fmt.Sprintf("Traded surplus rations for %d credits. Food -%d, morale -%d.", TradeCreditsGain, TradeFoodCost, TradeMoraleCost))
+	s.AddLogKind(LogTrade, fmt.Sprintf("Traded surplus rations for %d credits. Food -%d, morale -%d.", TradeCreditsGain, TradeFoodCost, TradeMoraleCost))
 	s.Clamp()
 	detail["ok"] = true
 }
@@ -171,7 +175,7 @@ func (s *State) beaconWithDetail(detail map[string]any) {
 	s.Credits -= 50
 	s.Morale += 5
 	s.BeaconParts++
-	s.AddLog(fmt.Sprintf("Signal Beacon part completed: %d/%d.", s.BeaconParts, s.MaxBeaconParts))
+	s.AddLogKind(LogMilestone, fmt.Sprintf("Signal Beacon part completed: %d/%d.", s.BeaconParts, s.MaxBeaconParts))
 	s.Clamp()
 	detail["ok"] = true
 	detail["beacon_parts"] = s.BeaconParts

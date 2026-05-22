@@ -114,7 +114,7 @@ func (s *State) syncWarnings() {
 	for _, w := range ActiveWarnings(*s) {
 		prev, seen := s.WarningLevels[w.ID]
 		if !seen || w.Severity > prev {
-			s.AddLog("! " + w.Message)
+			s.AddLogKind(LogDanger, w.Message)
 		}
 		s.WarningLevels[w.ID] = w.Severity
 	}

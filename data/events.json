@@ -2,14 +2,14 @@
   {
     "id": "solar_storm",
     "title": "Solar Storm",
-    "description": "Charged particles battered the arrays. Power -9.",
+    "description": "Charged particles battered the arrays.",
     "effects": { "power": -9 },
     "minDay": 2
   },
   {
     "id": "trader_arrives",
     "title": "Trader Arrives",
-    "description": "A rover convoy exchanged parts for telemetry. Credits +30.",
+    "description": "A rover convoy exchanged parts for telemetry.",
     "effects": { "credits": 30 },
     "minDay": 3,
     "maxDay": 25,
@@ -18,14 +18,14 @@
   {
     "id": "fungus",
     "title": "Hydroponics Fungus",
-    "description": "A fungal bloom damaged lettuce trays. Food -8, morale -4.",
+    "description": "A fungal bloom damaged lettuce trays.",
     "effects": { "food": -8, "morale": -4 },
     "minDay": 4
   },
   {
     "id": "quiet_shift",
     "title": "Quiet Shift",
-    "description": "Nothing broke. People noticed. Morale +8.",
+    "description": "Nothing broke. People noticed.",
     "effects": { "morale": 8, "food": 2 },
     "minDay": 1,
     "weight": 2
@@ -33,7 +33,7 @@
   {
     "id": "coffee_outage",
     "title": "Coffee Outage",
-    "description": "The colony discovered the last filter was used yesterday. Morale -9.",
+    "description": "The colony discovered the last filter was used yesterday.",
     "effects": { "morale": -6 },
     "minDay": 5,
     "weight": 1
@@ -41,21 +41,21 @@
   {
     "id": "cache_of_parts",
     "title": "Parts Cache",
-    "description": "A buried crate contained useful components. Power +8, credits +20.",
+    "description": "A buried crate contained useful components.",
     "effects": { "power": 8, "credits": 20 },
     "minDay": 6
   },
   {
     "id": "sick_colonist",
     "title": "Sick Colonist",
-    "description": "A fever spread through the bunks. Population -1, morale -6.",
+    "description": "A fever spread through the bunks.",
     "effects": { "population": -1, "morale": -6 },
     "minDay": 10
   },
   {
     "id": "dust_seal_failure",
     "title": "Dust Seal Failure",
-    "description": "Fine regolith infiltrated the greenhouse seals. Food -6, morale -3.",
+    "description": "Fine regolith infiltrated the greenhouse seals.",
     "effects": { "food": -6, "morale": -3 },
     "minDay": 14
   }

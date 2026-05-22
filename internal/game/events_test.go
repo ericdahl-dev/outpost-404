@@ -1,6 +1,9 @@
 package game
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestApplyEvent_AppliesEffectsAndLogLine(t *testing.T) {
 	s := newTestState()
@@ -18,8 +21,8 @@ func TestApplyEvent_AppliesEffectsAndLogLine(t *testing.T) {
 	if s.Morale != startMorale+8 {
 		t.Fatalf("Morale = %d, want %d", s.Morale, startMorale+8)
 	}
-	if len(s.Log) == 0 || s.Log[0] != "Quiet Shift: Calm day." {
-		t.Fatalf("log[0] = %q, want standard event line", s.Log[0])
+	if len(s.Log) == 0 || !strings.Contains(s.Log[0], "Quiet Shift: Calm day.") || !strings.Contains(s.Log[0], "Morale +8") {
+		t.Fatalf("log[0] = %q, want flavor and effect summary", s.Log[0])
 	}
 }
 
@@ -187,7 +190,7 @@ func TestTriggerRandomEvent_LiveMatchesReplayByEventID(t *testing.T) {
 	}
 	var eventID string
 	for _, e := range content.Events {
-		if live.Log[0] == e.Title+": "+e.Description {
+		if live.Log[0] == formatEventLogLine(e) {
 			eventID = e.ID
 			break
 		}

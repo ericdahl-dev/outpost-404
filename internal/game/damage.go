@@ -51,7 +51,7 @@ func (s *State) damageWithDetail(detail map[string]any, id string) {
 		return
 	}
 	s.damageBuilding(id)
-	s.AddLog(fmt.Sprintf("%s took damage; daily output halved until repaired.", def.Name))
+	s.AddLogKind(LogDanger, fmt.Sprintf("%s took damage; daily output halved until repaired.", def.Name))
 	detail["ok"] = true
 	detail["building_id"] = id
 }
@@ -96,6 +96,6 @@ func (s *State) damageRandomBuiltFacility() {
 	id := candidates[s.rng.Intn(len(candidates))]
 	s.damageBuilding(id)
 	if def, ok := s.FindBuilding(id); ok {
-		s.AddLog(fmt.Sprintf("%s took damage; daily output halved until repaired.", def.Name))
+		s.AddLogKind(LogDanger, fmt.Sprintf("%s took damage; daily output halved until repaired.", def.Name))
 	}
 }

@@ -28,7 +28,11 @@ func (m Model) mainView() string {
 			heading = goodStyle.Render("MISSION COMPLETE")
 		}
 		boxW := boxWidth(m.TermWidth, 72)
-		return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(boxW).Render(heading+"\n\n"+m.State.Message+"\n\nPress r to restart or q to quit.")
+		body := m.State.Message
+		if summary := m.State.SessionSummary(); len(summary) > 0 {
+			body += "\n\n" + strings.Join(summary, "\n")
+		}
+		return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(boxW).Render(heading+"\n\n"+body+"\n\nPress r to restart or q to quit.")
 	}
 
 	leftLines := []string{

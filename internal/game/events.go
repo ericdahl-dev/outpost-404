@@ -6,7 +6,7 @@ import "fmt"
 func (s *State) applyEvent(event EventDef) {
 	s.applyEffects(event.Effects, 1)
 	s.applyEventDamage(event)
-	s.AddLog(event.Title + ": " + event.Description)
+	s.AddLogKind(LogPlain, formatEventLogLine(event))
 }
 
 func (s *State) applyEventDamage(event EventDef) {
@@ -15,7 +15,7 @@ func (s *State) applyEventDamage(event EventDef) {
 		if s.BuildingLevel(event.DamageBuilding) > 0 {
 			s.damageBuilding(event.DamageBuilding)
 			if def, ok := s.FindBuilding(event.DamageBuilding); ok {
-				s.AddLog(fmt.Sprintf("%s damaged; daily output halved until repaired.", def.Name))
+				s.AddLogKind(LogDanger, fmt.Sprintf("%s damaged; daily output halved until repaired.", def.Name))
 			}
 		}
 	case event.DamageRandomBuilt:
