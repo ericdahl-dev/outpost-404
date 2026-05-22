@@ -2,6 +2,8 @@
 
 A tiny terminal base builder built with Go and the Charm stack.
 
+**Site:** [ericdahl-dev.github.io/outpost-404](https://ericdahl-dev.github.io/outpost-404/)
+
 You are the systems operator for a remote survival colony. Keep power online, food growing, morale stable, and the logs quiet while completing a Signal Beacon.
 
 ## Why this stack
@@ -173,6 +175,7 @@ internal/ui/              # Bubble Tea model, Bubbles widgets, Lip Gloss styles
 data/buildings.json       # data-driven building definitions (incl. dailyEffects)
 data/events.json          # data-driven random events
 scripts/                  # balance reference scripts + check-game-coverage.sh
+docs/site/                # GitHub Pages landing (deployed on push to main)
 docs/context.md           # design context and direction
 docs/balance.md           # baseline seeds, scripts, coverage policy
 AGENTS.md                 # coding-agent instructions
