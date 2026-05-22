@@ -13,8 +13,8 @@ func TestReferenceSeeds_Count(t *testing.T) {
 }
 
 func TestReferenceStrategies_Count(t *testing.T) {
-	if len(ReferenceStrategies()) < 3 {
-		t.Fatalf("ReferenceStrategies: got %d, want at least 3", len(ReferenceStrategies()))
+	if len(ReferenceStrategies()) < 4 {
+		t.Fatalf("ReferenceStrategies: got %d, want at least 4", len(ReferenceStrategies()))
 	}
 }
 

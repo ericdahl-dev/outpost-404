@@ -79,8 +79,8 @@ func (s *State) repairWithDetail(detail map[string]any) {
 	s.Credits -= 35
 	s.Power += 12
 	s.Food += 3
-	s.Morale += 4
-	s.AddLog("Workshop crew patched failing systems. Power +12, food +3, morale +4.")
+	s.Morale += 5
+	s.AddLog("Workshop crew patched failing systems. Power +12, food +3, morale +5.")
 	s.Clamp()
 	detail["ok"] = true
 }
