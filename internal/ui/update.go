@@ -65,6 +65,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.Started = false
 				m.Screen = screenTitle
 				m.State = game.State{}
+			case "s":
+				m.restartSameSeed()
 			}
 			return m, nil
 		}

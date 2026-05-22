@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/ericdahl/outpost-404/internal/game"
 )
 
 func (m Model) View() string {
@@ -27,16 +29,8 @@ func (m Model) View() string {
 func (m Model) mainView() string {
 	layout := MainLayoutFor(m.TermWidth, m.TermHeight)
 	if m.State.GameOver {
-		heading := badStyle.Render("OUTPOST COLLAPSED")
-		if m.State.Won {
-			heading = goodStyle.Render("MISSION COMPLETE")
-		}
-		boxW := boxWidth(m.TermWidth, 72)
-		body := m.State.Message
-		if summary := m.State.SessionSummary(); len(summary) > 0 {
-			body += "\n\n" + strings.Join(summary, "\n")
-		}
-		return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(boxW).Render(heading+"\n\n"+body+"\n\nPress r to restart or q to quit.")
+		report := game.BuildRunReport(m.State, m.Profiles)
+		return RenderEndScreen(report, m.TermWidth)
 	}
 
 	left := boxStyle.Width(layout.LeftWidth).Render(RenderResourcePanel(m.State, layout.LeftWidth))

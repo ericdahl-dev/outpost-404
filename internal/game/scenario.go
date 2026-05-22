@@ -224,6 +224,7 @@ func NewRun(content Content, profiles RunProfiles, seed int64, scenarioID, diffi
 		s.rng = rand.New(rand.NewSource(seed))
 	}
 
+	s.initVitalLows()
 	s.AddLogKind(LogMilestone, "Welcome to Outpost 404. Keep the systems online and finish the Signal Beacon.")
 	s.AddLogKind(LogPlain, fmt.Sprintf("Scenario: %s · %s. Survive %d days or complete %d beacon parts.",
 		sc.Name, diff.Name, s.SurvivalWinAfterDay, s.MaxBeaconParts))

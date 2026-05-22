@@ -9,6 +9,8 @@ func (s *State) doAction(typ string, initial map[string]any, fn func(detail map[
 		detail = map[string]any{}
 	}
 	fn(detail)
+	s.Clamp()
+	s.recordVitalLows()
 	s.CheckEnd()
 	if !s.GameOver {
 		s.syncWarnings()
