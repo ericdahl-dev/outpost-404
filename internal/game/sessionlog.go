@@ -150,7 +150,9 @@ func (s *State) LogSessionStart() {
 	}
 	snap := s.snapshot()
 	_ = s.SessionLog.Record("session_start", s.Day, map[string]any{
-		"seed": strconv.FormatInt(s.Seed, 10),
+		"seed":       strconv.FormatInt(s.Seed, 10),
+		"scenario":   s.ScenarioID,
+		"difficulty": s.DifficultyID,
 	}, snap, snap)
 }
 

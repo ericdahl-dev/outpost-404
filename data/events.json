@@ -11,6 +11,7 @@
     "title": "Trader Arrives",
     "description": "A rover convoy exchanged parts for telemetry.",
     "effects": { "credits": 30 },
+    "requiresBuilding": "radio_tower",
     "minDay": 3,
     "maxDay": 25,
     "weight": 2

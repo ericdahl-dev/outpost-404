@@ -6,26 +6,6 @@ func NewState(content Content) State {
 	return NewStateWithSeed(content, RandomSeed())
 }
 
-func newBareState(content Content) State {
-	s := State{
-		Day:            1,
-		Power:          65,
-		Food:           60,
-		Morale:         70,
-		Credits:        180,
-		Population:     8,
-		PopulationCap:  10,
-		BeaconParts:    0,
-		MaxBeaconParts: 5,
-		Buildings:      map[string]Building{},
-		Content:        content,
-		Log:            []string{},
-	}
-	s.AddLogKind(LogMilestone, "Welcome to Outpost 404. Keep the systems online and finish the Signal Beacon.")
-	s.AddLogKind(LogPlain, fmt.Sprintf("Survive %d days or complete 5 beacon parts to win.", SurvivalWinAfterDay))
-	return s
-}
-
 func (s *State) AddLog(message string) {
 	s.Log = append([]string{message}, s.Log...)
 	if len(s.Log) > maxColonyLogLines {
@@ -76,11 +56,12 @@ func (s *State) CheckEnd() {
 		cause := collapseCause(*s)
 		s.Message = fmt.Sprintf("Outpost collapse on day %d. Final stats: power %d, food %d, morale %d, population %d.", s.Day, s.Power, s.Food, s.Morale, s.Population)
 		s.AddLogKind(LogMilestone, fmt.Sprintf("Outpost collapsed — %s.", cause))
-	} else if s.Day > SurvivalWinAfterDay {
+	} else if s.Day > s.survivalWinAfterDay() {
+		target := s.survivalWinAfterDay()
 		s.GameOver = true
 		s.Won = true
-		s.Message = fmt.Sprintf("You survived %d days. Outpost 404 is stable enough to become permanent.", SurvivalWinAfterDay)
-		s.AddLogKind(LogMilestone, fmt.Sprintf("Day %d: the colony endured. Survival victory secured.", SurvivalWinAfterDay))
+		s.Message = fmt.Sprintf("You survived %d days. Outpost 404 is stable enough to become permanent.", target)
+		s.AddLogKind(LogMilestone, fmt.Sprintf("Day %d: the colony endured. Survival victory secured.", target))
 	}
 
 	if s.GameOver {

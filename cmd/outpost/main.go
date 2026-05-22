@@ -15,6 +15,8 @@ var version = "dev"
 func main() {
 	logFlag := flag.String("log", "", "JSONL session log path (empty: default cache dir; off: disable)")
 	seedFlag := flag.Int64("seed", 0, "RNG seed for random events (0: random each run)")
+	scenarioFlag := flag.String("scenario", "standard", "Scenario id for -simulate (standard, first_landing, dust_season, silent_colony, beacon_rush)")
+	difficultyFlag := flag.String("difficulty", "normal", "Difficulty id for -simulate (easy, normal, hard)")
 	replayFlag := flag.String("replay", "", "Replay a JSONL session log and verify snapshots (no TUI)")
 	simulateFlag := flag.String("simulate", "", "Run a JSON sim script headlessly (no TUI)")
 	seedsFlag := flag.String("seeds", "", "Comma-separated seeds for -simulate sweep (overrides -seed)")
@@ -41,26 +43,21 @@ func main() {
 	}
 
 	if *simulateFlag != "" {
-		if err := runSimulate(content, *simulateFlag, *seedFlag, *seedsFlag); err != nil {
+		if err := runSimulate(content, *simulateFlag, *seedFlag, *seedsFlag, *scenarioFlag, *difficultyFlag); err != nil {
 			fmt.Fprintf(os.Stderr, "simulate failed: %v\n", err)
 			os.Exit(1)
 		}
 		return
 	}
 
-	var state game.State
-	if *seedFlag != 0 {
-		state = game.NewStateWithSeed(content, *seedFlag)
-		fmt.Fprintf(os.Stderr, "seed: %d\n", *seedFlag)
-	} else {
-		state = game.NewState(content)
+	profiles, err := loadRunProfiles()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to load scenarios: %v\n", err)
+		os.Exit(1)
 	}
 
-	model := ui.NewModel(state)
-
-	if err := attachSessionLog(&model.State, resolveLogPath(*logFlag)); err != nil {
-		fmt.Fprintf(os.Stderr, "session logging disabled: %v\n", err)
-	}
+	model := ui.NewModel(content, profiles)
+	model.SessionLogPath = resolveLogPath(*logFlag)
 
 	program := tea.NewProgram(model, tea.WithAltScreen())
 
@@ -70,8 +67,17 @@ func main() {
 		os.Exit(1)
 	}
 	if m, ok := final.(ui.Model); ok {
-		m.State.EndSession()
+		if m.Started {
+			m.State.EndSession()
+		}
 	}
+}
+
+func loadRunProfiles() (game.RunProfiles, error) {
+	if _, err := os.Stat("data/scenarios.json"); err == nil {
+		return game.LoadRunProfiles("data")
+	}
+	return game.LoadEmbeddedRunProfiles()
 }
 
 func runReplay(content game.Content, path string) error {

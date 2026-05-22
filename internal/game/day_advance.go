@@ -13,7 +13,7 @@ func (s *State) advanceDay() {
 func (s *State) applyDailyUpkeep() {
 	s.Power -= DailyPowerUpkeep(s.Population)
 	s.Food -= DailyFoodUpkeep(s.Population)
-	s.Credits += DailyCreditsIncome
+	s.Credits += s.dailyCreditsIncome()
 }
 
 func (s *State) applyMoraleDrift() {

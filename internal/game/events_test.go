@@ -104,7 +104,7 @@ func TestEligibleEvents_FiltersByMinDay(t *testing.T) {
 		{ID: "mid", MinDay: 5},
 		{ID: "late", MinDay: 10},
 	}
-	got := eligibleEvents(events, 5)
+	got := eligibleEventsForState(State{Day: 5}, events)
 	if len(got) != 2 {
 		t.Fatalf("eligible count = %d, want 2", len(got))
 	}
@@ -115,7 +115,7 @@ func TestEligibleEvents_FiltersByMinDay(t *testing.T) {
 
 func TestEligibleEvents_EmptyWhenNoneQualify(t *testing.T) {
 	events := []EventDef{{ID: "late", MinDay: 10}}
-	if len(eligibleEvents(events, 1)) != 0 {
+	if len(eligibleEventsForState(State{Day: 1}, events)) != 0 {
 		t.Fatal("expected no eligible events on day 1")
 	}
 }
@@ -125,11 +125,11 @@ func TestEligibleEvents_FiltersByMaxDay(t *testing.T) {
 		{ID: "early_only", MinDay: 1, MaxDay: 5},
 		{ID: "always", MinDay: 1},
 	}
-	got := eligibleEvents(events, 10)
+	got := eligibleEventsForState(State{Day: 10}, events)
 	if len(got) != 1 || got[0].ID != "always" {
 		t.Fatalf("day 10 eligible = %v, want only always", got)
 	}
-	got5 := eligibleEvents(events, 5)
+	got5 := eligibleEventsForState(State{Day: 5}, events)
 	if len(got5) != 2 {
 		t.Fatalf("day 5 eligible count = %d, want 2", len(got5))
 	}
