@@ -130,7 +130,7 @@ func beaconRushBaseline() BaselineStrategy {
 			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
+			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
 			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
 		},
 	}

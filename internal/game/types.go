@@ -27,6 +27,8 @@ type EventDef struct {
 	Description string         `json:"description"`
 	Effects     map[string]int `json:"effects"`
 	MinDay      int            `json:"minDay"`
+	MaxDay      int            `json:"maxDay,omitempty"`
+	Weight      int            `json:"weight,omitempty"`
 }
 
 type Content struct {
