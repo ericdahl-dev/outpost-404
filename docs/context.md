@@ -2,6 +2,8 @@
 
 ## Origin
 
+Public landing page: [ericdahl-dev.github.io/outpost-404](https://ericdahl-dev.github.io/outpost-404/) (static site in `docs/site/`, deployed via GitHub Pages).
+
 The project started as a discussion about what kind of game would work well as a TUI. A terminal city/base builder stood out because the terminal naturally supports dashboards, panels, logs, resource bars, and keyboard-driven decision making.
 
 The chosen direction is to prioritize making a **great terminal game** over choosing the stack that collaborators might find most familiar.
