@@ -36,17 +36,17 @@ func (s *State) replayNextDay(detail map[string]any) {
 func (s *State) advanceDay() {
 	s.Day++
 	s.applyBuildingProduction()
-	s.Power -= 6 + s.Population/2
-	s.Food -= 4 + s.Population/2
-	s.Credits += 18
+	s.Power -= DailyPowerUpkeep(s.Population)
+	s.Food -= DailyFoodUpkeep(s.Population)
+	s.Credits += DailyCreditsIncome
 
-	if s.Power > 50 && s.Food > 40 {
-		s.Morale += 2
+	if ResourcesComfortable(s.Power, s.Food) {
+		s.Morale += ComfortMoraleGain
 	} else {
-		s.Morale -= 3
+		s.Morale -= StressMoraleLoss
 	}
 
-	if s.Day%5 == 0 && s.Population < s.PopulationCap && s.Food > 35 && s.Morale > 40 {
+	if CanGrowColonist(s.Day, s.Population, s.PopulationCap, s.Food, s.Morale) {
 		s.Population++
 		s.AddLog("A new colonist joined after hearing your beacon tests.")
 	}
@@ -76,7 +76,7 @@ func (s *State) applyEventByID(id string) {
 
 func (s *State) TriggerRandomEvent() string {
 	s.ensureRNG()
-	if s.rng.Intn(100) > 45 {
+	if !RandomEventRollOccurs(s.rng.Intn(RandomEventRollSides)) {
 		return ""
 	}
 
