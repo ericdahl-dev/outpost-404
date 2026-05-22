@@ -78,7 +78,7 @@ Use **TDD** for game logic and balance changes: one behavior per cycle, not a ba
 
 ## Suggested next task
 
-Extend `dailyEffects` on more buildings or add scenarios; use `game.Simulate` / `SimulateWithSnapshots` and `-replay` for regression checks.
+Extend `dailyEffects` on more buildings or add scenarios; use `game.Simulate` / `SimulateWithSnapshots`, `-simulate`, and `-replay` for regression checks.
 
 ## Agent skills
 
@@ -92,7 +92,7 @@ Default canonical label vocabulary (`needs-triage`, `needs-info`, `ready-for-age
 
 ### Domain docs
 
-Single-context repo — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+Single-context repo — `docs/context.md`, `docs/balance.md`, and `docs/adr/` when present. See `docs/agents/domain.md`.
 
 ## Learned User Preferences
 

@@ -48,7 +48,7 @@ go build -o outpost ./cmd/outpost
 
 ## CI and releases
 
-Matches [git-green](https://github.com/ericdahl-dev/git-green): GitHub Actions runs **build**, **test** (`-race`), and **golangci-lint** on every push/PR; pushing a `v*` tag runs **GoReleaser** (multi-platform binaries + `ericdahl-dev/homebrew-tap` formula).
+Matches [git-green](https://github.com/ericdahl-dev/git-green): GitHub Actions runs **build**, **test** (`-race`), **golangci-lint**, and an **≥ 80%** coverage floor on `internal/game` (`scripts/check-game-coverage.sh`) on every push/PR; pushing a `v*` tag runs **GoReleaser** (multi-platform binaries + `ericdahl-dev/homebrew-tap` formula).
 
 Repo secrets required for releases:
 
@@ -65,7 +65,7 @@ git push origin v0.1.0
 Game rules are covered by unit tests in `internal/game` (CI requires ≥ 80% statement coverage on that package; see [docs/balance.md](docs/balance.md)):
 
 ```bash
-go test ./...
+go test ./...          # game rules + cmd/outpost CLI contract tests
 ./scripts/check-game-coverage.sh
 ```
 
@@ -167,12 +167,14 @@ The survival path is tuned separately from beacon rush; see `scripts/survival_45
 ## Project structure
 
 ```text
-cmd/outpost/main.go       # executable entrypoint
+cmd/outpost/              # executable entrypoint; headless -simulate/-replay tested in cli_test.go
 internal/game/            # game state, rules, actions, daily tick, content loading
 internal/ui/              # Bubble Tea model, Bubbles widgets, Lip Gloss styles
-data/buildings.json       # data-driven building definitions
+data/buildings.json       # data-driven building definitions (incl. dailyEffects)
 data/events.json          # data-driven random events
+scripts/                  # balance reference scripts + check-game-coverage.sh
 docs/context.md           # design context and direction
+docs/balance.md           # baseline seeds, scripts, coverage policy
 AGENTS.md                 # coding-agent instructions
 ```
 
@@ -181,7 +183,6 @@ AGENTS.md                 # coding-agent instructions
 1. Add save/load.
 2. Add scenarios and difficulty settings.
 3. Make random events weighted instead of uniform.
-4. Add facility upkeep and passive per-day production.
+4. Extend `dailyEffects` to more buildings and tune mid/late events.
 5. Add a map panel or ASCII base layout.
-6. Expand `internal/game` tests (events, repair/trade, balance).
-7. JSON-driven passive building production (#19).
+6. Glamour markdown for help/events; Huh for new-game setup (see [docs/context.md](docs/context.md)).
