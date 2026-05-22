@@ -40,14 +40,16 @@ The player must keep systems online, manage scarce resources, handle random even
 The scaffold includes:
 
 - resource stats: power, food, morale, credits, population
-- buildings/upgrades
-- daily progression
-- random events
+- buildings/upgrades with JSON `dailyEffects` (per-level daily production before upkeep)
+- daily progression, upkeep, morale drift, colonist growth
+- random events (data-driven; replay pins `event_id` in session logs)
 - signal beacon progress
-- win/loss conditions
+- win/loss: survive **45 days** (win on day 46) or complete the beacon
 - help screen
 - Bubbles `list` build menu and `viewport` event log
 - JSON content for facilities and events
+- headless `-simulate`, `-replay`, and `-seed`; JSONL session logs
+- balance baselines and CI coverage floor on `internal/game` (see [balance.md](balance.md))
 
 ## Desired tone
 
@@ -64,8 +66,7 @@ Examples:
 
 - ASCII base map
 - named colonists
-- production/upkeep model per building
-- event weights and event chains
+- more buildings with `dailyEffects`; richer event weights and chains
 - difficulty presets
 - achievements
 - save files
