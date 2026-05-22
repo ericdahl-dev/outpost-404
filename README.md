@@ -87,6 +87,16 @@ go run ./cmd/outpost -log ./logs/my-run.jsonl
 # disable logging
 go run ./cmd/outpost -log off
 
+## Autosave
+
+After each completed day, the colony writes **`autosave.json`** under the same cache root (`~/Library/Caches/outpost-404/` on macOS). The new-game screen offers **Continue** (`C`), or resume from the CLI:
+
+```bash
+go run ./cmd/outpost -continue
+```
+
+Starting a new run asks before overwriting an existing autosave.
+
 # or via env (used when -log is not set)
 OUTPOST_LOG=./logs/run.jsonl go run ./cmd/outpost
 ```

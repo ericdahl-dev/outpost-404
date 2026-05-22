@@ -28,7 +28,10 @@ type Model struct {
 	LogViewport     viewport.Model
 	TermWidth       int
 	TermHeight      int
-	SessionLogPath  string
+	SessionLogPath      string
+	AutosavePath        string
+	CanContinue         bool
+	AwaitingOverwrite   bool
 }
 
 func NewModel(content game.Content, profiles game.RunProfiles) Model {
@@ -49,6 +52,10 @@ func NewModel(content game.Content, profiles game.RunProfiles) Model {
 		TermHeight:      defaultTermHeight,
 	}
 	m.LogViewport = newLogViewport(m.TermWidth, m.TermHeight)
+	if path, err := game.DefaultAutosavePath(); err == nil {
+		m.AutosavePath = path
+		m.CanContinue = game.AutosaveExists(path)
+	}
 	return m
 }
 

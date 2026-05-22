@@ -14,6 +14,9 @@ func (s *State) doAction(typ string, initial map[string]any, fn func(detail map[
 		s.syncWarnings()
 	}
 	s.recordAction(typ, detail, before, s.snapshot())
+	if typ == "next_day" && !s.GameOver {
+		_ = s.PersistAutosave()
+	}
 }
 
 func (s *State) Build(id string) {

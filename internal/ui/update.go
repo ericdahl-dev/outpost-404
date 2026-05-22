@@ -1,6 +1,9 @@
 package ui
 
 import (
+	"fmt"
+	"os"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/ericdahl/outpost-404/internal/game"
 )
@@ -19,6 +22,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
+			if m.Started && !m.State.GameOver {
+				_ = m.State.PersistAutosave()
+			}
 			return m, tea.Quit
 		}
 
@@ -59,6 +65,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func updateNewGame(m Model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	if m.AwaitingOverwrite {
+		switch msg.String() {
+		case "y", "Y", "enter":
+			m.startRun()
+		case "n", "N", "esc":
+			m.AwaitingOverwrite = false
+		}
+		return m, nil
+	}
 	switch msg.String() {
 	case "left", "h":
 		if m.ScenarioIndex > 0 {
@@ -76,8 +91,18 @@ func updateNewGame(m Model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		if m.DifficultyIndex < len(m.Profiles.Difficulties)-1 {
 			m.DifficultyIndex++
 		}
+	case "c", "C":
+		if m.CanContinue {
+			if err := m.continueRun(); err != nil {
+				fmt.Fprintf(os.Stderr, "could not load autosave: %v\n", err)
+			}
+		}
 	case "enter":
-		m.startRun()
+		if m.CanContinue {
+			m.AwaitingOverwrite = true
+		} else {
+			m.startRun()
+		}
 	}
 	return m, nil
 }
