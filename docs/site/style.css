@@ -212,3 +212,54 @@ footer {
   color: var(--muted);
   margin-right: 0.35rem;
 }
+
+.version-pill {
+  color: var(--accent);
+  border-color: var(--accent);
+  margin-left: 0.25rem;
+}
+
+.release-title {
+  margin: 0 0 0.5rem;
+}
+
+.asset-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.asset-list a {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  background: #080a08;
+  text-decoration: none;
+}
+
+.asset-list a:hover {
+  border-color: var(--accent);
+}
+
+.release-notes {
+  margin-top: 1.25rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.release-notes h3 {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--warn);
+  margin: 0 0 0.5rem;
+}
+
+.release-notes ul {
+  padding-left: 1.25rem;
+}

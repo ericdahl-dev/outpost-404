@@ -19,14 +19,17 @@
   <body>
     <div class="wrap">
       <header>
-        <p class="badge">Go · Charm · Bubble Tea</p>
+        <p class="badge">
+          Go · Charm · Bubble Tea · <span id="latest-version" class="version-pill">…</span>
+        </p>
         <h1>OUTPOST 404</h1>
         <p class="tagline">
           Remote survival colony ops in your terminal. Balance scarce resources, survive random
           events, and complete the Signal Beacon before the outpost collapses.
         </p>
         <div class="cta">
-          <a class="btn btn-primary" href="#install">Install</a>
+          <a class="btn btn-primary" href="#download">Download</a>
+          <a class="btn" href="#install">Install</a>
           <a
             class="btn"
             href="https://github.com/ericdahl-dev/outpost-404"
@@ -35,6 +38,15 @@
           >
         </div>
       </header>
+
+      <section id="download">
+        <h2>Latest release</h2>
+        <div class="panel">
+          <div id="release-status" class="dim">Loading release…</div>
+          <div id="release-assets"></div>
+          <div id="release-notes" class="release-notes"></div>
+        </div>
+      </section>
 
       <section id="objective">
         <h2>Mission</h2>
@@ -143,5 +155,6 @@ outpost -replay ./logs/my-run.jsonl</code></pre>
         </p>
       </footer>
     </div>
+    <script src="release.js"></script>
   </body>
 </html>
