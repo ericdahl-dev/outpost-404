@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -14,6 +15,36 @@ func TestSeedFromDetail_stringRoundTrip(t *testing.T) {
 	}
 	if got != want {
 		t.Fatalf("seed = %d, want %d", got, want)
+	}
+}
+
+func TestSeedFromDetail_jsonNumber(t *testing.T) {
+	got, err := seedFromDetail(map[string]any{"seed": json.Number("4242")})
+	if err != nil {
+		t.Fatalf("seedFromDetail: %v", err)
+	}
+	if got != 4242 {
+		t.Fatalf("seed = %d, want 4242", got)
+	}
+}
+
+func TestSeedFromDetail_missingSeed(t *testing.T) {
+	_, err := seedFromDetail(nil)
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "missing seed") {
+		t.Fatalf("error = %q", err)
+	}
+}
+
+func TestSeedFromDetail_invalidJsonNumber(t *testing.T) {
+	_, err := seedFromDetail(map[string]any{"seed": json.Number("not-a-number")})
+	if err == nil {
+		t.Fatal("expected error")
+	}
+	if !strings.Contains(err.Error(), "invalid seed") {
+		t.Fatalf("error = %q", err)
 	}
 }
 
