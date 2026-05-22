@@ -16,7 +16,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.LogViewport.Width = LogViewportWidth(msg.Width)
 		m.LogViewport.Height = LogViewportHeight(msg.Height)
 		m.LogViewport = syncLogViewport(m.LogViewport, m.State.Log)
-		m.BuildList.SetSize(buildListWidth(msg.Width), m.BuildList.Height())
+		if m.Started {
+			m.BuildList.SetSize(buildListWidth(msg.Width), buildListHeight(len(m.State.Content.Buildings)))
+		}
 		return m, nil
 
 	case tea.KeyMsg:
