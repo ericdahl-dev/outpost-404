@@ -128,8 +128,9 @@ func TestRepair_RejectsWhenGameOver(t *testing.T) {
 	s := newTestState()
 	s.GameOver = true
 	s.Credits = 100
+	s.Buildings["solar_array"] = Building{DefID: "solar_array", Level: 1, Damaged: true}
 
-	s.Repair()
+	s.RepairBuilding("solar_array")
 
 	if s.Credits != 100 {
 		t.Fatalf("Credits = %d, want unchanged 100", s.Credits)
@@ -138,9 +139,10 @@ func TestRepair_RejectsWhenGameOver(t *testing.T) {
 
 func TestRepair_RejectsInsufficientCredits(t *testing.T) {
 	s := newTestState()
+	s.Buildings["solar_array"] = Building{DefID: "solar_array", Level: 1, Damaged: true}
 	s.Credits = 10
 
-	s.Repair()
+	s.RepairBuilding("solar_array")
 
 	if s.Credits != 10 {
 		t.Fatalf("Credits = %d, want unchanged 10", s.Credits)
@@ -150,20 +152,14 @@ func TestRepair_RejectsInsufficientCredits(t *testing.T) {
 	}
 }
 
-func TestRepair_ProvidesFoodWhenStarving(t *testing.T) {
+func TestRepair_NoDamagedFacilities_IsNoOp(t *testing.T) {
 	s := newTestState()
-	s.Food = 0
-	s.Power = 100
-	s.Morale = 100
 	s.Credits = 100
 
 	s.Repair()
 
-	if s.Food != 3 {
-		t.Fatalf("Food = %d, want 3 from repair ration pack", s.Food)
-	}
-	if s.GameOver {
-		t.Fatal("repair should stabilize starving colony, not end the run")
+	if s.Credits != 100 {
+		t.Fatalf("Credits = %d, want unchanged", s.Credits)
 	}
 }
 

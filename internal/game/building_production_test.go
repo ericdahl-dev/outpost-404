@@ -12,7 +12,7 @@ func TestLoadEmbeddedContent_BuildingsHaveDailyEffectsWhereExpected(t *testing.T
 	}
 	wantDaily := map[string]map[string]int{
 		"hydroponics":  {"food": 6},
-		"solar_array":  {"power": 6},
+		"solar_array":  {"power": 10},
 		"habitat":      {"morale": 1},
 		"workshop":     {"morale": 1},
 		"radio_tower":  {"credits": 2, "morale": 1},
@@ -103,7 +103,7 @@ func TestSolarDailyProduction_AccumulatesPowerOverMultipleDays(t *testing.T) {
 		s.advanceDay()
 	}
 
-	net := 12 - DailyPowerUpkeep(s.Population)
+	net := 20 - DailyPowerUpkeep(s.Population)
 	want := 50 + net*3
 	if s.Power != want {
 		t.Fatalf("Power = %d, want %d after 3 days of solar L2 production", s.Power, want)
@@ -177,13 +177,13 @@ func TestNextDay_SolarLevel3_ScalesDailyPowerProduction(t *testing.T) {
 	s.Morale = 50
 
 	for range 3 {
-		s.NextDay()
+		s.advanceDay()
 	}
 
-	net := 18 - DailyPowerUpkeep(s.Population)
+	net := 30 - DailyPowerUpkeep(s.Population)
 	want := 50 + net*3
 	if s.Power != want {
-		t.Fatalf("Power = %d, want %d after 3 NextDay with solar L3", s.Power, want)
+		t.Fatalf("Power = %d, want %d after 3 advanceDay with solar L3", s.Power, want)
 	}
 }
 
@@ -248,7 +248,7 @@ func TestApplyBuildingProduction_UsesContentOrder(t *testing.T) {
 
 	s.applyBuildingProduction()
 
-	if s.Food != 46 || s.Power != 46 {
-		t.Fatalf("Food=%d Power=%d, want 46/46", s.Food, s.Power)
+	if s.Food != 46 || s.Power != 50 {
+		t.Fatalf("Food=%d Power=%d, want 46/50", s.Food, s.Power)
 	}
 }

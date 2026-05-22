@@ -125,13 +125,13 @@ func beaconRushBaseline() BaselineStrategy {
 		MinEndDay:      6,
 		MinBeaconParts: 2,
 		Expected: map[int64]BaselineOutcome{
-			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
-			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
-			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 2},
+			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 4},
+			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
 		},
 	}
 }

@@ -34,7 +34,7 @@ func NewStateWithSeed(content Content, seed int64) State {
 func StateFromSnapshot(content Content, snap Snapshot, seed int64) State {
 	buildings := make(map[string]Building, len(snap.Buildings))
 	for id, level := range snap.Buildings {
-		buildings[id] = Building{DefID: id, Level: level}
+		buildings[id] = Building{DefID: id, Level: level, Damaged: snap.Damaged[id]}
 	}
 	s := State{
 		Day:            snap.Day,
@@ -70,9 +70,16 @@ func (s *State) ensureRNG() {
 // Add new actions here; ApplySimAction derives from this map.
 var actionRegistry = map[string]func(*State, SimAction){
 	"build":    func(s *State, a SimAction) { s.Build(a.BuildingID) },
-	"repair":   func(s *State, a SimAction) { s.Repair() },
+	"repair": func(s *State, a SimAction) {
+		if a.BuildingID != "" {
+			s.RepairBuilding(a.BuildingID)
+		} else {
+			s.Repair()
+		}
+	},
 	"trade":    func(s *State, a SimAction) { s.Trade() },
 	"beacon":   func(s *State, a SimAction) { s.WorkOnBeacon() },
+	"damage":   func(s *State, a SimAction) { s.DamageBuilding(a.BuildingID) },
 	"next_day": func(s *State, a SimAction) { s.NextDay() },
 }
 
@@ -198,11 +205,15 @@ func (s *State) replayAction(entry LogEntry) error {
 		id, _ := detail["building_id"].(string)
 		s.buildWithDetail(detail, id)
 	case "repair":
-		s.repairWithDetail(detail)
+		id, _ := detail["building_id"].(string)
+		s.repairWithDetail(detail, id)
 	case "trade":
 		s.tradeWithDetail(detail)
 	case "beacon":
 		s.beaconWithDetail(detail)
+	case "damage":
+		id, _ := detail["building_id"].(string)
+		s.damageWithDetail(detail, id)
 	default:
 		return fmt.Errorf("unsupported log entry type %q", entry.Type)
 	}
@@ -212,7 +223,7 @@ func (s *State) replayAction(entry LogEntry) error {
 func (s *State) restoreSnapshot(snap Snapshot) {
 	buildings := make(map[string]Building, len(snap.Buildings))
 	for id, level := range snap.Buildings {
-		buildings[id] = Building{DefID: id, Level: level}
+		buildings[id] = Building{DefID: id, Level: level, Damaged: snap.Damaged[id]}
 	}
 	s.Day = snap.Day
 	s.Power = snap.Power

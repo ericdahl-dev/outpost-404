@@ -9,7 +9,7 @@ func testContent() Content {
 				Cost:         70,
 				MaxLevel:     3,
 				Effects:      map[string]int{"power": 20},
-				DailyEffects: map[string]int{"power": 6},
+				DailyEffects: map[string]int{"power": 10},
 			},
 			{
 				ID:           "hydroponics",

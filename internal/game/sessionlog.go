@@ -22,7 +22,8 @@ type Snapshot struct {
 	MaxBeacon     int            `json:"max_beacon_parts"`
 	GameOver      bool           `json:"game_over"`
 	Won           bool           `json:"won"`
-	Buildings     map[string]int `json:"buildings,omitempty"`
+	Buildings     map[string]int  `json:"buildings,omitempty"`
+	Damaged       map[string]bool `json:"damaged,omitempty"`
 }
 
 // LogEntry is one JSONL record for a play session.
@@ -118,8 +119,12 @@ func (l *SessionLogger) Close() error {
 
 func (s *State) snapshot() Snapshot {
 	buildings := make(map[string]int, len(s.Buildings))
+	damaged := make(map[string]bool)
 	for id, b := range s.Buildings {
 		buildings[id] = b.Level
+		if b.Damaged {
+			damaged[id] = true
+		}
 	}
 	return Snapshot{
 		Day:           s.Day,
@@ -134,6 +139,7 @@ func (s *State) snapshot() Snapshot {
 		GameOver:      s.GameOver,
 		Won:           s.Won,
 		Buildings:     buildings,
+		Damaged:       damaged,
 	}
 }
 

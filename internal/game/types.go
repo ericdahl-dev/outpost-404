@@ -22,13 +22,15 @@ type BuildingDef struct {
 }
 
 type EventDef struct {
-	ID          string         `json:"id"`
-	Title       string         `json:"title"`
-	Description string         `json:"description"`
-	Effects     map[string]int `json:"effects"`
-	MinDay      int            `json:"minDay"`
-	MaxDay      int            `json:"maxDay,omitempty"`
-	Weight      int            `json:"weight,omitempty"`
+	ID                string         `json:"id"`
+	Title             string         `json:"title"`
+	Description       string         `json:"description"`
+	Effects           map[string]int `json:"effects"`
+	MinDay            int            `json:"minDay"`
+	MaxDay            int            `json:"maxDay,omitempty"`
+	Weight            int            `json:"weight,omitempty"`
+	DamageBuilding    string         `json:"damageBuilding,omitempty"`
+	DamageRandomBuilt bool           `json:"damageRandomBuilt,omitempty"`
 }
 
 type Content struct {
@@ -46,8 +48,9 @@ func (c Content) FindBuilding(id string) (BuildingDef, bool) {
 }
 
 type Building struct {
-	DefID string
-	Level int
+	DefID   string
+	Level   int
+	Damaged bool
 }
 
 type State struct {

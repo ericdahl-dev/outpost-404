@@ -5,8 +5,12 @@
     "description": "One-time power buffer; ongoing +6 power per level each day.",
     "cost": 70,
     "maxLevel": 3,
-    "effects": { "power": 20 },
-    "dailyEffects": { "power": 6 }
+    "effects": {
+      "power": 20
+    },
+    "dailyEffects": {
+      "power": 10
+    }
   },
   {
     "id": "hydroponics",
@@ -14,8 +18,12 @@
     "description": "Food stockpile on build; ongoing +6 food per level each day.",
     "cost": 65,
     "maxLevel": 3,
-    "effects": { "food": 22 },
-    "dailyEffects": { "food": 6 }
+    "effects": {
+      "food": 22
+    },
+    "dailyEffects": {
+      "food": 6
+    }
   },
   {
     "id": "habitat",
@@ -23,8 +31,13 @@
     "description": "Population cap on build; +1 morale per level each day.",
     "cost": 90,
     "maxLevel": 3,
-    "effects": { "populationCap": 3, "morale": 4 },
-    "dailyEffects": { "morale": 1 }
+    "effects": {
+      "populationCap": 3,
+      "morale": 4
+    },
+    "dailyEffects": {
+      "morale": 1
+    }
   },
   {
     "id": "workshop",
@@ -32,8 +45,13 @@
     "description": "Morale on build; +1 morale per level each day from crew culture.",
     "cost": 85,
     "maxLevel": 2,
-    "effects": { "morale": 10, "credits": 10 },
-    "dailyEffects": { "morale": 1 }
+    "effects": {
+      "morale": 10,
+      "credits": 10
+    },
+    "dailyEffects": {
+      "morale": 1
+    }
   },
   {
     "id": "radio_tower",
@@ -41,7 +59,13 @@
     "description": "Trade contacts on build; +2 credits and +1 morale per level each day.",
     "cost": 110,
     "maxLevel": 2,
-    "effects": { "credits": 35, "morale": 7 },
-    "dailyEffects": { "credits": 2, "morale": 1 }
+    "effects": {
+      "credits": 35,
+      "morale": 7
+    },
+    "dailyEffects": {
+      "credits": 2,
+      "morale": 1
+    }
   }
 ]

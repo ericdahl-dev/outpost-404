@@ -57,11 +57,13 @@ func (s *State) replayNextDay(detail map[string]any) {
 // Runs at the start of advanceDay, before resource upkeep and morale drift.
 func (s *State) applyBuildingProduction() {
 	for _, def := range s.Content.Buildings {
-		lvl := s.BuildingLevel(def.ID)
-		if lvl <= 0 || len(def.DailyEffects) == 0 {
+		b, ok := s.Buildings[def.ID]
+		if !ok || b.Level <= 0 || len(def.DailyEffects) == 0 {
 			continue
 		}
-		s.applyEffects(def.DailyEffects, lvl)
+		if effects := dailyEffectsScaled(def, b); len(effects) > 0 {
+			s.applyEffects(effects, 1)
+		}
 	}
 }
 

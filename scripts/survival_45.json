@@ -18,9 +18,6 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
     },
     {
@@ -40,9 +37,6 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
     },
     {
@@ -57,9 +51,6 @@
       "building_id": "solar_array"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
     },
     {
@@ -73,9 +64,6 @@
     },
     {
       "type": "next_day"
-    },
-    {
-      "type": "repair"
     },
     {
       "type": "next_day"
@@ -95,16 +83,7 @@
       "building_id": "solar_array"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
-    },
-    {
-      "type": "next_day"
-    },
-    {
-      "type": "repair"
     },
     {
       "type": "next_day"
@@ -116,19 +95,7 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
-    },
-    {
-      "type": "next_day"
-    },
-    {
-      "type": "repair"
-    },
-    {
-      "type": "repair"
     },
     {
       "type": "next_day"
@@ -146,7 +113,13 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
+    },
+    {
+      "type": "next_day"
     },
     {
       "type": "next_day"
@@ -158,9 +131,6 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
     },
     {
@@ -170,16 +140,7 @@
       "type": "next_day"
     },
     {
-      "type": "repair"
-    },
-    {
       "type": "next_day"
-    },
-    {
-      "type": "next_day"
-    },
-    {
-      "type": "repair"
     },
     {
       "type": "next_day"

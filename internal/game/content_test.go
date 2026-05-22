@@ -24,8 +24,8 @@ func TestLoadContent_LoadsBuildingsAndEventsFromDataDir(t *testing.T) {
 			if b.Cost != 70 {
 				t.Fatalf("solar_array cost = %d, want 70", b.Cost)
 			}
-			if b.DailyEffects["power"] != 6 {
-				t.Fatalf("solar_array daily power = %d, want 6", b.DailyEffects["power"])
+			if b.DailyEffects["power"] != 10 {
+				t.Fatalf("solar_array daily power = %d, want 10", b.DailyEffects["power"])
 			}
 			return
 		}

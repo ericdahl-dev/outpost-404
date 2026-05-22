@@ -15,7 +15,7 @@ func TestReplaySession_MultiActionMatchesLiveSession(t *testing.T) {
 	content := testContentWithEvents()
 	live, entries := recordMultiActionSession(t, content, multiActionSeed)
 
-	assertSessionHasActionTypes(t, entries, "build", "repair", "trade", "beacon", "next_day")
+	assertSessionHasActionTypes(t, entries, "build", "damage", "repair", "trade", "beacon", "next_day")
 	assertNextDayLogsEventID(t, entries)
 
 	replayed, err := ReplaySession(content, entries)
@@ -40,7 +40,7 @@ func TestReplaySession_FixtureJSONLMatchesLiveSession(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parse fixture: %v", err)
 	}
-	assertSessionHasActionTypes(t, entries, "build", "repair", "trade", "beacon", "next_day")
+	assertSessionHasActionTypes(t, entries, "build", "damage", "repair", "trade", "beacon", "next_day")
 
 	replayed, err := ReplaySession(content, entries)
 	if err != nil {
@@ -85,7 +85,8 @@ func recordMultiActionSession(t *testing.T, content Content, seed int64) (State,
 	t.Helper()
 	return recordSession(t, content, seed, func(s *State) {
 		s.Build("solar_array")
-		s.Repair()
+		s.DamageBuilding("solar_array")
+		s.RepairBuilding("solar_array")
 		s.Trade()
 		s.WorkOnBeacon()
 		s.NextDay()
@@ -166,6 +167,38 @@ func logEntryTypes(entries []LogEntry) []string {
 		types = append(types, e.Type)
 	}
 	return types
+}
+
+func TestRegenerateMultiActionFixture(t *testing.T) {
+	if os.Getenv("UPDATE_SESSION_FIXTURE") != "1" {
+		t.Skip("set UPDATE_SESSION_FIXTURE=1 to rewrite testdata/sessions/multi_action.jsonl")
+	}
+	content := testContentWithEvents()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "session.jsonl")
+	logger, err := OpenSessionLog(path)
+	if err != nil {
+		t.Fatalf("OpenSessionLog: %v", err)
+	}
+	s := NewStateWithSeed(content, multiActionSeed)
+	s.SessionLog = logger
+	s.LogSessionStart()
+	s.Build("solar_array")
+	s.DamageBuilding("solar_array")
+	s.RepairBuilding("solar_array")
+	s.Trade()
+	s.WorkOnBeacon()
+	s.NextDay()
+	_ = logger.Close()
+
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile: %v", err)
+	}
+	out := filepath.Join("testdata", "sessions", "multi_action.jsonl")
+	if err := os.WriteFile(out, raw, 0o644); err != nil {
+		t.Fatalf("WriteFile: %v", err)
+	}
 }
 
 func parseSessionLogLines(raw []byte) ([]LogEntry, error) {
