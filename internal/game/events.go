@@ -39,14 +39,17 @@ func (s *State) applyEventByID(id string) {
 	}
 }
 
-// eligibleEvents returns events that can fire on the given day.
-func eligibleEvents(events []EventDef, day int) []EventDef {
+// eligibleEventsForState returns events that can fire on the current day and building state.
+func eligibleEventsForState(s State, events []EventDef) []EventDef {
 	out := make([]EventDef, 0)
 	for _, event := range events {
-		if event.MinDay > day {
+		if event.MinDay > s.Day {
 			continue
 		}
-		if event.MaxDay > 0 && day > event.MaxDay {
+		if event.MaxDay > 0 && s.Day > event.MaxDay {
+			continue
+		}
+		if event.RequiresBuilding != "" && s.ScenarioID == "silent_colony" && s.BuildingLevel(event.RequiresBuilding) <= 0 {
 			continue
 		}
 		out = append(out, event)

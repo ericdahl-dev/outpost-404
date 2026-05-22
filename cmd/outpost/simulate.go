@@ -7,7 +7,11 @@ import (
 	"github.com/ericdahl/outpost-404/internal/game"
 )
 
-func runSimulate(content game.Content, scriptPath string, seedFlag int64, seedsFlag string) error {
+func runSimulate(content game.Content, scriptPath string, seedFlag int64, seedsFlag string, scenarioFlag, difficultyFlag string) error {
+	profiles, err := loadRunProfiles()
+	if err != nil {
+		return err
+	}
 	script, err := game.LoadSimScript(scriptPath)
 	if err != nil {
 		return err
@@ -19,14 +23,19 @@ func runSimulate(content game.Content, scriptPath string, seedFlag int64, seedsF
 	}
 
 	if len(sweep) > 0 {
-		return runSimSweep(content, script, sweep)
+		return runSimSweep(content, profiles, script, sweep, scenarioFlag, difficultyFlag)
 	}
 
 	seed, err := game.ResolveSimSeed(script.SeedSet, script.Seed, seedFlag)
 	if err != nil {
 		return err
 	}
-	final, err := game.Simulate(content, seed, script.Actions)
+	setup := game.RunSetup{
+		Seed:         seed,
+		ScenarioID:   coalesce(script.Scenario, scenarioFlag),
+		DifficultyID: coalesce(script.Difficulty, difficultyFlag),
+	}
+	final, err := game.SimulateRun(content, setup, script.Actions)
 	if err != nil {
 		return err
 	}
@@ -34,10 +43,22 @@ func runSimulate(content game.Content, scriptPath string, seedFlag int64, seedsF
 	return nil
 }
 
-func runSimSweep(content game.Content, script game.SimScript, seeds []int64) error {
+func coalesce(scriptVal, flagVal string) string {
+	if scriptVal != "" {
+		return scriptVal
+	}
+	return flagVal
+}
+
+func runSimSweep(content game.Content, profiles game.RunProfiles, script game.SimScript, seeds []int64, scenarioFlag, difficultyFlag string) error {
 	wins := 0
+	setup := game.RunSetup{
+		ScenarioID:   coalesce(script.Scenario, scenarioFlag),
+		DifficultyID: coalesce(script.Difficulty, difficultyFlag),
+	}
 	for _, seed := range seeds {
-		final, err := game.Simulate(content, seed, script.Actions)
+		setup.Seed = seed
+		final, err := game.SimulateRun(content, setup, script.Actions)
 		if err != nil {
 			return err
 		}

@@ -69,11 +69,11 @@ func (s *State) applyBuildingProduction() {
 
 func (s *State) TriggerRandomEvent() string {
 	s.ensureRNG()
-	if !RandomEventRollOccurs(s.rng.Intn(RandomEventRollSides)) {
+	if !s.randomEventRollOccurs(s.rng.Intn(RandomEventRollSides)) {
 		return ""
 	}
 
-	candidates := eligibleEvents(s.Content.Events, s.Day)
+	candidates := eligibleEventsForState(*s, s.Content.Events)
 	event, ok := s.pickRandomEligibleEvent(candidates)
 	if !ok {
 		return ""

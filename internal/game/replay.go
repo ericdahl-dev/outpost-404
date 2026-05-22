@@ -22,12 +22,18 @@ func RandomSeed() int64 {
 	return time.Now().UnixNano()
 }
 
-// NewStateWithSeed creates a colony with deterministic random events.
+// NewStateWithSeed creates a standard/normal colony with deterministic random events.
 func NewStateWithSeed(content Content, seed int64) State {
-	s := newBareState(content)
-	s.Seed = seed
-	s.rng = rand.New(rand.NewSource(seed))
-	return s
+	profiles, err := LoadEmbeddedRunProfiles()
+	if err != nil {
+		s := NewRun(content, RunProfiles{}, seed, "standard", "normal")
+		s.Seed = seed
+		if seed != 0 {
+			s.rng = rand.New(rand.NewSource(seed))
+		}
+		return s
+	}
+	return NewRun(content, profiles, seed, "standard", "normal")
 }
 
 // StateFromSnapshot restores stats and re-seeds RNG for replay.
@@ -90,15 +96,30 @@ func (s *State) ApplySimAction(a SimAction) {
 	}
 }
 
-// Simulate runs a scripted session without the TUI.
+// Simulate runs a scripted session without the TUI (standard/normal).
 func Simulate(content Content, seed int64, actions []SimAction) (State, error) {
 	final, _, err := SimulateWithSnapshots(content, seed, actions)
 	return final, err
 }
 
-// SimulateWithSnapshots runs a script and records a snapshot after each action.
+// SimulateRun runs a scripted session with scenario and difficulty.
+func SimulateRun(content Content, setup RunSetup, actions []SimAction) (State, error) {
+	final, _, err := SimulateRunWithSnapshots(content, setup, actions)
+	return final, err
+}
+
+// SimulateWithSnapshots runs a script and records a snapshot after each action (standard/normal).
 func SimulateWithSnapshots(content Content, seed int64, actions []SimAction) (State, []Snapshot, error) {
-	s := NewStateWithSeed(content, seed)
+	return SimulateRunWithSnapshots(content, RunSetup{Seed: seed, ScenarioID: "standard", DifficultyID: "normal"}, actions)
+}
+
+// SimulateRunWithSnapshots applies scenario/difficulty then runs actions.
+func SimulateRunWithSnapshots(content Content, setup RunSetup, actions []SimAction) (State, []Snapshot, error) {
+	profiles, err := LoadEmbeddedRunProfiles()
+	if err != nil {
+		return State{}, nil, fmt.Errorf("load run profiles: %w", err)
+	}
+	s := NewRun(content, profiles, setup.Seed, setup.ScenarioID, setup.DifficultyID)
 	snaps := []Snapshot{s.snapshot()}
 	for _, a := range actions {
 		if s.GameOver {

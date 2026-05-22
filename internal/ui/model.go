@@ -10,29 +10,45 @@ import (
 type screen int
 
 const (
-	screenMain screen = iota
+	screenNewGame screen = iota
+	screenMain
 	screenBuild
 	screenHelp
 )
 
 type Model struct {
-	State      game.State
-	Screen     screen
-	BuildList  list.Model
-	LogViewport viewport.Model
-	TermWidth  int
-	TermHeight int
+	Content         game.Content
+	Profiles        game.RunProfiles
+	State           game.State
+	Started         bool
+	ScenarioIndex   int
+	DifficultyIndex int
+	Screen          screen
+	BuildList       list.Model
+	LogViewport     viewport.Model
+	TermWidth       int
+	TermHeight      int
+	SessionLogPath  string
 }
 
-func NewModel(state game.State) Model {
-	m := Model{
-		State:      state,
-		Screen:     screenMain,
-		TermWidth:  defaultTermWidth,
-		TermHeight: defaultTermHeight,
+func NewModel(content game.Content, profiles game.RunProfiles) Model {
+	diffIdx := 0
+	for i, d := range profiles.Difficulties {
+		if d.ID == "normal" {
+			diffIdx = i
+			break
+		}
 	}
-	m.BuildList = newBuildList(state, m.TermWidth)
-	m.LogViewport = syncLogViewport(newLogViewport(m.TermWidth, m.TermHeight), state.Log)
+	m := Model{
+		Content:         content,
+		Profiles:        profiles,
+		Screen:          screenNewGame,
+		ScenarioIndex:   0,
+		DifficultyIndex: diffIdx,
+		TermWidth:       defaultTermWidth,
+		TermHeight:      defaultTermHeight,
+	}
+	m.LogViewport = newLogViewport(m.TermWidth, m.TermHeight)
 	return m
 }
 

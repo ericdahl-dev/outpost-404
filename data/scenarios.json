@@ -1,0 +1,99 @@
+{
+  "scenarios": [
+    {
+      "id": "standard",
+      "name": "Standard Run",
+      "description": "Baseline outpost rules — the CI balance reference.",
+      "starting": {
+        "power": 65,
+        "food": 60,
+        "morale": 70,
+        "credits": 180,
+        "population": 8,
+        "populationCap": 10
+      },
+      "maxBeaconParts": 5,
+      "survivalWinAfterDay": 45
+    },
+    {
+      "id": "first_landing",
+      "name": "First Landing",
+      "description": "Extra supplies for a softer opening; same win targets as Standard Run.",
+      "starting": {
+        "power": 75,
+        "food": 70,
+        "morale": 75,
+        "credits": 220,
+        "population": 8,
+        "populationCap": 10
+      },
+      "maxBeaconParts": 5,
+      "survivalWinAfterDay": 45
+    },
+    {
+      "id": "dust_season",
+      "name": "Dust Season",
+      "description": "Regolith storms are frequent — expect more random events.",
+      "starting": {
+        "power": 65,
+        "food": 60,
+        "morale": 70,
+        "credits": 180,
+        "population": 8,
+        "populationCap": 10
+      },
+      "maxBeaconParts": 5,
+      "survivalWinAfterDay": 45,
+      "modifiers": { "eventGateSkipAbove": 52 }
+    },
+    {
+      "id": "silent_colony",
+      "name": "Silent Colony",
+      "description": "Isolated start; trader signals need a Radio Tower on the air.",
+      "starting": {
+        "power": 60,
+        "food": 58,
+        "morale": 65,
+        "credits": 150,
+        "population": 8,
+        "populationCap": 10
+      },
+      "maxBeaconParts": 5,
+      "survivalWinAfterDay": 45
+    },
+    {
+      "id": "beacon_rush",
+      "name": "Beacon Rush",
+      "description": "Finish the Signal Beacon in 3 parts instead of 5.",
+      "starting": {
+        "power": 65,
+        "food": 60,
+        "morale": 70,
+        "credits": 180,
+        "population": 8,
+        "populationCap": 10
+      },
+      "maxBeaconParts": 3,
+      "survivalWinAfterDay": 45
+    }
+  ],
+  "difficulties": [
+    {
+      "id": "easy",
+      "name": "Easy",
+      "description": "Calmer skies and steadier supply runs.",
+      "modifiers": { "eventGateSkipAbove": 38, "dailyCreditsIncomeDelta": 4 }
+    },
+    {
+      "id": "normal",
+      "name": "Normal",
+      "description": "Default colony pressure."
+    },
+    {
+      "id": "hard",
+      "name": "Hard",
+      "description": "Harsher weather and tighter budgets.",
+      "modifiers": { "eventGateSkipAbove": 50, "dailyCreditsIncomeDelta": -4 }
+    }
+  ]
+}

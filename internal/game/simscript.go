@@ -10,9 +10,11 @@ import (
 
 // SimScript is a headless action script, optionally with a default seed.
 type SimScript struct {
-	Seed    int64
-	SeedSet bool
-	Actions []SimAction
+	Seed       int64
+	SeedSet    bool
+	Scenario   string
+	Difficulty string
+	Actions    []SimAction
 }
 
 // LoadSimScript reads a JSON array of actions or {"seed": N, "actions": [...]}.
@@ -27,8 +29,10 @@ func LoadSimScript(path string) (SimScript, error) {
 	}
 
 	var wrapped struct {
-		Seed    *int64      `json:"seed"`
-		Actions []SimAction `json:"actions"`
+		Seed       *int64      `json:"seed"`
+		Scenario   string      `json:"scenario"`
+		Difficulty string      `json:"difficulty"`
+		Actions    []SimAction `json:"actions"`
 	}
 	if trim[0] == '{' {
 		if err := json.Unmarshal(data, &wrapped); err != nil {
@@ -37,7 +41,11 @@ func LoadSimScript(path string) (SimScript, error) {
 		if len(wrapped.Actions) == 0 {
 			return SimScript{}, fmt.Errorf("sim script has no actions")
 		}
-		out := SimScript{Actions: wrapped.Actions}
+		out := SimScript{
+			Actions:    wrapped.Actions,
+			Scenario:   wrapped.Scenario,
+			Difficulty: wrapped.Difficulty,
+		}
 		if wrapped.Seed != nil {
 			out.Seed = *wrapped.Seed
 			out.SeedSet = true
@@ -68,8 +76,8 @@ func ResolveSimSeed(scriptSeedSet bool, scriptSeed, flagSeed int64) (int64, erro
 
 // FormatSimOutcome is one line suitable for logs and CLI output.
 func FormatSimOutcome(seed int64, s State) string {
-	return fmt.Sprintf("seed=%d day=%d won=%v game_over=%v beacon=%d/%d power=%d food=%d morale=%d credits=%d",
-		seed, s.Day, s.Won, s.GameOver, s.BeaconParts, s.MaxBeaconParts,
+	return fmt.Sprintf("seed=%d scenario=%s difficulty=%s day=%d won=%v game_over=%v beacon=%d/%d power=%d food=%d morale=%d credits=%d",
+		seed, s.ScenarioID, s.DifficultyID, s.Day, s.Won, s.GameOver, s.BeaconParts, s.MaxBeaconParts,
 		s.Power, s.Food, s.Morale, s.Credits)
 }
 

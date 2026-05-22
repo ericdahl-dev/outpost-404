@@ -29,8 +29,9 @@ type EventDef struct {
 	MinDay            int            `json:"minDay"`
 	MaxDay            int            `json:"maxDay,omitempty"`
 	Weight            int            `json:"weight,omitempty"`
-	DamageBuilding    string         `json:"damageBuilding,omitempty"`
-	DamageRandomBuilt bool           `json:"damageRandomBuilt,omitempty"`
+	DamageBuilding     string         `json:"damageBuilding,omitempty"`
+	DamageRandomBuilt  bool           `json:"damageRandomBuilt,omitempty"`
+	RequiresBuilding   string         `json:"requiresBuilding,omitempty"`
 }
 
 type Content struct {
@@ -66,6 +67,11 @@ type State struct {
 	Buildings      map[string]Building
 	Log            []string
 	KeyMoments     []string
+	ScenarioID     string
+	DifficultyID   string
+	SurvivalWinAfterDay   int
+	EventGateSkipAbove    int
+	DailyCreditsIncomeDelta int
 	Content        Content
 	SessionLog     Recorder
 	Seed           int64

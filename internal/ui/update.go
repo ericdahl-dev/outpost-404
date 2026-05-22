@@ -1,9 +1,6 @@
 package ui
 
 import (
-	"fmt"
-	"os"
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/ericdahl/outpost-404/internal/game"
 )
@@ -23,6 +20,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		}
+
+		if !m.Started {
+			return updateNewGame(m, msg)
+		}
+
+		switch msg.String() {
 		case "?":
 			if m.Screen == screenHelp {
 				m.Screen = screenMain
@@ -36,19 +40,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.State.GameOver {
 			switch msg.String() {
 			case "r":
-				hadLog := m.State.SessionLog != nil
 				m.State.EndSession()
-				m.State = game.NewState(m.State.Content)
-				m.Screen = screenMain
-				m.BuildList = newBuildList(m.State, m.TermWidth)
-				m.LogViewport = syncLogViewport(m.LogViewport, m.State.Log)
-				if hadLog {
-					if logger, err := game.AttachSessionLog(&m.State, ""); err != nil {
-						fmt.Fprintf(os.Stderr, "session logging disabled: %v\n", err)
-					} else {
-						fmt.Fprintf(os.Stderr, "session log: %s\n", logger.Path)
-					}
-				}
+				m.Started = false
+				m.Screen = screenNewGame
+				m.State = game.State{}
 			}
 			return m, nil
 		}
@@ -59,6 +54,30 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case screenBuild:
 			return updateBuild(m, msg)
 		}
+	}
+	return m, nil
+}
+
+func updateNewGame(m Model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "left", "h":
+		if m.ScenarioIndex > 0 {
+			m.ScenarioIndex--
+		}
+	case "right", "l":
+		if m.ScenarioIndex < len(m.Profiles.Scenarios)-1 {
+			m.ScenarioIndex++
+		}
+	case "up", "k":
+		if m.DifficultyIndex > 0 {
+			m.DifficultyIndex--
+		}
+	case "down", "j":
+		if m.DifficultyIndex < len(m.Profiles.Difficulties)-1 {
+			m.DifficultyIndex++
+		}
+	case "enter":
+		m.startRun()
 	}
 	return m, nil
 }

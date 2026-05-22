@@ -44,3 +44,19 @@ func CanGrowColonist(day, population, populationCap, food, morale int) bool {
 func RandomEventRollOccurs(roll int) bool {
 	return roll <= RandomEventRollSkipAbove
 }
+
+func (s State) randomEventRollOccurs(roll int) bool {
+	limit := s.EventGateSkipAbove
+	if limit <= 0 {
+		limit = RandomEventRollSkipAbove
+	}
+	return roll <= limit
+}
+
+func (s State) dailyCreditsIncome() int {
+	n := DailyCreditsIncome + s.DailyCreditsIncomeDelta
+	if n < 0 {
+		return 0
+	}
+	return n
+}

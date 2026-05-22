@@ -10,6 +10,9 @@ import (
 )
 
 func (m Model) View() string {
+	if !m.Started {
+		return m.newGameView()
+	}
 	switch m.Screen {
 	case screenBuild:
 		return m.buildView()
@@ -36,7 +39,7 @@ func (m Model) mainView() string {
 	}
 
 	leftLines := []string{
-		fmt.Sprintf("Day: %d / %d", m.State.Day, game.SurvivalWinAfterDay),
+		fmt.Sprintf("Day: %d / %d", m.State.Day, m.State.SurvivalWinTarget()),
 		bar("Power", m.State.Power, layout.LeftWidth),
 		bar("Food", m.State.Food, layout.LeftWidth),
 		bar("Morale", m.State.Morale, layout.LeftWidth),
@@ -105,7 +108,7 @@ func (m Model) buildView() string {
 
 func (m Model) helpView() string {
 	help := []string{
-		fmt.Sprintf("Goal: survive %d days or complete 5 Signal Beacon parts.", game.SurvivalWinAfterDay),
+		fmt.Sprintf("Goal: survive %d days or complete %d Signal Beacon parts.", m.State.SurvivalWinTarget(), m.State.MaxBeaconParts),
 		"",
 		"Every day consumes power and food. Low resources damage morale.",
 		"Build facilities to stabilize the colony, then spend power and credits on the beacon.",
