@@ -52,13 +52,15 @@ func (s *State) advanceDay() {
 	}
 }
 
-// applyBuildingProduction grants daily output from completed facilities (see data/buildings.json).
+// applyBuildingProduction grants per-day output from building dailyEffects (JSON order).
+// Runs at the start of advanceDay, before resource upkeep and morale drift.
 func (s *State) applyBuildingProduction() {
-	if lvl := s.BuildingLevel("hydroponics"); lvl > 0 {
-		s.Food += 6 * lvl
-	}
-	if lvl := s.BuildingLevel("solar_array"); lvl > 0 {
-		s.Power += 6 * lvl
+	for _, def := range s.Content.Buildings {
+		lvl := s.BuildingLevel(def.ID)
+		if lvl <= 0 || len(def.DailyEffects) == 0 {
+			continue
+		}
+		s.applyEffects(def.DailyEffects, lvl)
 	}
 }
 

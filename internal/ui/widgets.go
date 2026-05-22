@@ -31,9 +31,14 @@ func buildListItems(state game.State) []list.Item {
 	for _, def := range state.Content.Buildings {
 		level := state.BuildingLevel(def.ID)
 		cost := def.Cost * (level + 1)
-		desc := fmt.Sprintf("Lv. %d/%d  Cost: %d  %s", level, def.MaxLevel, cost, def.Description)
+		var desc string
 		if level >= def.MaxLevel {
 			desc = fmt.Sprintf("Lv. %d/%d  MAX  %s", level, def.MaxLevel, def.Description)
+		} else {
+			desc = fmt.Sprintf("Lv. %d/%d  Cost: %d  %s", level, def.MaxLevel, cost, def.Description)
+		}
+		if note := game.FormatDailyProductionNote(def); note != "" {
+			desc += "  " + note
 		}
 		items = append(items, buildItem{
 			id:          def.ID,
