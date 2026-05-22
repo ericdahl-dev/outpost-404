@@ -117,9 +117,7 @@ func TestTriggerRandomEvent_LiveMatchesReplayByEventID(t *testing.T) {
 	}
 
 	replay := NewStateWithSeed(content, 42)
-	replay.advanceDay()
-	replay.applyEventByID(eventID)
-	replay.Clamp()
+	replay.nextDayWithDetail(map[string]any{"event_id": eventID})
 
 	if diff := snapshotDiff(normalizeSnapshot(live.snapshot()), normalizeSnapshot(replay.snapshot())); diff != "" {
 		t.Fatalf("live NextDay vs replay event_id: %s", diff)

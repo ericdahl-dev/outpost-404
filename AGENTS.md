@@ -78,7 +78,7 @@ Use **TDD** for game logic and balance changes: one behavior per cycle, not a ba
 
 ## Suggested next task
 
-Tick refactor (#22–#26) or extend `dailyEffects` on more buildings; use `game.Simulate` / `SimulateWithSnapshots` and `-replay` for regression checks.
+Extend `dailyEffects` on more buildings or add scenarios; use `game.Simulate` / `SimulateWithSnapshots` and `-replay` for regression checks.
 
 ## Agent skills
 
@@ -93,3 +93,13 @@ Default canonical label vocabulary (`needs-triage`, `needs-info`, `ready-for-age
 ### Domain docs
 
 Single-context repo — one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+## Learned User Preferences
+
+- Never commit or push work directly to `main`; use a feature branch and open a PR.
+
+## Learned Workspace Facts
+
+- CI and releases follow the local `git-green` repo pattern: GitHub Actions (build, `go test -race`, golangci-lint), GoReleaser on `v*` tags, Homebrew formula in `ericdahl-dev/homebrew-tap` (needs `HOMEBREW_TAP_GITHUB_TOKEN`).
+- Shipped binaries embed `data/` JSON; a checkout’s `./data` directory overrides embedded content when present.
+- Headless balance tooling: `go run ./cmd/outpost -simulate scripts/*.json`, `-replay` on JSONL session logs, plus `game.Simulate` / `TestBalanceBaseline` in tests.
