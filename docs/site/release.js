@@ -130,4 +130,16 @@
   }
 
   loadLatestRelease();
+
+  var entries = document.querySelectorAll('.log-entry');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(records) {
+      records.forEach(function(r) {
+        if (r.isIntersecting) { r.target.classList.add('visible'); io.unobserve(r.target); }
+      });
+    }, { threshold: 0.08 });
+    entries.forEach(function(el) { io.observe(el); });
+  } else {
+    entries.forEach(function(el) { el.classList.add('visible'); });
+  }
 })();
