@@ -34,7 +34,14 @@ func TestBalanceBaseline_ReferenceStrategies(t *testing.T) {
 
 			for _, seed := range ReferenceSeeds {
 				t.Run(seedLabel(seed), func(t *testing.T) {
-					final, err := Simulate(content, seed, script.Actions)
+					var final State
+					var err error
+					if strategy.ScenarioID != "" {
+						setup := RunSetup{Seed: seed, ScenarioID: strategy.ScenarioID}
+						final, err = SimulateRun(content, setup, script.Actions)
+					} else {
+						final, err = Simulate(content, seed, script.Actions)
+					}
 					if err != nil {
 						t.Fatalf("Simulate: %v", err)
 					}

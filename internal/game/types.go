@@ -72,6 +72,7 @@ type State struct {
 	SurvivalWinAfterDay   int
 	EventGateSkipAbove    int
 	DailyCreditsIncomeDelta int
+	DailyPowerDelta         int
 	Content        Content
 	SessionLog     Recorder
 	Seed           int64

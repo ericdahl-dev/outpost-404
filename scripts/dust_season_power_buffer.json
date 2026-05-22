@@ -1,0 +1,16 @@
+{
+  "scenario": "dust_season",
+  "description": "Dust Season opener: solar first for power buffer, repair aggressively, skip hydro upgrade until power is stable.",
+  "actions": [
+    { "type": "build", "building_id": "solar_array" },
+    { "type": "build", "building_id": "hydroponics" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "repair" },
+    { "type": "next_day" }
+  ]
+}

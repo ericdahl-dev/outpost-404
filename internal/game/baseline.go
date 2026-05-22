@@ -29,6 +29,7 @@ type BaselineOutcome struct {
 type BaselineStrategy struct {
 	ID             string
 	ScriptFile     string
+	ScenarioID     string // empty = "standard"
 	MinEndDay      int
 	RequireAlive   bool
 	MinBeaconParts int
@@ -42,6 +43,8 @@ func ReferenceStrategies() []BaselineStrategy {
 		noTradeSurvivalBaseline(),
 		beaconRushBaseline(),
 		survival45Baseline(),
+		dustSeasonPowerBufferBaseline(),
+		silentColonyRadioFirstBaseline(),
 	}
 }
 
@@ -132,6 +135,44 @@ func beaconRushBaseline() BaselineStrategy {
 			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
 			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 4},
 			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 3},
+		},
+	}
+}
+
+func dustSeasonPowerBufferBaseline() BaselineStrategy {
+	return BaselineStrategy{
+		ID:           "dust_season_power_buffer",
+		ScriptFile:   "dust_season_power_buffer.json",
+		ScenarioID:   "dust_season",
+		MinEndDay:    6,
+		RequireAlive: true,
+		Expected: map[int64]BaselineOutcome{
+			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+		},
+	}
+}
+
+func silentColonyRadioFirstBaseline() BaselineStrategy {
+	return BaselineStrategy{
+		ID:           "silent_colony_radio_first",
+		ScriptFile:   "silent_colony_radio_first.json",
+		ScenarioID:   "silent_colony",
+		MinEndDay:    6,
+		RequireAlive: true,
+		Expected: map[int64]BaselineOutcome{
+			1:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			7:                   {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			42:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			99:                  {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			100:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			101:                 {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
+			1779403310247544000: {Day: 6, GameOver: false, Won: false, BeaconParts: 0},
 		},
 	}
 }

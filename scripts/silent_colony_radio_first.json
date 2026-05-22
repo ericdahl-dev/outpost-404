@@ -1,0 +1,13 @@
+{
+  "scenario": "silent_colony",
+  "description": "Silent Colony opener: radio tower early to unlock trader events and restore credit income before economy stalls.",
+  "actions": [
+    { "type": "build", "building_id": "solar_array" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "next_day" },
+    { "type": "build", "building_id": "radio_tower" },
+    { "type": "next_day" },
+    { "type": "next_day" }
+  ]
+}
