@@ -1,0 +1,229 @@
+diff --git a/internal/game/replay.go b/internal/game/replay.go
+--- a/internal/game/replay.go
++++ b/internal/game/replay.go
+@@ -127,6 +127,9 @@ func LoadSessionLog(path string) ([]LogEntry, error) {
+ 	if err := scanner.Err(); err != nil {
+ 		return nil, fmt.Errorf("read session log: %w", err)
+ 	}
++	if len(entries) == 0 {
++		return nil, fmt.Errorf("empty session log")
++	}
+ 	return entries, nil
+ }
+ 
+diff --git a/internal/game/sessionlog_test.go b/internal/game/sessionlog_test.go
+--- a/internal/game/sessionlog_test.go
++++ b/internal/game/sessionlog_test.go
+@@ -174,6 +174,58 @@ func TestDefaultSessionLogPath_ReturnsPathUnderCache(t *testing.T) {
+ 	}
+ }
+ 
++func TestLoadSessionLog_missingFile(t *testing.T) {
++	_, err := LoadSessionLog(filepath.Join(t.TempDir(), "missing.jsonl"))
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !strings.Contains(err.Error(), "open session log") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestLoadSessionLog_invalidJSONLine(t *testing.T) {
++	path := filepath.Join(t.TempDir(), "bad.jsonl")
++	if err := os.WriteFile(path, []byte("not json\n"), 0o644); err != nil {
++		t.Fatal(err)
++	}
++	_, err := LoadSessionLog(path)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !strings.Contains(err.Error(), "parse session log line") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestLoadSessionLog_emptyFile(t *testing.T) {
++	path := filepath.Join(t.TempDir(), "empty.jsonl")
++	if err := os.WriteFile(path, nil, 0o644); err != nil {
++		t.Fatal(err)
++	}
++	_, err := LoadSessionLog(path)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !strings.Contains(err.Error(), "empty session log") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestLoadSessionLog_skipsBlankLines(t *testing.T) {
++	path := filepath.Join(t.TempDir(), "sparse.jsonl")
++	line := `{"type":"session_start","snapshot":{"day":1,"power":65,"credits":180,"max_beacon_parts":5}}`
++	if err := os.WriteFile(path, []byte("\n\n"+line+"\n\n"), 0o644); err != nil {
++		t.Fatal(err)
++	}
++	entries, err := LoadSessionLog(path)
++	if err != nil {
++		t.Fatalf("LoadSessionLog: %v", err)
++	}
++	if len(entries) != 1 || entries[0].Type != "session_start" {
++		t.Fatalf("entries = %+v", entries)
++	}
++}
++
+ func readLogLines(t *testing.T, path string) []string {
+ 	t.Helper()
+ 	raw, err := os.ReadFile(path)
+diff --git a/internal/game/replay_test.go b/internal/game/replay_test.go
+--- a/internal/game/replay_test.go
++++ b/internal/game/replay_test.go
+@@ -1,6 +1,7 @@
+ package game
+ 
+ import (
++	"encoding/json"
+ 	"os"
+ 	"path/filepath"
+ 	"strings"
+@@ -101,6 +102,92 @@ func TestReplaySession_MismatchAfterBuildReturnsError(t *testing.T) {
+ 	}
+ }
+ 
++func TestReplaySession_missingSessionStart(t *testing.T) {
++	content := testContentWithEvents()
++	_, err := ReplaySession(content, []LogEntry{{Type: "build", Day: 1}})
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !containsAll(err.Error(), "session log missing session_start") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestReplaySession_sessionStartWithoutSnapshot(t *testing.T) {
++	content := testContentWithEvents()
++	entries := []LogEntry{{Type: "session_start", Detail: map[string]any{"seed": "7"}}}
++	_, err := ReplaySession(content, entries)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !containsAll(err.Error(), "session log missing session_start") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestReplaySession_missingSeed(t *testing.T) {
++	content := testContentWithEvents()
++	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
++	entries := []LogEntry{{Type: "session_start", Snapshot: &start}}
++	_, err := ReplaySession(content, entries)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !containsAll(err.Error(), "session log", "missing seed") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestReplaySession_invalidSeedType(t *testing.T) {
++	content := testContentWithEvents()
++	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
++	entries := []LogEntry{
++		{Type: "session_start", Snapshot: &start, Detail: map[string]any{"seed": true}},
++	}
++	_, err := ReplaySession(content, entries)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !containsAll(err.Error(), "session log", "invalid seed type") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestReplaySession_numericSeedFormsReplay(t *testing.T) {
++	content := testContentWithEvents()
++	seed := int64(7)
++	actions := []SimAction{{Type: "next_day"}}
++
++	final, snaps, err := SimulateWithSnapshots(content, seed, actions)
++	if err != nil {
++		t.Fatalf("SimulateWithSnapshots: %v", err)
++	}
++	start, after := snaps[0], snaps[1]
++
++	cases := []struct {
++		name string
++		seed any
++	}{
++		{name: "string", seed: "7"},
++		{name: "float64", seed: float64(7)},
++		{name: "json.Number", seed: json.Number("7")},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			entries := []LogEntry{
++				{Type: "session_start", Snapshot: &start, Detail: map[string]any{"seed": tc.seed}},
++				{Type: "next_day", Day: 1, Before: &start, After: &after},
++			}
++			got, err := ReplaySession(content, entries)
++			if err != nil {
++				t.Fatalf("ReplaySession: %v", err)
++			}
++			if diff := snapshotDiff(normalizeSnapshot(final.snapshot()), normalizeSnapshot(got.snapshot())); diff != "" {
++				t.Fatalf("snapshot mismatch: %s", diff)
++			}
++		})
++	}
++}
++
+ func TestReplaySession_UnsupportedEntryTypeReturnsError(t *testing.T) {
+ 	content := testContentWithEvents()
+ 	start := Snapshot{Day: 1, Power: 65, Credits: 180, MaxBeacon: 5}
+diff --git a/internal/game/seed_json_test.go b/internal/game/seed_json_test.go
+--- a/internal/game/seed_json_test.go
++++ b/internal/game/seed_json_test.go
+@@ -3,6 +3,7 @@ package game
+ import (
+ 	"encoding/json"
+ 	"strconv"
++	"strings"
+ 	"testing"
+ )
+ 
+@@ -17,6 +18,36 @@ func TestSeedFromDetail_stringRoundTrip(t *testing.T) {
+ 	}
+ }
+ 
++func TestSeedFromDetail_jsonNumber(t *testing.T) {
++	got, err := seedFromDetail(map[string]any{"seed": json.Number("4242")})
++	if err != nil {
++		t.Fatalf("seedFromDetail: %v", err)
++	}
++	if got != 4242 {
++		t.Fatalf("seed = %d, want 4242", got)
++	}
++}
++
++func TestSeedFromDetail_missingSeed(t *testing.T) {
++	_, err := seedFromDetail(nil)
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !strings.Contains(err.Error(), "missing seed") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
++func TestSeedFromDetail_invalidJsonNumber(t *testing.T) {
++	_, err := seedFromDetail(map[string]any{"seed": json.Number("not-a-number")})
++	if err == nil {
++		t.Fatal("expected error")
++	}
++	if !strings.Contains(err.Error(), "invalid seed") {
++		t.Fatalf("error = %q", err)
++	}
++}
++
+ func TestSeedFromDetail_float64LosesPrecision(t *testing.T) {
+ 	want := int64(1779403310247544000)
+ 	raw, err := json.Marshal(map[string]any{"seed": want})
