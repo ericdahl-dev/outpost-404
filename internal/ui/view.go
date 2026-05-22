@@ -31,7 +31,7 @@ func (m Model) mainView() string {
 		return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(boxW).Render(heading+"\n\n"+m.State.Message+"\n\nPress r to restart or q to quit.")
 	}
 
-	left := boxStyle.Width(layout.LeftWidth).Render(strings.Join([]string{
+	leftLines := []string{
 		fmt.Sprintf("Day: %d / %d", m.State.Day, game.SurvivalWinAfterDay),
 		bar("Power", m.State.Power, layout.LeftWidth),
 		bar("Food", m.State.Food, layout.LeftWidth),
@@ -39,7 +39,16 @@ func (m Model) mainView() string {
 		fmt.Sprintf("Credits: %d", m.State.Credits),
 		fmt.Sprintf("Population: %d / %d", m.State.Population, m.State.PopulationCap),
 		fmt.Sprintf("Signal Beacon: %d / %d", m.State.BeaconParts, m.State.MaxBeaconParts),
-	}, "\n"))
+	}
+	for _, w := range game.ActiveWarnings(m.State) {
+		line := "! " + w.Message
+		if w.Severity >= game.SeverityCritical {
+			leftLines = append(leftLines, badStyle.Render(line))
+		} else {
+			leftLines = append(leftLines, warnStyle.Render(line))
+		}
+	}
+	left := boxStyle.Width(layout.LeftWidth).Render(strings.Join(leftLines, "\n"))
 
 	buildings := []string{"Facilities"}
 	nameW := facilityNameWidth(layout.MiddleWidth)

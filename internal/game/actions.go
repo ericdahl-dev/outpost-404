@@ -10,6 +10,9 @@ func (s *State) doAction(typ string, initial map[string]any, fn func(detail map[
 	}
 	fn(detail)
 	s.CheckEnd()
+	if !s.GameOver {
+		s.syncWarnings()
+	}
 	s.recordAction(typ, detail, before, s.snapshot())
 }
 
