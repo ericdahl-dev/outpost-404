@@ -85,14 +85,22 @@ func (s *State) ApplySimAction(a SimAction) {
 
 // Simulate runs a scripted session without the TUI.
 func Simulate(content Content, seed int64, actions []SimAction) (State, error) {
+	final, _, err := SimulateWithSnapshots(content, seed, actions)
+	return final, err
+}
+
+// SimulateWithSnapshots runs a script and records a snapshot after each action.
+func SimulateWithSnapshots(content Content, seed int64, actions []SimAction) (State, []Snapshot, error) {
 	s := NewStateWithSeed(content, seed)
+	snaps := []Snapshot{s.snapshot()}
 	for _, a := range actions {
 		if s.GameOver {
 			break
 		}
 		s.ApplySimAction(a)
+		snaps = append(snaps, s.snapshot())
 	}
-	return s, nil
+	return s, snaps, nil
 }
 
 // LoadSessionLog reads JSONL session records from path.

@@ -74,14 +74,14 @@ func (s *State) CheckEnd() {
 		s.GameOver = true
 		s.Won = true
 		s.Message = "Signal Beacon complete. Rescue is inbound. Outpost 404 survives."
-	} else if s.Day > 30 {
-		s.GameOver = true
-		s.Won = true
-		s.Message = "You survived 30 days. Outpost 404 is stable enough to become permanent."
 	} else if s.Power <= 0 || s.Food <= 0 || s.Morale <= 0 || s.Population <= 0 {
 		s.GameOver = true
 		s.Won = false
 		s.Message = fmt.Sprintf("Outpost collapse on day %d. Final stats: power %d, food %d, morale %d, population %d.", s.Day, s.Power, s.Food, s.Morale, s.Population)
+	} else if s.Day > 30 {
+		s.GameOver = true
+		s.Won = true
+		s.Message = "You survived 30 days. Outpost 404 is stable enough to become permanent."
 	}
 
 	if s.GameOver {

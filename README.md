@@ -156,7 +156,7 @@ Logs recorded before seeds were added cannot be replayed; record a new session w
 
 Win by doing either of these:
 
-- **Survive 30 days** — advance to day 31 with power, food, morale, and population still above zero (checked each day; win triggers when day becomes 31).
+- **Survive 30 days** — reach day 31 with power, food, morale, and population still above zero. Collapse is checked before the survival win, so hitting zero on the final day still loses.
 - **Signal Beacon** — complete 5 beacon parts before collapse.
 
 Lose if power, food, morale, or population hits zero on any day.
@@ -183,4 +183,4 @@ AGENTS.md                 # coding-agent instructions
 4. Add facility upkeep and passive per-day production.
 5. Add a map panel or ASCII base layout.
 6. Expand `internal/game` tests (events, repair/trade, balance).
-7. Further tighten survival margin (stats at day-31 win) without breaking `survival_30` baseline.
+7. JSON-driven passive building production (#19).
