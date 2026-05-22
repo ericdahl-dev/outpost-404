@@ -119,6 +119,7 @@ func (m Model) helpView() string {
 		"",
 		"Keys: b build, r repair, t trade, s beacon, n/space next day, esc back, q quit.",
 		"Event log scrolls with arrow keys on the main screen.",
+		"Log prefixes: ! alert  + gain  $ trade  * milestone  > event  · system",
 	}
 	layout := MainLayoutFor(m.TermWidth, m.TermHeight)
 	return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(layout.BoxWidth).Render(strings.Join(help, "\n"))

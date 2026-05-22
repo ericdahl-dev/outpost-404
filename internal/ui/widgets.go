@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/viewport"
@@ -110,11 +109,7 @@ func newLogViewport(termWidth, termHeight int) viewport.Model {
 }
 
 func syncLogViewport(vp viewport.Model, lines []string) viewport.Model {
-	content := strings.Join(lines, "\n")
-	if content == "" {
-		content = mutedStyle.Render("Quiet shift. No new entries.")
-	}
-	vp.SetContent(content)
+	vp.SetContent(FormatColonyLogLines(lines))
 	vp.GotoBottom()
 	return vp
 }

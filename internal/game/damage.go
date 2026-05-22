@@ -39,13 +39,13 @@ func (s *State) damageWithDetail(detail map[string]any, id string) {
 	}
 	def, ok := s.FindBuilding(id)
 	if !ok {
-		s.AddLog("Unknown building.")
+		s.AddLogKind(LogSystem, "Unknown building.")
 		detail["ok"] = false
 		detail["reason"] = "unknown_building"
 		return
 	}
 	if s.BuildingLevel(id) <= 0 {
-		s.AddLog(fmt.Sprintf("%s is not built yet.", def.Name))
+		s.AddLogKind(LogSystem, fmt.Sprintf("%s is not built yet.", def.Name))
 		detail["ok"] = false
 		detail["reason"] = "not_built"
 		return

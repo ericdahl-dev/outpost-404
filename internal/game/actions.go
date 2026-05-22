@@ -33,14 +33,14 @@ func (s *State) buildWithDetail(detail map[string]any, id string) {
 	}
 	def, ok := s.FindBuilding(id)
 	if !ok {
-		s.AddLog("Unknown building.")
+		s.AddLogKind(LogSystem, "Unknown building.")
 		detail["ok"] = false
 		detail["reason"] = "unknown_building"
 		return
 	}
 	level := s.BuildingLevel(id)
 	if level >= def.MaxLevel {
-		s.AddLog(fmt.Sprintf("%s is already at max level.", def.Name))
+		s.AddLogKind(LogSystem, fmt.Sprintf("%s is already at max level.", def.Name))
 		detail["ok"] = false
 		detail["reason"] = "max_level"
 		return
@@ -49,7 +49,7 @@ func (s *State) buildWithDetail(detail map[string]any, id string) {
 	cost := def.Cost * (level + 1)
 	detail["cost"] = cost
 	if s.Credits < cost {
-		s.AddLog(fmt.Sprintf("Not enough credits for %s. Need %d.", def.Name, cost))
+		s.AddLogKind(LogSystem, fmt.Sprintf("Not enough credits for %s. Need %d.", def.Name, cost))
 		detail["ok"] = false
 		detail["reason"] = "insufficient_credits"
 		return
@@ -72,7 +72,7 @@ func (s *State) Repair() {
 	id := s.firstDamagedBuildingID()
 	if id == "" {
 		s.doAction("repair", nil, func(detail map[string]any) {
-			s.AddLog("No damaged facilities need repair.")
+			s.AddLogKind(LogSystem, "No damaged facilities need repair.")
 			detail["ok"] = false
 			detail["reason"] = "nothing_damaged"
 		})
@@ -95,20 +95,20 @@ func (s *State) repairWithDetail(detail map[string]any, id string) {
 	}
 	def, ok := s.FindBuilding(id)
 	if !ok {
-		s.AddLog("Unknown building.")
+		s.AddLogKind(LogSystem, "Unknown building.")
 		detail["ok"] = false
 		detail["reason"] = "unknown_building"
 		return
 	}
 	b, built := s.Buildings[id]
 	if !built || b.Level <= 0 {
-		s.AddLog(fmt.Sprintf("%s is not built yet.", def.Name))
+		s.AddLogKind(LogSystem, fmt.Sprintf("%s is not built yet.", def.Name))
 		detail["ok"] = false
 		detail["reason"] = "not_built"
 		return
 	}
 	if !b.Damaged {
-		s.AddLog(fmt.Sprintf("%s is not damaged.", def.Name))
+		s.AddLogKind(LogSystem, fmt.Sprintf("%s is not damaged.", def.Name))
 		detail["ok"] = false
 		detail["reason"] = "not_damaged"
 		return
@@ -116,7 +116,7 @@ func (s *State) repairWithDetail(detail map[string]any, id string) {
 	cost := RepairCost(b.Level)
 	detail["cost"] = cost
 	if s.Credits < cost {
-		s.AddLog(fmt.Sprintf("Repair %s needs %d credits.", def.Name, cost))
+		s.AddLogKind(LogSystem, fmt.Sprintf("Repair %s needs %d credits.", def.Name, cost))
 		detail["ok"] = false
 		detail["reason"] = "insufficient_credits"
 		return
@@ -143,7 +143,7 @@ func (s *State) tradeWithDetail(detail map[string]any) {
 		return
 	}
 	if s.Food <= MinFoodToTrade {
-		s.AddLog(fmt.Sprintf("Trade refused: food reserves too low (need more than %d).", MinFoodToTrade))
+		s.AddLogKind(LogSystem, fmt.Sprintf("Trade refused: food reserves too low (need more than %d).", MinFoodToTrade))
 		detail["ok"] = false
 		detail["reason"] = "low_food"
 		return
@@ -169,7 +169,7 @@ func (s *State) beaconWithDetail(detail map[string]any) {
 		return
 	}
 	if s.Power < 18 || s.Credits < 50 {
-		s.AddLog("Beacon work requires at least 18 power and 50 credits.")
+		s.AddLogKind(LogSystem, "Beacon work requires at least 18 power and 50 credits.")
 		detail["ok"] = false
 		detail["reason"] = "requirements_not_met"
 		return
