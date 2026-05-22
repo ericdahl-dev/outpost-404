@@ -39,9 +39,9 @@ func TestAdvanceDay_AppliesBuildingProductionBeforeUpkeep(t *testing.T) {
 
 	s.advanceDay()
 
-	// +6 daily food then -8 upkeep (pop 8) => net -2 from food 10 => 8
-	if s.Food != 8 {
-		t.Fatalf("Food = %d, want 8 (production before upkeep)", s.Food)
+	want := 10 + 6 - DailyFoodUpkeep(s.Population)
+	if s.Food != want {
+		t.Fatalf("Food = %d, want %d (production before upkeep)", s.Food, want)
 	}
 }
 
@@ -56,9 +56,10 @@ func TestHydroDailyProduction_AccumulatesOverMultipleDays(t *testing.T) {
 		s.advanceDay()
 	}
 
-	// +12 food/day (6*2), -8 upkeep => +4/day for 3 days => 62
-	if s.Food != 62 {
-		t.Fatalf("Food = %d, want 62 after 3 days of hydro L2 production", s.Food)
+	net := 12 - DailyFoodUpkeep(s.Population)
+	want := 50 + net*3
+	if s.Food != want {
+		t.Fatalf("Food = %d, want %d after 3 days of hydro L2 production", s.Food, want)
 	}
 	if s.Day != 4 {
 		t.Fatalf("Day = %d, want 4", s.Day)
@@ -76,9 +77,10 @@ func TestSolarDailyProduction_AccumulatesPowerOverMultipleDays(t *testing.T) {
 		s.advanceDay()
 	}
 
-	// +6 power/day, -10 upkeep (pop 8) => -4/day => 50-12 = 38
-	if s.Power != 38 {
-		t.Fatalf("Power = %d, want 38 after 3 days of solar production", s.Power)
+	net := 6 - DailyPowerUpkeep(s.Population)
+	want := 50 + net*3
+	if s.Power != want {
+		t.Fatalf("Power = %d, want %d after 3 days of solar production", s.Power, want)
 	}
 }
 

@@ -14,16 +14,16 @@ func TestNextDay_AdvancesDayAndConsumesResources(t *testing.T) {
 	if s.Day != startDay+1 {
 		t.Fatalf("Day = %d, want %d", s.Day, startDay+1)
 	}
-	wantPower := startPower - (6 + s.Population/2)
+	wantPower := startPower - DailyPowerUpkeep(s.Population)
 	if s.Power != wantPower {
 		t.Fatalf("Power = %d, want %d", s.Power, wantPower)
 	}
-	wantFood := startFood - (4 + s.Population/2)
+	wantFood := startFood - DailyFoodUpkeep(s.Population)
 	if s.Food != wantFood {
 		t.Fatalf("Food = %d, want %d", s.Food, wantFood)
 	}
-	if s.Credits != startCredits+18 {
-		t.Fatalf("Credits = %d, want %d", s.Credits, startCredits+18)
+	if s.Credits != startCredits+DailyCreditsIncome {
+		t.Fatalf("Credits = %d, want %d", s.Credits, startCredits+DailyCreditsIncome)
 	}
 }
 
