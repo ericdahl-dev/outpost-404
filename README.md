@@ -133,6 +133,8 @@ seed=42 day=5 won=false game_over=true beacon=0/5 power=40 food=0 morale=55 cred
 
 You can also call `game.Simulate` from Go tests (see `internal/game/replay.go`).
 
+**Balance baseline** — three reference scripts (`scripts/conservative.json`, `no_trade_survival.json`, `beacon_rush.json`) run across fixed seeds in `go test`; see [docs/balance.md](docs/balance.md) for seeds, viability rules, and how to update expectations after tuning.
+
 Logs recorded before seeds were added cannot be replayed; record a new session with the current build.
 
 ## Controls
