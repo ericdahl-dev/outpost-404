@@ -64,16 +64,6 @@ func (s *State) applyBuildingProduction() {
 	}
 }
 
-func (s *State) applyEventByID(id string) {
-	for _, event := range s.Content.Events {
-		if event.ID == id {
-			s.applyEffects(event.Effects, 1)
-			s.AddLog(event.Title + ": " + event.Description)
-			return
-		}
-	}
-}
-
 func (s *State) TriggerRandomEvent() string {
 	s.ensureRNG()
 	if !RandomEventRollOccurs(s.rng.Intn(RandomEventRollSides)) {
@@ -91,7 +81,6 @@ func (s *State) TriggerRandomEvent() string {
 	}
 
 	event := candidates[s.rng.Intn(len(candidates))]
-	s.applyEffects(event.Effects, 1)
-	s.AddLog(event.Title + ": " + event.Description)
+	s.applyEvent(event)
 	return event.ID
 }
