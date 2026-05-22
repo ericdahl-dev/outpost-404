@@ -2,7 +2,7 @@
   {
     "id": "solar_array",
     "name": "Solar Array",
-    "description": "One-time power buffer; ongoing +6 power per level each day.",
+    "description": "One-time +20 power buffer; ongoing +10 power per level each day.",
     "cost": 70,
     "maxLevel": 3,
     "effects": {
@@ -15,7 +15,7 @@
   {
     "id": "hydroponics",
     "name": "Hydroponics",
-    "description": "Food stockpile on build; ongoing +6 food per level each day.",
+    "description": "+22 food on build; ongoing +6 food per level each day.",
     "cost": 65,
     "maxLevel": 3,
     "effects": {
@@ -28,7 +28,7 @@
   {
     "id": "habitat",
     "name": "Habitat",
-    "description": "Population cap on build; +1 morale per level each day.",
+    "description": "+3 population cap and +4 morale on build; +1 morale per level each day.",
     "cost": 90,
     "maxLevel": 3,
     "effects": {
@@ -42,7 +42,7 @@
   {
     "id": "workshop",
     "name": "Workshop",
-    "description": "Morale on build; +1 morale per level each day from crew culture.",
+    "description": "+10 morale and +10 credits on build; +1 morale per level each day from crew culture.",
     "cost": 85,
     "maxLevel": 2,
     "effects": {
