@@ -35,6 +35,9 @@ type AutosaveFile struct {
 	Won                     bool           `json:"won"`
 	Message                 string         `json:"message,omitempty"`
 	WarningLevels           map[string]int `json:"warning_levels,omitempty"`
+	MinPowerSeen            int            `json:"min_power_seen,omitempty"`
+	MinFoodSeen             int            `json:"min_food_seen,omitempty"`
+	MinMoraleSeen           int            `json:"min_morale_seen,omitempty"`
 }
 
 type SavedBuilding struct {
@@ -94,6 +97,9 @@ func (s *State) toAutosaveFile() AutosaveFile {
 		Won:                     s.Won,
 		Message:                 s.Message,
 		WarningLevels:           warn,
+		MinPowerSeen:            s.MinPowerSeen,
+		MinFoodSeen:             s.MinFoodSeen,
+		MinMoraleSeen:           s.MinMoraleSeen,
 	}
 }
 
@@ -168,6 +174,12 @@ func stateFromAutosave(file AutosaveFile, content Content, profiles RunProfiles)
 		Won:                     file.Won,
 		Message:                 file.Message,
 		WarningLevels:           warn,
+		MinPowerSeen:            file.MinPowerSeen,
+		MinFoodSeen:             file.MinFoodSeen,
+		MinMoraleSeen:           file.MinMoraleSeen,
+	}
+	if s.MinPowerSeen == 0 && s.MinFoodSeen == 0 && s.MinMoraleSeen == 0 {
+		s.initVitalLows()
 	}
 	s.rng = replayRNG(s.Seed, s.rngDrawMods)
 	if s.ScenarioID == "" {

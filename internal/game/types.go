@@ -81,4 +81,7 @@ type State struct {
 	Won            bool
 	Message        string
 	WarningLevels  map[string]WarningSeverity
+	MinPowerSeen   int
+	MinFoodSeen    int
+	MinMoraleSeen  int
 }
