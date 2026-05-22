@@ -58,8 +58,9 @@ func TestTryColonistArrival_OnIntervalDay(t *testing.T) {
 	if s.Population != 9 {
 		t.Fatalf("Population = %d, want 9", s.Population)
 	}
-	if len(s.Log) == 0 || s.Log[0] != colonistArrivalLog {
-		t.Fatalf("log = %q, want colonist arrival line", s.Log[0])
+	wantLog := string(LogGain) + " " + colonistArrivalLog
+	if len(s.Log) == 0 || s.Log[0] != wantLog {
+		t.Fatalf("log = %q, want %q", s.Log[0], wantLog)
 	}
 }
 

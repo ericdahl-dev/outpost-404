@@ -29,5 +29,5 @@ func (s *State) tryColonistArrival() {
 		return
 	}
 	s.Population++
-	s.AddLog(colonistArrivalLog)
+	s.AddLogKind(LogGain, colonistArrivalLog)
 }

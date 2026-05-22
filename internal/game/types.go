@@ -65,6 +65,7 @@ type State struct {
 	MaxBeaconParts int
 	Buildings      map[string]Building
 	Log            []string
+	KeyMoments     []string
 	Content        Content
 	SessionLog     Recorder
 	Seed           int64
