@@ -44,12 +44,12 @@
       },
       "maxBeaconParts": 5,
       "survivalWinAfterDay": 45,
-      "modifiers": { "eventGateSkipAbove": 52 }
+      "modifiers": { "eventGateSkipAbove": 52, "dailyPowerDelta": 3 }
     },
     {
       "id": "silent_colony",
       "name": "Silent Colony",
-      "description": "Isolated start; trader signals need a Radio Tower on the air.",
+      "description": "Isolated start; trader signals need a Radio Tower on the air. Supply runs cost more — earn the antenna.",
       "starting": {
         "power": 60,
         "food": 58,
@@ -59,12 +59,13 @@
         "populationCap": 10
       },
       "maxBeaconParts": 5,
-      "survivalWinAfterDay": 45
+      "survivalWinAfterDay": 45,
+      "modifiers": { "dailyCreditsIncomeDelta": -8 }
     },
     {
       "id": "beacon_rush",
       "name": "Beacon Rush",
-      "description": "Finish the Signal Beacon in 3 parts instead of 5.",
+      "description": "Finish the Signal Beacon in 3 parts instead of 5. Supply runners are motivated — credits flow faster.",
       "starting": {
         "power": 65,
         "food": 60,
@@ -74,7 +75,8 @@
         "populationCap": 10
       },
       "maxBeaconParts": 3,
-      "survivalWinAfterDay": 45
+      "survivalWinAfterDay": 45,
+      "modifiers": { "dailyCreditsIncomeDelta": 7 }
     }
   ],
   "difficulties": [

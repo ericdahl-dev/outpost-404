@@ -23,6 +23,7 @@ type StartingResources struct {
 type RunModifiers struct {
 	EventGateSkipAbove      int `json:"eventGateSkipAbove,omitempty"`
 	DailyCreditsIncomeDelta int `json:"dailyCreditsIncomeDelta,omitempty"`
+	DailyPowerDelta         int `json:"dailyPowerDelta,omitempty"`
 }
 
 // ScenarioDef is a selectable run profile from data/scenarios.json.
@@ -133,6 +134,7 @@ func mergeRunModifiers(base, overlay RunModifiers) RunModifiers {
 		out.EventGateSkipAbove = overlay.EventGateSkipAbove
 	}
 	out.DailyCreditsIncomeDelta += overlay.DailyCreditsIncomeDelta
+	out.DailyPowerDelta += overlay.DailyPowerDelta
 	return out
 }
 
@@ -217,6 +219,7 @@ func NewRun(content Content, profiles RunProfiles, seed int64, scenarioID, diffi
 		s.EventGateSkipAbove = mods.EventGateSkipAbove
 	}
 	s.DailyCreditsIncomeDelta = mods.DailyCreditsIncomeDelta
+	s.DailyPowerDelta = mods.DailyPowerDelta
 
 	s.Seed = seed
 	s.rngDrawMods = nil

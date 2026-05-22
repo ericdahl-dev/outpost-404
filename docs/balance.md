@@ -79,3 +79,24 @@ Override the minimum locally with `MIN_GAME_COVERAGE=85 ./scripts/check-game-cov
 ## Building daily production
 
 `data/buildings.json` may include `dailyEffects` (per-level per day). `advanceDay` applies them **before** power/food upkeep and morale drift (`applyBuildingProduction` in `internal/game/tick.go`). One-time build bonuses stay in `effects`.
+
+## Scenarios — strategic identity
+
+Each non-standard scenario has a situational mechanic that rewards a distinct opener.
+
+| Scenario | Strategic hook | Good opener |
+|----------|----------------|-------------|
+| **Dust Season** | Extra `dailyPowerDelta: +3` drain from regolith storms; higher event frequency (`eventGateSkipAbove: 52`). Power buffer depletes 3× faster, and damaged buildings halve output. | Build solar array first, repair aggressively rather than saving credits. The `dust_season_power_buffer.json` script demonstrates this. |
+| **Silent Colony** | `dailyCreditsIncomeDelta: -8` — supply runs arrive sporadically until the radio is on air. Credit flow is tight until a Radio Tower is built (which also unlocks `trader_arrives` events). | Radio Tower early, before a second hydro or solar upgrade. `silent_colony_radio_first.json` demonstrates the cost/benefit. |
+| **Beacon Rush** | `maxBeaconParts: 3` and `dailyCreditsIncomeDelta: +7` — motivated supply runners. You can reach a win-beacon faster without grinding Hydro L3, because the credit income more than offsets skipping one food upgrade. | Skip Hydro/Solar L3 and divert credits to beacon work. The standard `beacon_rush.json` still validates this path. |
+| **First Landing** | Onboarding cushion — extra credits and slightly better morale/food. No strategic hook; same viable openers as Standard Run. |
+
+### Scenario simulate scripts
+
+```bash
+# Dust Season — solar-first, repair-heavy opener
+outpost -simulate scripts/dust_season_power_buffer.json -seeds 1,7,42
+
+# Silent Colony — radio tower early
+outpost -simulate scripts/silent_colony_radio_first.json -seeds 1,7,42
+```
