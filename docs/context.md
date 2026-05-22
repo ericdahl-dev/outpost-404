@@ -1,5 +1,7 @@
 # Outpost 404 Context
 
+**Domain glossary (player-facing terms):** [CONTEXT.md](../CONTEXT.md). This file is product/stack direction; implementation plans live in [gameplay-depth-plan.md](gameplay-depth-plan.md) and [tui-graphics-plan.md](tui-graphics-plan.md).
+
 ## Origin
 
 Public landing page: [ericdahl-dev.github.io/outpost-404](https://ericdahl-dev.github.io/outpost-404/) (static site in `docs/site/`, deployed via GitHub Pages).

@@ -178,7 +178,9 @@ data/buildings.json       # data-driven building definitions (incl. dailyEffects
 data/events.json          # data-driven random events
 scripts/                  # balance reference scripts + check-game-coverage.sh
 docs/site/                # GitHub Pages landing (deployed on push to main)
+CONTEXT.md                # domain glossary (player-facing terms)
 docs/context.md           # design context and direction
+docs/gameplay-depth-plan.md  # v0.2 gameplay decisions and issue order
 docs/balance.md           # baseline seeds, scripts, coverage policy
 AGENTS.md                 # coding-agent instructions
 ```
