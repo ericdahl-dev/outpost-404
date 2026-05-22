@@ -44,7 +44,13 @@ func (m Model) mainView() string {
 	buildings := []string{"Facilities"}
 	nameW := facilityNameWidth(layout.MiddleWidth)
 	for _, def := range m.State.Content.Buildings {
-		buildings = append(buildings, fmt.Sprintf("%-*s Lv. %d/%d", nameW, def.Name, m.State.BuildingLevel(def.ID), def.MaxLevel))
+		line := fmt.Sprintf("%-*s Lv. %d/%d", nameW, def.Name, m.State.BuildingLevel(def.ID), def.MaxLevel)
+		if lvl := m.State.BuildingLevel(def.ID); lvl > 0 {
+			if note := game.FormatDailyProductionNote(def); note != "" {
+				line += "  " + mutedStyle.Render(note)
+			}
+		}
+		buildings = append(buildings, line)
 	}
 	middle := boxStyle.Width(layout.MiddleWidth).Render(strings.Join(buildings, "\n"))
 

@@ -13,6 +13,9 @@ func TestLoadEmbeddedContent_BuildingsHaveDailyEffectsWhereExpected(t *testing.T
 	wantDaily := map[string]map[string]int{
 		"hydroponics":  {"food": 6},
 		"solar_array":  {"power": 6},
+		"habitat":      {"morale": 1},
+		"workshop":     {"morale": 1},
+		"radio_tower":  {"credits": 2, "morale": 1},
 	}
 	for id, want := range wantDaily {
 		def, ok := content.FindBuilding(id)
@@ -42,6 +45,29 @@ func TestAdvanceDay_AppliesBuildingProductionBeforeUpkeep(t *testing.T) {
 	want := 10 + 6 - DailyFoodUpkeep(s.Population)
 	if s.Food != want {
 		t.Fatalf("Food = %d, want %d (production before upkeep)", s.Food, want)
+	}
+}
+
+func TestHydroDailyProduction_ConsumesPowerPerLevel(t *testing.T) {
+	content := testContent()
+	for i := range content.Buildings {
+		if content.Buildings[i].ID == "hydroponics" {
+			content.Buildings[i].DailyEffects = map[string]int{"food": 6, "power": -1}
+			break
+		}
+	}
+	s := NewState(content)
+	s.Buildings["hydroponics"] = Building{DefID: "hydroponics", Level: 2}
+	s.Food = 50
+	s.Power = 50
+	s.Morale = 50
+
+	s.advanceDay()
+
+	foodNet := 12 - DailyFoodUpkeep(s.Population)
+	powerNet := -2 - DailyPowerUpkeep(s.Population)
+	if s.Food != 50+foodNet || s.Power != 50+powerNet {
+		t.Fatalf("Food=%d Power=%d, want %d/%d", s.Food, s.Power, 50+foodNet, 50+powerNet)
 	}
 }
 
@@ -176,6 +202,36 @@ func TestFormatDailyProductionNote(t *testing.T) {
 	got := FormatDailyProductionNote(hydro)
 	if got != "Daily: +6 food/lv" {
 		t.Fatalf("FormatDailyProductionNote = %q, want Daily: +6 food/lv", got)
+	}
+}
+
+func TestWorkshopDailyProduction_AddsMoralePerLevel(t *testing.T) {
+	s := newTestState()
+	s.Buildings["workshop"] = Building{DefID: "workshop", Level: 2}
+	s.Morale = 40
+	s.Power = 80
+	s.Food = 80
+
+	s.advanceDay()
+
+	want := 40 + 2 + ComfortMoraleGain
+	if s.Morale != want {
+		t.Fatalf("Morale = %d, want %d", s.Morale, want)
+	}
+}
+
+func TestHabitatDailyProduction_AddsMoralePerLevel(t *testing.T) {
+	s := newTestState()
+	s.Buildings["habitat"] = Building{DefID: "habitat", Level: 2}
+	s.Morale = 50
+	s.Power = 80
+	s.Food = 80
+
+	s.advanceDay()
+
+	want := 50 + 2 + ComfortMoraleGain
+	if s.Morale != want {
+		t.Fatalf("Morale = %d, want %d", s.Morale, want)
 	}
 }
 

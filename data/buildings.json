@@ -11,7 +11,7 @@
   {
     "id": "hydroponics",
     "name": "Hydroponics",
-    "description": "One-time food stockpile; ongoing +6 food per level each day.",
+    "description": "Food stockpile on build; ongoing +6 food per level each day.",
     "cost": 65,
     "maxLevel": 3,
     "effects": { "food": 22 },
@@ -20,25 +20,28 @@
   {
     "id": "habitat",
     "name": "Habitat",
-    "description": "Raises population cap and morale.",
+    "description": "Population cap on build; +1 morale per level each day.",
     "cost": 90,
     "maxLevel": 3,
-    "effects": { "populationCap": 3, "morale": 4 }
+    "effects": { "populationCap": 3, "morale": 4 },
+    "dailyEffects": { "morale": 1 }
   },
   {
     "id": "workshop",
     "name": "Workshop",
-    "description": "Improves maintenance culture and morale.",
+    "description": "Morale on build; +1 morale per level each day from crew culture.",
     "cost": 85,
     "maxLevel": 2,
-    "effects": { "morale": 10, "credits": 10 }
+    "effects": { "morale": 10, "credits": 10 },
+    "dailyEffects": { "morale": 1 }
   },
   {
     "id": "radio_tower",
     "name": "Radio Tower",
-    "description": "Brings trade contacts and beacon progress confidence.",
+    "description": "Trade contacts on build; +2 credits and +1 morale per level each day.",
     "cost": 110,
     "maxLevel": 2,
-    "effects": { "credits": 35, "morale": 7 }
+    "effects": { "credits": 35, "morale": 7 },
+    "dailyEffects": { "credits": 2, "morale": 1 }
   }
 ]
