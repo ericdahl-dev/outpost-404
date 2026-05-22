@@ -11,6 +11,9 @@ import (
 
 func (m Model) View() string {
 	if !m.Started {
+		if m.Screen == screenTitle {
+			return m.titleView()
+		}
 		return m.newGameView()
 	}
 	switch m.Screen {

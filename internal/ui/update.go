@@ -26,10 +26,21 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				_ = m.State.PersistAutosave()
 			}
 			return m, tea.Quit
+		case "esc":
+			if !m.Started && m.Screen == screenNewGame && !m.AwaitingOverwrite {
+				m.Screen = screenTitle
+				return m, nil
+			}
 		}
 
 		if !m.Started {
-			return updateNewGame(m, msg)
+			switch m.Screen {
+			case screenTitle:
+				return updateTitle(m, msg)
+			case screenNewGame:
+				return updateNewGame(m, msg)
+			}
+			return m, nil
 		}
 
 		switch msg.String() {
@@ -40,7 +51,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.Screen = screenHelp
 			}
 		case "esc":
-			m.Screen = screenMain
+			if m.Screen != screenMain {
+				m.Screen = screenMain
+			}
 		}
 
 		if m.State.GameOver {
@@ -48,7 +61,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "r":
 				m.State.EndSession()
 				m.Started = false
-				m.Screen = screenNewGame
+				m.Screen = screenTitle
 				m.State = game.State{}
 			}
 			return m, nil
@@ -60,6 +73,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case screenBuild:
 			return updateBuild(m, msg)
 		}
+	}
+	return m, nil
+}
+
+func updateTitle(m Model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
+	switch msg.String() {
+	case "s", "S", "enter":
+		m.Screen = screenNewGame
+	case "c", "C":
+		if m.CanContinue {
+			if err := m.continueRun(); err != nil {
+				fmt.Fprintf(os.Stderr, "could not load autosave: %v\n", err)
+			}
+		}
+	case "q", "Q", "ctrl+c":
+		return m, tea.Quit
 	}
 	return m, nil
 }
@@ -90,12 +119,6 @@ func updateNewGame(m Model, msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	case "down", "j":
 		if m.DifficultyIndex < len(m.Profiles.Difficulties)-1 {
 			m.DifficultyIndex++
-		}
-	case "c", "C":
-		if m.CanContinue {
-			if err := m.continueRun(); err != nil {
-				fmt.Fprintf(os.Stderr, "could not load autosave: %v\n", err)
-			}
 		}
 	case "enter":
 		if m.CanContinue {

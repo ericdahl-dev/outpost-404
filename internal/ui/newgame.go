@@ -33,10 +33,10 @@ func (m Model) newGameView() string {
 		mutedStyle.Render(diff.Description),
 		"",
 	}
-	if m.CanContinue {
-		lines = append(lines, warnStyle.Render("Saved run found — [C] continue"))
-	}
-	lines = append(lines, mutedStyle.Render("[←/→] scenario  [↑/↓] difficulty  [Enter] new run  [Q] quit"))
+	lines = append(lines,
+		mutedStyle.Render("[←/→] scenario  [↑/↓] difficulty"),
+		mutedStyle.Render("[Enter] start  [Esc] back to title  [Q] quit"),
+	)
 	return titleStyle.Render("Outpost 404") + "\n\n" + boxStyle.Width(layout.BoxWidth).Render(strings.Join(lines, "\n"))
 }
 
