@@ -110,15 +110,28 @@ go run ./cmd/outpost -replay ./logs/my-run.jsonl
 go run ./cmd/outpost -seed 42
 ```
 
-**Headless scripts** use `game.Simulate` in Go (see `internal/game/replay.go`):
+**Headless simulate** runs a JSON script without the TUI (for balance tuning and regression checks):
 
-```go
-final, err := game.Simulate(content, 42, []game.SimAction{
-    {Type: "build", BuildingID: "solar_array"},
-    {Type: "next_day"},
-    {Type: "beacon"},
-})
+```bash
+go run ./cmd/outpost -simulate scripts/conservative.json
+go run ./cmd/outpost -simulate scripts/conservative.json -seed 99
+go run ./cmd/outpost -simulate scripts/conservative.json -seeds 1,42,99,100,101
 ```
+
+Script formats:
+
+- Array of actions: `[{"type":"build","building_id":"solar_array"},{"type":"next_day"}]`
+- Object with optional seed: `{"seed":42,"actions":[...]}`
+
+Action `type` values: `build`, `repair`, `trade`, `beacon`, `next_day`. Use `-seed` to override the script seed; use `-seeds` for a comma-separated sweep (prints one outcome line per seed and a win count on stderr).
+
+Example output:
+
+```text
+seed=42 day=5 won=false game_over=true beacon=0/5 power=40 food=0 morale=55 credits=30
+```
+
+You can also call `game.Simulate` from Go tests (see `internal/game/replay.go`).
 
 Logs recorded before seeds were added cannot be replayed; record a new session with the current build.
 
