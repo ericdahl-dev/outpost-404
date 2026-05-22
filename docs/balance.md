@@ -46,7 +46,8 @@ go run ./cmd/outpost -simulate scripts/survival_30.json -seeds 1,7,42,99,100,101
 - **No-trade reaches day 14 alive** — mid-game without trade; baseline expects survival through the full script after #16 food/trade/production tuning.
 - **Conservative mid day 11+** — early hydro/solar path must not collapse on days 3–5 and should reach day 11 on every reference seed.
 - **Beacon rush beacon ≥2** — rush path still buys parts before collapse; power/credit gates for `beacon` still reachable.
-- **Survival 30 day 31 win** — `scripts/survival_30.json` with exactly 30 day advances; `TestSurvival30_WinsOnAllReferenceSeeds` and `survival_30` baseline strategy.
+- **Survival 30 day 31 win** — `scripts/survival_30.json` with exactly 30 `next_day` actions; hydro/solar L3, workshop, repairs; `survival_30` baseline + `TestSurvival30_*`.
+- **Survival stat integrity (#31)** — `CheckEnd` treats collapse before the day-31 win. `TestSurvival30_NoVitalHitsZeroDuringScript` walks snapshots; end floors: power ≥ `SurvivalMinEndPower` (15), food ≥ `SurvivalMinEndFood` (10) on all reference seeds.
 - **Exact mismatch** — RNG or rules changed; update `baseline.go` expectations only after intentional balance work (#16+).
 
 Win-rate sweeps (`sweep: N/M won`) are for exploration; the automated baseline uses **documented outcomes**, not “must win on all seeds.”

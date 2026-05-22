@@ -44,11 +44,15 @@ func TestCheckEnd_LossWhenCriticalResourceDepleted(t *testing.T) {
 func TestCheckEnd_WinAfterSurviving30Days(t *testing.T) {
 	s := newTestState()
 	s.Day = 31
+	s.Power = 20
+	s.Food = 20
+	s.Morale = 50
+	s.Population = 8
 
 	s.CheckEnd()
 
 	if !s.GameOver || !s.Won {
-		t.Fatal("expected win after day 31")
+		t.Fatal("expected win after day 31 with positive vitals")
 	}
 }
 

@@ -78,7 +78,7 @@ Use **TDD** for game logic and balance changes: one behavior per cycle, not a ba
 
 ## Suggested next task
 
-Balance the 30-day win path; use `game.Simulate` and `-replay` for regression checks.
+Tighten survival margins (#31) or passive building production (#19); use `game.Simulate` / `SimulateWithSnapshots` and `-replay` for regression checks.
 
 ## Agent skills
 
