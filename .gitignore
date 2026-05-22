@@ -4,3 +4,4 @@ logs/
 *.jsonl
 !internal/game/testdata/sessions/*.jsonl
 .DS_Store
+coverage*.out

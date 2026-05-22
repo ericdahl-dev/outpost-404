@@ -26,4 +26,7 @@ jobs:
 
       - run: go test -race ./...
 
+      - name: internal/game coverage floor (80%)
+        run: ./scripts/check-game-coverage.sh
+
       - run: go build ./...

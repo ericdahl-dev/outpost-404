@@ -62,10 +62,11 @@ git push origin v0.1.0
 
 ## Test it
 
-Game rules are covered by unit tests in `internal/game`:
+Game rules are covered by unit tests in `internal/game` (CI requires ≥ 80% statement coverage on that package; see [docs/balance.md](docs/balance.md)):
 
 ```bash
 go test ./...
+./scripts/check-game-coverage.sh
 ```
 
 ## Session logs

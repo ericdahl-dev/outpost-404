@@ -66,6 +66,16 @@ Use `-simulate` sweeps to explore; lock outcomes in tests before merging balance
 
 Do not loosen checks to greenwash a regression—change data/rules or document a deliberate baseline shift in the PR.
 
+## Coverage floor (`internal/game`)
+
+CI enforces **≥ 80%** statement coverage on `internal/game` only (`cmd/outpost` and `internal/ui` are excluded). The check runs after `go test -race ./...` via `scripts/check-game-coverage.sh`.
+
+```bash
+./scripts/check-game-coverage.sh
+```
+
+Override the minimum locally with `MIN_GAME_COVERAGE=85 ./scripts/check-game-coverage.sh`. Raise the default in the script and this doc together when coverage improves intentionally (#47).
+
 ## Building daily production
 
 `data/buildings.json` may include `dailyEffects` (per-level per day). `advanceDay` applies them **before** power/food upkeep and morale drift (`applyBuildingProduction` in `internal/game/tick.go`). One-time build bonuses stay in `effects`.
